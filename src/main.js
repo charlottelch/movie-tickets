@@ -6,6 +6,9 @@ import router from './router'
 import Vant from 'vant';
 import 'vant/lib/index.css';
 import axios from 'axios'
+import Carousel3d from 'vue-carousel-3d';
+
+Vue.use(Carousel3d);
 Vue.prototype.$axios = axios  
 Vue.use(Vant);
 

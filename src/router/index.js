@@ -4,6 +4,8 @@ import Router from 'vue-router'
 import HomePage from '@/pages/homePage/homePage'
 import Tickets from '@/pages/tickets/tickets'
 import PersonalCenter from '@/pages/personalCenter/personalCenter'
+import Massage from '@/pages/personalCenter/massage'
+
 import Community from '@/pages/community/community'
 import MovieDetail from '@/pages/tickets/movieDetail'
 import TicketsBuy from '@/pages/tickets/ticketsBuy'
@@ -43,6 +45,10 @@ export default new Router({
       path: '/PersonalCenter',
       name: 'PersonalCenter',
       component: PersonalCenter
+    },{
+      path: '/PersonalCenter/Massage',
+      name: 'Massage',
+      component: Massage
     }, {
       path: '/Community',
       name: 'Community',
