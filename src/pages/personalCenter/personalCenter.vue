@@ -6,17 +6,17 @@
       </div>
       <div class="info">
         <div>
-          <h3>昵称</h3>
+          <h3 @click="toLogin">登录/注册</h3>
         </div>
         <div class="top-right">
-          <img src="../../assets/icon/massage.png" alt  @click="goMassage"/>
-          <img src="../../assets/icon/setting.png" alt />
+          <img src="../../assets/icon/massage.png" alt  @click="goMessage"/>
+          <img src="../../assets/icon/setting.png" alt  @click="goSetting"/>
         </div>
       </div>
     </div>
     <div class="functional-area">
       <div class="container">
-        <div class="sign-in">
+        <div class="sign-in" @click="toSignIn">
           <img src="../../assets/icon/sign-in.png" alt />
           <p>
             <span>签到有惊喜</span>
@@ -108,8 +108,17 @@ export default {
     }
   },
   methods: {
-    goMassage () {
-      this.$router.push('/PersonalCenter/Massage')
+    toLogin () {
+      this.$router.push('/Login')
+    },
+    goMessage () {
+      this.$router.push('/PersonalCenter/Message')
+    },
+    goSetting () {
+      this.$router.push('/PersonalCenter/Setting')
+    },
+    toSignIn () {
+      this.$router.push('/PersonalCenter/SignIn')
     }
   }
   

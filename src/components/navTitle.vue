@@ -1,6 +1,6 @@
 <template>
   <div class="title">
-    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft"/>
   </div>
 </template>
 

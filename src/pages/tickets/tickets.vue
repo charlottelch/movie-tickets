@@ -7,7 +7,7 @@
       </div>
       <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" />
       <div class="right">
-        <van-icon name="location-o" />
+        <van-icon name="location-o" @click="toCinemaMap"/>
         <van-icon name="search" @click="getUserInfo" />
       </div>
     </div>
@@ -253,6 +253,9 @@ export default {
     },
     goTicketsBuy () {
       this.$router.push('/Tickets/TicketsBuy')
+    },
+    toCinemaMap () {
+      this.$router.push('/Tickets/CinemaMap')
     },
     getRightData (data) {
       this.businessCircleTitle = data.text

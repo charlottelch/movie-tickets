@@ -60,7 +60,10 @@
                   </div>
                   <div class="tickets-info-right">
                     <div class="tickets-price">
-                      <span class="price">到手价￥ <span>18</span></span>
+                      <span class="price">
+                        到手价￥
+                        <span>18</span>
+                      </span>
                       <span>优惠券已抵4元</span>
                     </div>
                     <span class="choose-seat">选座</span>
@@ -77,6 +80,7 @@
 
 <script>
 import { Carousel3d, Slide } from 'vue-carousel-3d'
+// import AMap from 'AMap'
 export default {
   name: 'CinemaDetail',
   components: {
@@ -128,6 +132,8 @@ export default {
       ],
     }
   },
+  mounted () {
+  },
   methods: {
     onClickLeft () {
       this.$router.go(-1)
@@ -137,7 +143,8 @@ export default {
     },
     iscollect () {
       this.isCollect = true
-    }
+    },
+    
   }
 }
 </script>
@@ -197,55 +204,55 @@ export default {
     .tickets-info {
       padding: 10px 0;
       display: flex;
-        justify-content: space-between;
+      justify-content: space-between;
+      align-items: center;
+      .tickets-info-left {
+        display: flex;
         align-items: center;
-        .tickets-info-left {
+        span {
+          margin: 2px 0;
+        }
+        div {
           display: flex;
-          align-items: center;
-           span {
-              margin: 2px 0;
-            }
-          div {
-            display: flex;
-            flex-direction: column;
-          }
-          .tickets-time {
-            margin-right: 10px;
-           .begin-time {
-             font-size: 16px;
-             color: black;
-           }
+          flex-direction: column;
+        }
+        .tickets-time {
+          margin-right: 10px;
+          .begin-time {
+            font-size: 16px;
+            color: black;
           }
         }
-        .tickets-info-right {
-          display: flex;
-          align-items: center;
-          text-align: right;
-          .tickets-price>span {
-              margin: 2px 0;
-          }
-          .price {
-            color: hotpink;
-            span {
-              font-size: 18px;
-            }
-          }
-          .choose-seat {
-            display: inline-block;
-            width: 50px;
-            height: 25px;
-            text-align: center;
-            line-height: 25px;
-            border: 1px solid hotpink;
-            color: hotpink;
-            border-radius: 25px;
-            margin-left: 10px;
-          }
-          div {
-             display: flex;
-            flex-direction: column;
+      }
+      .tickets-info-right {
+        display: flex;
+        align-items: center;
+        text-align: right;
+        .tickets-price > span {
+          margin: 2px 0;
+        }
+        .price {
+          color: hotpink;
+          span {
+            font-size: 18px;
           }
         }
+        .choose-seat {
+          display: inline-block;
+          width: 50px;
+          height: 25px;
+          text-align: center;
+          line-height: 25px;
+          border: 1px solid hotpink;
+          color: hotpink;
+          border-radius: 25px;
+          margin-left: 10px;
+        }
+        div {
+          display: flex;
+          flex-direction: column;
+        }
+      }
     }
   }
 }

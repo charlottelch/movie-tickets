@@ -14,7 +14,7 @@ export default {
   components: {
     NavTitle
   },
-  name: 'Massage',
+  name: 'Message',
   data () {
     return {
       title: '消息',
