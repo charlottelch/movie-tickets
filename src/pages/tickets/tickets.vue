@@ -7,28 +7,30 @@
       </div>
       <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" />
       <div class="right">
-        <van-icon name="location-o" @click="toCinemaMap"/>
-        <van-icon name="search" @click="getUserInfo" />
+        <van-icon name="location-o" @click="toCinemaMap" />
+        <van-icon name="search" />
       </div>
     </div>
     <van-tabs v-model="active" sticky>
       <van-tab title="热映">
-        <div class="film" v-for="item in 16">
-          <div class="information" @click="goMovieDetailPage">
-            <img src="../../assets/film1.jpg" alt />
+        <div class="film" v-for="(mItem,index) in movieList" :key="index">
+          <div class="information" @click="goMovieDetailPage(mItem)">
+            <img :src="`../../assets/img/${mItem.movieImg}`" alt />
             <div>
-              <h3>囧妈</h3>
+              <h3>{{mItem.movieName}}</h3>
               <p>
                 评分
-                <span>8.0</span>
+                <span>{{mItem.score}}</span>
               </p>
               <p>
                 导演:
-                <span>徐峥</span>
+                <span v-for="(dItem,index) in mItem.director" :key="index">{{dItem.performerName}}</span>
               </p>
               <p>
                 主演:
-                <span>迈克尔.佩纳/丽兹.卡潘</span>
+                <span v-for="(aItem,index) in mItem.actor" :key="index">
+                  <span>{{aItem.performerName}}  </span>
+                </span>
               </p>
             </div>
           </div>
@@ -191,7 +193,7 @@ export default {
       value: "",
       value1: 0,
       value2: 'a',
-      active: 1,
+      active: 0,
       active1: '',
       option2: [
         { text: '综合排序', value: 'a' },
@@ -226,11 +228,13 @@ export default {
           "title": "影院品牌",
           "select": ["太平洋影城", "万达电影", "CGV", "横店影视", "星美影商城", "橙天嘉禾", "UME影城", "百老汇电影", "卢米埃影城", "博纳影城", "大地影院", "幸福蓝海国际影城", "保利影城"]
         }
-      ]
+      ],
+      movieList: []
       // subwayTitle: '全城',
     }
   },
   mounted () {
+    this.getMovie()
     // 事件监听滚动条
     window.addEventListener('scroll', this.watchScroll)
   },
@@ -244,9 +248,9 @@ export default {
         this.navBarFixed = false
       }
     },
-    goMovieDetailPage () {
+    goMovieDetailPage (mItem) {
       // 跳转到Goods.vue商品详情页面,name为Goods.vue页面路由配置里的的name属性
-      this.$router.push('/Tickets/MovieDetail')
+      this.$router.push({path:'/Tickets/MovieDetail',query:{data:mItem}})
     },
     toCinemaDetail () {
       this.$router.push('/Tickets/CinemaDetail')
@@ -267,11 +271,12 @@ export default {
     wantToWatch () {
       console.log("want to look")
     },
-    getUserInfo () {
-      this.$axios.post("http://localhost:8080/api/getUserInfo", {
-        user_id: "1"
-      }).then((response) => {
-        console.log(response)
+    getMovie () {
+      this.$axios.post("http://localhost:8080/getMovie", {
+        // user_id: "1"
+      }).then((res) => {
+        this.movieList = res.data.data
+        console.log(this.movieList)
       })
     }
   }
@@ -530,31 +535,31 @@ export default {
       }
     }
     .coming-soon-film {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 0px;
-    .information {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      text-align: left;
-      font-size: 12px;
-      img {
-        width: 80px;
-        height: 120px;
+      justify-content: space-between;
+      padding: 10px 0px;
+      .information {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        font-size: 12px;
+        img {
+          width: 80px;
+          height: 120px;
+        }
+        h3 {
+          margin: 8px;
+        }
+        p {
+          margin: 8px;
+        }
       }
-      h3 {
-        margin: 8px;
-      }
-      p {
-        margin: 8px;
+      button {
+        // z-index: 100;
       }
     }
-    button {
-      // z-index: 100;
-    }
-  }
   }
 }
 </style>

@@ -10,7 +10,7 @@
       </van-field>-->
       <van-field v-model="newPassword" type="password" placeholder="请输入密码" />
       <van-field v-model="confirmPassword" type="password" placeholder="请再次输入密码" />
-      <van-button type="primary" size="large" @click="regist">注册</van-button>
+      <van-button type="primary" size="large" @click="register">注册</van-button>
     </van-cell-group>
   </div>
 </template>
@@ -21,32 +21,43 @@ export default {
   components: {
     NavTitle
   },
-  name: 'Regist',
+  name: 'Register',
   data () {
     return {
       title: '注册',
       tel: '',
       sms: '',
       newPassword: '',
-      confirmPassword: ''
+      confirmPassword: '',
     }
   },
+  
   mounted () {
   },
   methods: {
     onClickLeft () {
       this.$router.go(-1)
     },
-    regist () {
+    register () {
       // console.log("kk")
-      if (this.newPassword !== this.confirmPassword) {
-          console.log('两次输入密码不同')
-          return
+      if (!this.tel) {
+        console.log('电话号码为空')
+        return
       }
-      this.$axios.post("http://localhost:8080/regist", {
+      if (this.newPassword !== this.confirmPassword) {
+        console.log('两次输入密码不同')
+        return
+      } else if (!this.newPassword) {
+        console.log('密码为空')
+        return
+      }
+      this.$axios.post("http://localhost:8080/register", {
         phone: this.tel,
         password: this.newPassword
       }).then((res) => {
+      if(res.data.code == 200){
+         this.$router.go(-1)   
+      }
         console.log(res.data.msg)
       })
     }

@@ -101,11 +101,11 @@ export default {
       show: false,
       genderShow: false,
       dateShow: false,
-      actions: [
-        { name: '选项', color: '#07c160' },
-        { loading: true },
-        { name: '禁用选项', disabled: true }
-      ],
+      // actions: [
+      //   { name: '选项', color: '#07c160' },
+      //   { loading: true },
+      //   { name: '禁用选项', disabled: true }
+      // ],
       minDate: new Date(1920, 0, 1),
       maxDate: new Date(),
       currentDate: new Date()

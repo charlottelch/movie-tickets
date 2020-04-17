@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // import HelloWorld from '@/components/HelloWorld'
-import Login from '@/pages/loginAndRegist/login'
-import Regist from '@/pages/loginAndRegist/regist'
+import Login from '@/pages/loginAndRegister/login'
+import Register from '@/pages/loginAndRegister/register'
 import HomePage from '@/pages/homePage/homePage'
 import Tickets from '@/pages/tickets/tickets'
 import MovieDetail from '@/pages/tickets/movieDetail'
@@ -17,11 +17,11 @@ import Setting from '@/pages/personalCenter/setting'
 import NicknameEdit from '@/pages/personalCenter/nicknameEdit'
 import ChangePassword from '@/pages/personalCenter/changePassword'
 import SignIn from '@/pages/personalCenter/signIn'
-
+import MovieTickets from '@/pages/personalCenter/MovieTickets'
+import TicketDetail from '@/pages/personalCenter/TicketDetail'
 
 import Community from '@/pages/community/community'
 import City from '@/components/city'
-
 Vue.use(Router)
 
 export default new Router({
@@ -32,9 +32,9 @@ export default new Router({
       component: Login
     },
     {
-      path: '/Regist',
-      name: 'Regist',
-      component: Regist
+      path: '/Register',
+      name: 'Register',
+      component: Register
     },
     {
       path: '/',
@@ -49,34 +49,37 @@ export default new Router({
       path: '/Tickets/CinemaMap',
       name: 'CinemaMap',
       component: CinemaMap
-    },{
+    }, {
       path: '/Tickets/MovieDetail',
       name: 'MovieDetail',
       component: MovieDetail
-    },{
+    }, {
       path: '/Tickets/MovieDetail/Grade',
       name: 'Grade',
       component: Grade
-    },{
+    }, {
       path: '/Tickets/TicketsBuy',
       name: 'TicketsBuy',
       component: TicketsBuy
-    },{
+    }, {
       path: '/Tickets/CinemaDetail',
       name: 'CinemaDetail',
       component: CinemaDetail
-    },{
+    }, {
       path: '/PersonalCenter',
       name: 'PersonalCenter',
       component: PersonalCenter
-    },{
+    }, {
       path: '/PersonalCenter/Message',
       name: 'Message',
       component: Message
     }, {
       path: '/PersonalCenter/Setting',
       name: 'Setting',
-      component: Setting
+      component: Setting,
+      // meta: {
+      //   requireAuth: true
+      // }
     }, {
       path: '/PersonalCenter/Setting/NicknameEdit',
       name: 'NicknameEdit',
@@ -85,11 +88,20 @@ export default new Router({
       path: '/PersonalCenter/Setting/ChangePassword',
       name: 'ChangePassword',
       component: ChangePassword
-    },{
+    }, {
       path: '/PersonalCenter/SignIn',
       name: 'SignIn',
       component: SignIn
-    },{
+    },
+    {
+      path: '/PersonalCenter/MovieTickets',
+      name: 'MovieTickets',
+      component: MovieTickets
+    }, {
+      path: '/PersonalCenter/MovieTickets/TicketDetail',
+      name: 'TicketDetail',
+      component: TicketDetail
+    }, {
       path: '/Community',
       name: 'Community',
       component: Community
@@ -99,4 +111,7 @@ export default new Router({
       component: City
     }
   ]
+
 })
+
+

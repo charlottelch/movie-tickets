@@ -1,15 +1,15 @@
 <template>
   <div class="title">
-    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft"/>
+    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'NavTitle',
-   props: {
-      title: String,
-      default: '标题'
+  props: {
+    title: String,
+    default: '标题'
   },
   data () {
     return {

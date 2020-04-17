@@ -6,11 +6,11 @@
       </div>
       <div class="info">
         <div>
-          <h3 @click="toLogin">登录/注册</h3>
+          <h3 @click="toLogin">{{userName}}</h3>
         </div>
         <div class="top-right">
-          <img src="../../assets/icon/massage.png" alt  @click="goMessage"/>
-          <img src="../../assets/icon/setting.png" alt  @click="goSetting"/>
+          <img src="../../assets/icon/massage.png" alt @click="goMessage" />
+          <img src="../../assets/icon/setting.png" alt @click="goSetting" />
         </div>
       </div>
     </div>
@@ -24,50 +24,50 @@
           </p>
         </div>
         <div class="list">
-          <div>
+          <div @click="toMovieTickets">
             <div class="gradation-bk01">
-              <img src="../../assets/icon/tickiets.png" alt="">
+              <img src="../../assets/icon/tickiets.png" alt />
             </div>
             <span>电影票</span>
           </div>
           <div>
             <div class="gradation-bk02">
-              <img src="../../assets/icon/member.png" alt="">
+              <img src="../../assets/icon/member.png" alt />
             </div>
             <span>会员</span>
           </div>
           <div>
             <div class="gradation-bk03">
-              <img src="../../assets/icon/coupon.png" alt="">
+              <img src="../../assets/icon/coupon.png" alt />
             </div>
             <span>优惠券</span>
           </div>
           <div>
             <div class="gradation-bk04">
-              <img src="../../assets/icon/snake.png" alt="">
+              <img src="../../assets/icon/snake.png" alt />
             </div>
             <span>小食</span>
           </div>
         </div>
         <div class="list">
           <div>
-            <img src="../../assets/icon/want-to-watch.png" alt="">
+            <img src="../../assets/icon/want-to-watch.png" alt />
             <span>想看</span>
           </div>
           <div>
-            <img src="../../assets/icon/collection.png" alt="">
+            <img src="../../assets/icon/collection.png" alt />
             <span>影单</span>
           </div>
           <div>
-            <img src="../../assets/icon/watched.png" alt="">
+            <img src="../../assets/icon/watched.png" alt />
             <span>看过</span>
           </div>
           <div>
-            <img src="../../assets/icon/comment.png" alt="">
+            <img src="../../assets/icon/comment.png" alt />
             <span>评论</span>
           </div>
           <div>
-            <img src="../../assets/icon/customer-service.png" alt="">
+            <img src="../../assets/icon/customer-service.png" alt />
             <span>客服</span>
           </div>
         </div>
@@ -104,8 +104,12 @@ export default {
   name: 'HomePage',
   data () {
     return {
-
+      userName: '登录/注册',
+      userInfo:{}
     }
+  },
+  mounted () {
+    this.receiveUserName()
   },
   methods: {
     toLogin () {
@@ -119,9 +123,22 @@ export default {
     },
     toSignIn () {
       this.$router.push('/PersonalCenter/SignIn')
+    },
+    toMovieTickets () {
+      this.$router.push('/PersonalCenter/MovieTickets')
+    },
+    receiveUserName () {
+      // console.log(this.$store.state.userInfo)
+      // this.userInfo = this.$store.state.userInfo 
+      if(this.$store.state.userInfo != null){
+        this.userName = this.$store.state.userInfo.userName
+      }
+      // console.log(this.userInfo.userName)
+      // this.userName = this.userInfo
+      // this.userName = this.$route.query.data 
     }
   }
-  
+
 }
 </script>
 
@@ -139,7 +156,13 @@ export default {
   .personal-top {
     height: 150px;
     // background: #34c372;
-    background-image: radial-gradient(circle at 10% 50%,#99CCCC 20%, #7171B7 40%, #CCCC99 60%, #4F9C9C 80%);
+    background-image: radial-gradient(
+      circle at 10% 50%,
+      #99cccc 20%,
+      #7171b7 40%,
+      #cccc99 60%,
+      #4f9c9c 80%
+    );
     color: white;
     border-radius: 0 0 10% 10%;
     display: flex;
