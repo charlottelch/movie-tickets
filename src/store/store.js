@@ -5,9 +5,9 @@ import actions from './action.js'
 
 Vue.use(Vuex)
 
-const state={
-  userInfo:null,
-  token:false
+const state = {
+  userInfo: null,
+  token: false //登录前token为false
 }
 
 export default new Vuex.Store({

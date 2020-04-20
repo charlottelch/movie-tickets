@@ -1,189 +1,203 @@
 <template>
   <div class="main-con">
-    <van-nav-bar fixed left-arrow @click-left="onClickLeft">
-      <template #right>
-        <van-icon name="ellipsis" />
-      </template>
-    </van-nav-bar>
-    <div class="video">
-      <video width="100%" height="100%" controls>
-        <source src="../../assets/video/meirenyu.mp4" type="video/mp4" />您的浏览器不支持 HTML5 video 标签。
-      </video>
-    </div>
-    <div class="info">
-      <div class="score box-shadow">
-        <div class="movie-info">
-          <img src="../../assets/dream-travel.jpg" alt />
-          <div class="movie-info-content">
-            <h3>寻梦环游记</h3>
-            <span class="want-to-watch">
-              <van-icon name="browsing-history" size="20" />
-              <span>120人想看</span>
-            </span>
-            <p>
-              <span>150分钟</span>/
-              <span>动作 喜剧 音乐 奇幻</span>/
-              <span>美国</span>
-            </p>
-            <p>
-              <span>2020-03-26</span>
-              <span>大陆上映</span>
-            </p>
+    <div>
+      <van-nav-bar fixed left-arrow @click-left="onClickLeft" :title="movieList.movieName">
+        <template #right>
+          <div class="share">
+            <img src="../../assets/icon/share.png" alt @click="showShare=true"/>
           </div>
+          <!-- <van-icon name="ellipsis" /> -->
+        </template>
+      </van-nav-bar>
+      <van-action-sheet v-model="showShare" title="标题" cancel-text="取消" @cancel="showShare=false">
+        <div class="content">
+          <img src="../../assets/icon/WeChat.png" alt="">
+          <img src="../../assets/icon/weibo.png" alt="">
+          <img src="../../assets/icon/QQ .png" alt="">
         </div>
-        <van-divider></van-divider>
-        <div class="score-detail">
-          <div class="score-star">
-            <p>
-              <span>9.0</span>电影评分
-            </p>
-            <van-rate
-              v-model="starValue"
-              allow-half
-              void-icon="star"
-              color="#ff3174"
-              void-color="#eee"
-              :size="20"
-              readonly
-            />
-          </div>
-          <span class="click-button" :class="[isActive?'checked':'']" @click="wantToLook">
-            <van-icon name="like" />
-            <span>想看</span>
-          </span>
-          <span class="click-button" @click="writeReview">
-            <van-icon name="star" />
-            <span>看过</span>
-          </span>
-        </div>
+      </van-action-sheet>
+      <div class="video">
+        <video width="100%" height="100%" controls>
+          <source :src="`../../../static/video/${movieList.video}`" type="video/mp4" />您的浏览器不支持 HTML5 video 标签。
+          <!-- <source src="../../../static/video/meirenyu.mp4" type="video/mp4"/>> -->
+        </video>
       </div>
-      <div class="introduction-review-more">
-        <van-tabs v-model="active" scrollspy sticky offset-top="46" line-width="20px" color="#ff3174">
-          <van-tab title="简介">
-            <div v-bind:class="{ expansion : active }" class="card-mid">
-              小男孩米格(安东尼·冈萨雷斯配音)一心梦想成为音乐
-              家，更希望自己能和偶像歌神德拉库斯(本杰明·布拉特
-              配音)一样，创造出打动人心的音乐，但他的家族却世
-              代禁止族人接触音乐。米格痴迷音乐，无比渴望证明自
-              己的音乐才能，却因为一系列怪事，来到了五彩斑斓又
-              光怪陆离的神秘世界。在那里，米格遇见了魅力十足的
-              落魄乐手埃克托(盖尔·加西亚·贝纳尔配音)，他们-
-              起踏上了探寻米格家族不为人知往事的奇妙之旅，并开
-              启了一段震撼心灵、感动非凡、永生难忘的旅程。
+      <div class="info">
+        <div class="score box-shadow">
+          <div class="movie-info">
+            <img src="../../assets/dream-travel.jpg" alt />
+            <div class="movie-info-content">
+              <!-- <h3>{{item.movieName}}</h3> -->
+              <h3>{{movieList.movieName}}</h3>
+              <span class="want-to-watch">
+                <van-icon name="browsing-history" size="20" />
+                <span>{{movieList.wantLook}}人想看</span>
+              </span>
+              <p>
+                <span>{{movieList.movieDuration}}</span>/
+                <span>{{movieList.movieLabel}}</span>/
+                <span>{{movieList.showingArea}}</span>
+              </p>
+              <p>
+                <span>{{movieList.releaseTime}}</span>
+                <span>{{movieList.showingArea}}</span>
+              </p>
             </div>
-            <div class="introduction-myreview box-shadow">
-              <div class="introduction-myreview-title">
-                <h3>我的影评</h3>
-                <van-icon name="upgrade" size="20" color="orange" />
-              </div>
-              <p>很好看很好看很好看很好看很好看很好看很好看很好看很好看</p>
+          </div>
+          <van-divider></van-divider>
+          <div class="score-detail">
+            <div class="score-star">
+              <p>
+                <span>{{movieList.score}}</span>电影评分
+              </p>
+              <van-rate
+                v-model="starValue"
+                allow-half
+                void-icon="star"
+                color="#ff3174"
+                void-color="#eee"
+                :size="20"
+                readonly
+              />
             </div>
-            <div class="performers box-shadow">
-              <div class="performers-title">
-                <h3>演职人员</h3>
-                <p>
-                  <span>热播榜</span>
-                  <van-icon name="arrow" />
-                </p>
+            <span class="click-button" :class="[isActive?'checked':'']" @click="wantToLook">
+              <van-icon name="like" />
+              <span>想看</span>
+            </span>
+            <span class="click-button" @click="writeReview">
+              <van-icon name="star" />
+              <span>看过</span>
+            </span>
+          </div>
+        </div>
+        <div class="introduction-review-more">
+          <van-tabs
+            v-model="active"
+            scrollspy
+            sticky
+            offset-top="46"
+            line-width="20px"
+            color="#ff3174"
+          >
+            <van-tab title="简介">
+              <div
+                v-bind:class="{ expansion : active }"
+                class="card-mid"
+              >{{movieList.filmIntroduction}}</div>
+              <div class="introduction-myreview box-shadow">
+                <div class="introduction-myreview-title">
+                  <h3>我的影评</h3>
+                  <van-icon name="upgrade" size="20" color="orange" />
+                </div>
+                <p>很好看很好看很好看很好看很好看很好看很好看很好看很好看</p>
               </div>
-              <div class="sortMenu clearfix">
-                <ul class="sortMenu-ul">
-                  <li class="cell" v-for="item in 6">
-                    <img src="../../assets/头像.jpg" alt />
-                    <p>哈哈</p>
-                    <p>导演</p>
-                    <!-- <a href>{{item.sortname}}</a> -->
-                  </li>
-                </ul>
+              <div class="performers box-shadow">
+                <div class="performers-title">
+                  <h3>演职人员</h3>
+                  <p>
+                    <span>热播榜</span>
+                    <van-icon name="arrow" />
+                  </p>
+                </div>
+                <div class="sortMenu clearfix">
+                  <ul class="sortMenu-ul">
+                    <li class="cell" v-for="item in 6">
+                      <img src="../../assets/头像.jpg" alt />
+                      <p>哈哈</p>
+                      <p>导演</p>
+                      <!-- <a href>{{item.sortname}}</a> -->
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
-            <div class="movie-video box-shadow">
-              <div class="performers-title">
-                <h3>视频</h3>
-                <!-- <p>
+              <div class="movie-video box-shadow">
+                <div class="performers-title">
+                  <h3>视频</h3>
+                  <!-- <p>
                 <span>热播榜</span>
                 <van-icon name="arrow" />
-                </p>-->
-              </div>
-              <div class="sortMenu clearfix">
-                <ul class="sortMenu-ul">
-                  <li class="cell" v-for="item in 6">
-                    <img src="../../assets/头像.jpg" alt />
-                    <!-- <p>哈哈</p>
-                    <p>导演</p>-->
-                    <!-- <a href>{{item.sortname}}</a> -->
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="photo box-shadow">
-              <div class="performers-title">
-                <h3>剧照</h3>
-              </div>
-              <div class="sortMenu clearfix">
-                <ul class="sortMenu-ul">
-                  <li class="cell" v-for="item in 6">
-                    <img src="../../assets/头像.jpg" alt />
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="awards box-shadow">
-              <div class="performers-title">
-                <h3>奖项荣誉</h3>
-              </div>
-              <div class="awards-part" v-for="item in 3">
-                <img src="../../assets/film1.jpg" alt />
-                <div>
-                  <h3>第35届香港电影金像奖</h3>
-                  <p>最佳两岸华语电影(提名)</p>
+                  </p>-->
                 </div>
-                <van-icon name="arrow" />
-              </div>
-            </div>
-          </van-tab>
-          <van-tab title="影评">
-            <div class="film-review box-shadow">
-              <div class="film-review-title">
-                <h3>观众评论</h3>
-                <span @click="writeReview">写影评</span>
-              </div>
-              <div class="film-review-part" v-for="item in 3">
-                <div class="film-review-user">
-                  <img src="../../assets/头像.jpg" alt />
-                  <p>用户名</p>
+                <div class="sortMenu clearfix">
+                  <ul class="sortMenu-ul">
+                    <li class="cell" v-for="item in 6">
+                      <img src="../../assets/头像.jpg" alt />
+                      <!-- <p>哈哈</p>
+                      <p>导演</p>-->
+                      <!-- <a href>{{item.sortname}}</a> -->
+                    </li>
+                  </ul>
                 </div>
-                <p>很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人</p>
-                <div class="review-bottom">
-                  <span>2019-12-12</span>
+              </div>
+              <div class="photo box-shadow">
+                <div class="performers-title">
+                  <h3>剧照</h3>
+                </div>
+                <div class="sortMenu clearfix">
+                  <ul class="sortMenu-ul">
+                    <li class="cell" v-for="item in 6">
+                      <img src="../../assets/头像.jpg" alt />
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="awards box-shadow">
+                <div class="performers-title">
+                  <h3>奖项荣誉</h3>
+                </div>
+                <div class="awards-part" v-for="item in 3">
+                  <img src="../../assets/film1.jpg" alt />
                   <div>
-                    <span>
-                      <van-icon name="good-job-o" />
-                      <span>539</span>
-                    </span>
-                    <span>
-                      <van-icon name="chat-o" />
-                      <span>13</span>
-                    </span>
+                    <h3>第35届香港电影金像奖</h3>
+                    <p>最佳两岸华语电影(提名)</p>
+                  </div>
+                  <van-icon name="arrow" />
+                </div>
+              </div>
+            </van-tab>
+            <van-tab title="影评">
+              <div class="film-review box-shadow">
+                <div class="film-review-title">
+                  <h3>观众评论</h3>
+                  <span @click="writeReview">写影评</span>
+                </div>
+                <div class="film-review-part" v-for="item in 3">
+                  <div class="film-review-user">
+                    <img src="../../assets/头像.jpg" alt />
+                    <p>用户名</p>
+                  </div>
+                  <p>很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人</p>
+                  <div class="review-bottom">
+                    <span>2019-12-12</span>
+                    <div>
+                      <span>
+                        <van-icon name="good-job-o" />
+                        <span>539</span>
+                      </span>
+                      <span>
+                        <van-icon name="chat-o" />
+                        <span>13</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </van-tab>
-          <van-tab title="更多">
-            <div class="movie-dynamics box-shadow">
-              <div>
-                <h3>电影动态</h3>
+            </van-tab>
+            <van-tab title="更多">
+              <div class="movie-dynamics box-shadow">
+                <div>
+                  <h3>电影动态</h3>
+                </div>
               </div>
-            </div>
-          </van-tab>
-        </van-tabs>
+            </van-tab>
+          </van-tabs>
+        </div>
       </div>
-    </div>
 
-    <div class="ticket-purchase">
-      <!-- <van-button round type="info" size="large">选座购票</van-button> -->
-      <span @click="goTicketsBuy">选座购票</span>
+      <div class="ticket-purchase">
+        <!-- <van-button round type="info" size="large">选座购票</van-button> -->
+        <span @click="goTicketsBuy">选座购票</span>
+      </div>
     </div>
   </div>
 </template>
@@ -193,14 +207,28 @@ export default {
   name: 'MovieDetail',
   data () {
     return {
+      showShare:false,
+      options: [
+        [
+          { name: '微信', icon: 'wechat' },
+          { name: '微博', icon: 'weibo' },
+          { name: 'QQ', icon: 'qq' },
+        ],
+        [
+          { name: '复制链接', icon: 'link' },
+          { name: '分享海报', icon: 'poster' },
+          { name: '二维码', icon: 'qrcode' },
+        ],
+      ],
       starValue: 4.5,
       active: 0,
       movieList: [],
-      isActive: false
+      isActive: null
     }
   },
   mounted () {
     this.receiveMovie()
+    this.wantLookList()
   },
   methods: {
     onClickLeft () {
@@ -213,11 +241,41 @@ export default {
       this.$router.push('/Tickets/MovieDetail/Grade')
     },
     receiveMovie () {
-      this.movieList = this.$route.query.data
+      // this.movieList = this.$route.query.data
+      this.movieList = JSON.parse(localStorage.getItem('movie'))
       console.log(this.movieList)
     },
     wantToLook (index) {
       this.isActive = !this.isActive
+      if (this.isActive) {
+        this.movieList.wantLook = this.movieList.wantLook + 1
+      } else {
+        this.movieList.wantLook = this.movieList.wantLook - 1
+      }
+      console.log(this.movieList.wantLook, this.isActive)
+      this.$axios.post("http://localhost:8080/wantToLook", {
+        wantLook: this.movieList.wantLook,
+        movieId: this.movieList.movieId,
+        isActive: this.isActive
+      }).then((res) => {
+        // this.movieList = res.data.data
+        console.log(res)
+      })
+    },
+    wantLookList () {
+      this.$axios.post("http://localhost:8080/wantLookList", {
+        // wantLook: this.movieList.wantLook,
+        movieId: this.movieList.movieId
+      }).then((res) => {
+        // this.movieList = res.data.data
+        if (res.data.code == 200) {
+          // var isActive = true
+          this.isActive = true
+        } else {
+          this.isActive = false
+        }
+        console.log(res.data.code)
+      })
     }
   }
 }
@@ -253,6 +311,14 @@ export default {
     border-radius: 10px;
     padding: 10px;
     margin-top: 20px;
+  }
+  .share {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    img {
+      width: 24px;
+    }
   }
   .video {
     // height: 200px;

@@ -15,7 +15,7 @@
       <van-tab title="热映">
         <div class="film" v-for="(mItem,index) in movieList" :key="index">
           <div class="information" @click="goMovieDetailPage(mItem)">
-            <img :src="`../../assets/img/${mItem.movieImg}`" alt />
+            <img :src="`../../../static/${mItem.movieImg}`" alt />
             <div>
               <h3>{{mItem.movieName}}</h3>
               <p>
@@ -250,7 +250,8 @@ export default {
     },
     goMovieDetailPage (mItem) {
       // 跳转到Goods.vue商品详情页面,name为Goods.vue页面路由配置里的的name属性
-      this.$router.push({path:'/Tickets/MovieDetail',query:{data:mItem}})
+      this.$router.push({path:'/Tickets/MovieDetail'})
+      localStorage.setItem('movie',JSON.stringify(mItem));
     },
     toCinemaDetail () {
       this.$router.push('/Tickets/CinemaDetail')

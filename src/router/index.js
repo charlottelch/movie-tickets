@@ -77,9 +77,9 @@ export default new Router({
       path: '/PersonalCenter/Setting',
       name: 'Setting',
       component: Setting,
-      // meta: {
-      //   requireAuth: true
-      // }
+      meta: {
+        requireAuth: true
+      }
     }, {
       path: '/PersonalCenter/Setting/NicknameEdit',
       name: 'NicknameEdit',
