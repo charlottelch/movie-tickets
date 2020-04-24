@@ -4,8 +4,8 @@
     <div class="cinema-title">
       <div class="cinema-info">
         <div>
-          <h3>太平洋影城(温江店)</h3>
-          <p>温江星艺大道300号艺苑生活圈2楼</p>
+          <h3>{{cinemaList.cinemaName}}</h3>
+          <p>{{cinemaList.cinemaAdress}}</p>
         </div>
         <div class="cinema-info-right">
           <div>
@@ -16,53 +16,59 @@
         </div>
       </div>
       <div class="label">
-        <van-tag color="#f2826a">3D</van-tag>
-        <van-tag color="#f2826a">可停车</van-tag>
-        <van-tag color="#7232dd">儿童优惠</van-tag>
+        <van-tag
+          color="#ff3174"
+          v-for="(Litem,index) in cinemaList.label"
+          :key="index"
+        >{{Litem.labelName}}</van-tag>
       </div>
     </div>
     <div class="movieShow">
       <carousel-3d :perspective="20" :space="80" :display="7">
-        <slide :index="0">Slide 1 Content</slide>
-        <slide :index="1">Slide 2 Content</slide>
-        <slide :index="2">Slide 3 Content</slide>
-        <slide :index="3">Slide 4 Content</slide>
-        <slide :index="4">Slide 5 Content</slide>
-        <slide :index="5">Slide 6 Content</slide>
-        <slide :index="6">Slide 7 Content</slide>
-        <slide :index="7">Slide 8 Content</slide>
+        <slide v-for="(item,index) in movieSceneList" :index="index" :key="index">
+          <img :src="`../../../static/${item.movieImg}`" alt @click="changeSlide(index)" />
+          <!-- <template slot-scope="{ index, isCurrent, leftIndex, rightIndex}">
+            <img
+              :src="`../../../static/${item.movieImg}`"
+              :data-index="index"
+              :class="{ current: isCurrent, onLeft: (leftIndex >= 0), onRight: (rightIndex >=0)}"
+              alt
+            />
+          </template>-->
+        </slide>
+        <!-- <slide :index="2">1</slide> -->
       </carousel-3d>
     </div>
     <div class="movieinfo">
-      <h3>狼图腾</h3>
+      <h3>{{movieSceneList.length==0?'':movieSceneList[movieIndex].movieName}}</h3>
       <p>
-        <span>150分钟</span>/
-        <span>动作 喜剧 音乐 奇幻</span>/
-        <span>冯绍峰、窦骁</span>
+        <span>{{movieSceneList.length==0?'':movieSceneList[movieIndex].movieDuration}}</span>/
+        <span>{{movieSceneList.length==0?'':movieSceneList[movieIndex].movieLabel}}</span>
+        <!-- <span>冯绍峰、窦骁</span> -->
       </p>
     </div>
     <div class="detail-info">
       <van-tabs class="date-tab">
         <div>
-          <van-tab v-for="(item, index) in weekList" :title="item.date" :key="index">
+          <van-tab v-for="(item, index) in movieSceneList[movieIndex].sceneDate" :title="item.sceneDate" :key="index">
             <div class="tickets-totle">
-              <div class="tickets" v-for="(citem, index) in item.cinema" :key="index">
+              <div class="tickets" v-for="(citem, index) in item.scene" :key="index">
                 <div class="tickets-info">
                   <div class="tickets-info-left">
                     <div class="tickets-time">
-                      <span class="begin-time">15:50</span>
-                      <span>17:51散场</span>
+                      <span class="begin-time">{{citem.startTime}}</span>
+                      <span>{{citem.endTime}}散场</span>
                     </div>
                     <div>
-                      <span>国语2D</span>
-                      <span>二号激光厅</span>
+                      <span>{{citem.studioType}}</span>
+                      <span>{{citem.movieHall}}</span>
                     </div>
                   </div>
                   <div class="tickets-info-right">
                     <div class="tickets-price">
                       <span class="price">
                         到手价￥
-                        <span>18</span>
+                        <span>{{citem.ticketPrice}}</span>
                       </span>
                       <span>优惠券已抵4元</span>
                     </div>
@@ -130,9 +136,23 @@ export default {
           ]
         }
       ],
+      cinemaList: [],
+      movieSceneList: [],
+      movieIndex: 0
     }
   },
+  beforeMount () {
+
+  },
+  beforeCreate () {
+
+  },
   mounted () {
+    // 获取影院数据
+    this.cinemaList = JSON.parse(localStorage.getItem('cinema'))
+    console.log(this.cinemaList)
+    // 获取电影场次数据
+    this.getCinemaMovie()
   },
   methods: {
     onClickLeft () {
@@ -144,7 +164,28 @@ export default {
     iscollect () {
       this.isCollect = true
     },
-    
+    // 获取影院上映的电影
+    getCinemaMovie () {
+      this.$axios.post("http://localhost:8080/getCinemaMovie", {
+        cinemaId: this.cinemaList.cinemaId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          if (res.data.data.length !== 0) {
+            this.movieSceneList = res.data.data
+            console.log(this.movieSceneList)
+          }
+
+        } else {
+
+        }
+        // console.log(res.data)
+      })
+    },
+    changeSlide (index) {
+      this.movieIndex = index
+      console.log(index)
+    },
+
   }
 }
 </script>
@@ -174,6 +215,9 @@ export default {
         }
         text-align: right;
       }
+    }
+    .van-tag {
+      margin-right: 2px;
     }
   }
   .movieShow {

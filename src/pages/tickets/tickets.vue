@@ -24,12 +24,15 @@
               </p>
               <p>
                 导演:
-                <span v-for="(dItem,index) in mItem.director" :key="index">{{dItem.performerName}}</span>
+                <span
+                  v-for="(dItem,index) in mItem.director"
+                  :key="index"
+                >{{dItem.performerName}}</span>
               </p>
               <p>
                 主演:
                 <span v-for="(aItem,index) in mItem.actor" :key="index">
-                  <span>{{aItem.performerName}}  </span>
+                  <span>{{aItem.performerName}}</span>
                 </span>
               </p>
             </div>
@@ -88,22 +91,22 @@
             ></van-dropdown-item>
           </van-dropdown-menu>
         </div>
-        <div class="cinema" v-for="item in 10" @click="toCinemaDetail">
-          <div class="cinema-info">
-            <div>
-              <h3>太平洋影城(温江店)</h3>
-              <p>温江星艺大道300号艺苑生活圈2楼</p>
+        <div class="cinema-all">
+          <div class="cinema" v-for="(item,index) in cinemaList" :key="index" @click="toCinemaDetail(item)">
+            <div class="cinema-info">
+              <div>
+                <h3>{{item.cinemaName}}</h3>
+                <p>{{item.cinemaAdress}}</p>
+              </div>
+              <div class="cinema-info-right">
+                <span>￥{{item.bottomPrice}}元</span>
+                <span>起</span>
+                <p>{{item.cinemaDistance}}</p>
+              </div>
             </div>
-            <div class="cinema-info-right">
-              <span>￥28元</span>
-              <span>起</span>
-              <p>28.1km</p>
+            <div class="label">
+              <van-tag color="#ff3174" v-for="(Litem,index) in item.label" :key="index">{{Litem.labelName}}</van-tag>
             </div>
-          </div>
-          <div class="label">
-            <van-tag color="#f2826a">3D</van-tag>
-            <van-tag color="#f2826a">可停车</van-tag>
-            <van-tag color="#7232dd">儿童优惠</van-tag>
           </div>
         </div>
       </van-tab>
@@ -229,14 +232,17 @@ export default {
           "select": ["太平洋影城", "万达电影", "CGV", "横店影视", "星美影商城", "橙天嘉禾", "UME影城", "百老汇电影", "卢米埃影城", "博纳影城", "大地影院", "幸福蓝海国际影城", "保利影城"]
         }
       ],
-      movieList: []
+      movieList: [],
+      cinemaList: []
       // subwayTitle: '全城',
     }
   },
   mounted () {
     this.getMovie()
+    this.getCinemaData()
     // 事件监听滚动条
     window.addEventListener('scroll', this.watchScroll)
+
   },
   methods: {
     watchScroll () {
@@ -249,12 +255,14 @@ export default {
       }
     },
     goMovieDetailPage (mItem) {
-      // 跳转到Goods.vue商品详情页面,name为Goods.vue页面路由配置里的的name属性
-      this.$router.push({path:'/Tickets/MovieDetail'})
-      localStorage.setItem('movie',JSON.stringify(mItem));
+      // 电影信息存到localstorage
+      this.$router.push({ path: '/Tickets/MovieDetail' })
+      localStorage.setItem('movie', JSON.stringify(mItem));
     },
-    toCinemaDetail () {
+    toCinemaDetail (item) {
       this.$router.push('/Tickets/CinemaDetail')
+      localStorage.setItem('cinema', JSON.stringify(item));
+
     },
     goTicketsBuy () {
       this.$router.push('/Tickets/TicketsBuy')
@@ -279,7 +287,19 @@ export default {
         this.movieList = res.data.data
         console.log(this.movieList)
       })
+    },
+    // 获取电影院信息
+    getCinemaData () {
+      this.$axios.post("http://localhost:8080/getCinemaData", {
+        // userId: this.userInfo.userId,
+        // movieId: this.movieList.movieId
+      }).then((res) => {
+        this.cinemaList = res.data.data
+        console.log(this.cinemaList)
+        // this.movieList.score = res.data.data[0].score
+      })
     }
+
   }
 }
 </script>
@@ -430,6 +450,9 @@ export default {
       .cinema-info-right {
         text-align: right;
       }
+    }
+    .van-tag {
+      margin-right: 2px;
     }
   }
   .coming-soon {

@@ -6,7 +6,7 @@
       </div>
       <div class="info">
         <div>
-          <h3 @click="toLogin">{{userName}}</h3>
+          <h3 @click="toLogin">{{userName || '登录/注册'}} </h3>
         </div>
         <div class="top-right">
           <img src="../../assets/icon/massage.png" alt @click="goMessage" />
@@ -135,6 +135,7 @@ export default {
       }
       // console.log(this.userInfo.userName)
       // this.userName = this.userInfo
+      // 路由传值
       // this.userName = this.$route.query.data 
     }
   }

@@ -14,21 +14,21 @@
       <div class="select" @click="toNickName">
         <span>昵称</span>
         <div class="select-right">
-          <span>糖糖</span>
+          <span>{{userInfo.userName}}</span>
           <van-icon name="arrow" />
         </div>
       </div>
       <div class="select" @click="genderShow=true">
         <span>性别</span>
         <div class="select-right">
-          <span>女</span>
+          <span>{{userInfo.gender}}</span>
           <van-icon name="arrow" />
         </div>
       </div>
       <div class="select" @click="dateShow=true">
         <span>生日</span>
         <div class="select-right">
-          <span>10月21日</span>
+          <span>{{userInfo.birthday}}</span>
           <van-icon name="arrow" />
         </div>
       </div>
@@ -69,8 +69,8 @@
       </van-action-sheet>
       <van-action-sheet v-model="genderShow" title="标题" cancel-text="取消" @cancel="onGenderCancel">
         <div class="content">
-          <p>男</p>
-          <p>女</p>
+          <p @click="genderBoy">男</p>
+          <p @click="genderGirl">女</p>
         </div>
       </van-action-sheet>
       <van-action-sheet v-model="dateShow" title="标题">
@@ -89,6 +89,8 @@
 
 <script>
 import NavTitle from "@/components/navTitle"
+import {CLEAR_USERINFO} from "../../store/mutations-type"
+
 export default {
   components: {
     NavTitle
@@ -101,17 +103,16 @@ export default {
       show: false,
       genderShow: false,
       dateShow: false,
-      // actions: [
-      //   { name: '选项', color: '#07c160' },
-      //   { loading: true },
-      //   { name: '禁用选项', disabled: true }
-      // ],
       minDate: new Date(1920, 0, 1),
       maxDate: new Date(),
-      currentDate: new Date()
+      currentDate: new Date(),
+      userInfo: {}
     }
   },
   mounted () {
+    if (this.$store.state.userInfo != null) {
+      this.userInfo = this.$store.state.userInfo
+    }
   },
   methods: {
     onClickLeft () {
@@ -131,9 +132,30 @@ export default {
       console.log(this.genderShow)
       this.genderShow = false
     },
+    // 更改生日
     confirmDate (value) {
-      console.log(value)
       this.dateShow = false
+      value = this.date(value)
+      this.userInfo.birthday = value
+      this.$axios.post("http://localhost:8080/confirmDate", {
+        birthday: this.userInfo.birthday,
+        userId: this.userInfo.userId
+      }).then((res) => {
+        console.log(res)
+      })
+      console.log(value)
+    },
+
+    // 改变日期时间格式
+    date (time) {
+      time = new Date(time)
+      time = time.getFullYear() + '-' + this.formatDate((time.getMonth() + 1)) + '-' + this.formatDate(time.getDate())
+      // this.endTime = new Date(this.formInline.time[1])
+      return time
+    },
+    // 不够10添加0的函数
+    formatDate (s) {
+      return s < 10 ? '0' + s : s
     },
     cancelDate () {
       this.dateShow = false
@@ -142,14 +164,39 @@ export default {
       this.$router.push('/PersonalCenter/Setting/changePassword')
     },
     logout () {
+      // this.$store.commit(CLEAR_USERINFO)
+      // this.$router.push({ path: '/PersonalCenter' })
       this.$dialog.confirm({
         // title:'标题奥',
         message: '确认退出登录吗？',
         confirmButtonColor: 'red'
       }).then(() => {
         console.log('点击了确认')
+        this.$store.commit(CLEAR_USERINFO)
+        this.$router.push({ path: '/PersonalCenter' })
+        console.log('haha')
       }).catch(() => {
         console.log('点击了取消')
+      })
+    },
+    genderBoy () {
+      this.userInfo.gender = '男'
+      this.onGenderCancel()
+      this.$axios.post("http://localhost:8080/genderBoy", {
+        gender: this.userInfo.gender,
+        userId: this.userInfo.userId
+      }).then((res) => {
+        console.log(res)
+      })
+    },
+    genderGirl () {
+      this.userInfo.gender = '女'
+      this.onGenderCancel()
+      this.$axios.post("http://localhost:8080/genderGirl", {
+        gender: this.userInfo.gender,
+        userId: this.userInfo.userId
+      }).then((res) => {
+        console.log(res)
       })
     }
   }

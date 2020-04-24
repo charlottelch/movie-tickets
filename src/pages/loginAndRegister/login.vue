@@ -50,11 +50,11 @@ export default {
           // console.log(this.userName)
           // 将登录数据传值到仓库
           this.$store.commit(GET_USERINFO,this.data)
-          this.$store.dispatch('getUser',{
-            userId:'0001'
-          }).then(()=>{
+          // this.$store.dispatch('getUser',{
+          //   userId:'0001'
+          // }).then(()=>{
 
-          }) 
+          // }) 
           this.$router.push({path:'/PersonalCenter'})
           // 路由传值
           // this.$router.push({path:'/PersonalCenter',query:{data:this.userName}})

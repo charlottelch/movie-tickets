@@ -1,19 +1,36 @@
 <template>
   <div class="main-con">
     <div>
-      <van-nav-bar fixed left-arrow @click-left="onClickLeft" :title="movieList.movieName">
+      <van-nav-bar
+        fixed
+        left-arrow
+        @click-left="onClickLeft"
+        :title="movieList.movieName"
+        :class="[isScroll?'title-top':'title-top-scroll']"
+      >
         <template #right>
           <div class="share">
-            <img src="../../assets/icon/share.png" alt @click="showShare=true"/>
+            <img
+              v-if="isScroll==true"
+              src="../../assets/icon/share.png"
+              alt
+              @click="showShare=true"
+            />
+            <img
+              v-if="isScroll==false"
+              src="../../assets/icon/share-black.png"
+              alt
+              @click="showShare=true"
+            />
           </div>
           <!-- <van-icon name="ellipsis" /> -->
         </template>
       </van-nav-bar>
       <van-action-sheet v-model="showShare" title="标题" cancel-text="取消" @cancel="showShare=false">
         <div class="content">
-          <img src="../../assets/icon/WeChat.png" alt="">
-          <img src="../../assets/icon/weibo.png" alt="">
-          <img src="../../assets/icon/QQ .png" alt="">
+          <img src="../../assets/icon/WeChat.png" alt />
+          <img src="../../assets/icon/weibo.png" alt />
+          <img src="../../assets/icon/QQ .png" alt />
         </div>
       </van-action-sheet>
       <div class="video">
@@ -25,7 +42,7 @@
       <div class="info">
         <div class="score box-shadow">
           <div class="movie-info">
-            <img src="../../assets/dream-travel.jpg" alt />
+            <img :src="`../../../static/${movieList.movieImg}`" alt />
             <div class="movie-info-content">
               <!-- <h3>{{item.movieName}}</h3> -->
               <h3>{{movieList.movieName}}</h3>
@@ -64,7 +81,7 @@
               <van-icon name="like" />
               <span>想看</span>
             </span>
-            <span class="click-button" @click="writeReview">
+            <span class="click-button" :class="[isSeen?'checked':'']" @click="writeReview">
               <van-icon name="star" />
               <span>看过</span>
             </span>
@@ -84,12 +101,12 @@
                 v-bind:class="{ expansion : active }"
                 class="card-mid"
               >{{movieList.filmIntroduction}}</div>
-              <div class="introduction-myreview box-shadow">
+              <div class="introduction-myreview box-shadow" v-if="this.isSeen == true">
                 <div class="introduction-myreview-title">
                   <h3>我的影评</h3>
                   <van-icon name="upgrade" size="20" color="orange" />
                 </div>
-                <p>很好看很好看很好看很好看很好看很好看很好看很好看很好看</p>
+                <p>{{comment}}</p>
               </div>
               <div class="performers box-shadow">
                 <div class="performers-title">
@@ -101,10 +118,14 @@
                 </div>
                 <div class="sortMenu clearfix">
                   <ul class="sortMenu-ul">
-                    <li class="cell" v-for="item in 6">
-                      <img src="../../assets/头像.jpg" alt />
-                      <p>哈哈</p>
-                      <p>导演</p>
+                    <li
+                      class="cell"
+                      v-for="(item,index) in movieList.directorAndActor"
+                      :key="index"
+                    >
+                      <img :src="`../../../static/images/${item.image}`" alt />
+                      <p>{{item.performerName}}</p>
+                      <p>{{item.role}}</p>
                       <!-- <a href>{{item.sortname}}</a> -->
                     </li>
                   </ul>
@@ -135,12 +156,25 @@
                 </div>
                 <div class="sortMenu clearfix">
                   <ul class="sortMenu-ul">
-                    <li class="cell" v-for="item in 6">
-                      <img src="../../assets/头像.jpg" alt />
+                    <li class="cell" v-for="(item,index) in stillList" :key="index">
+                      <img
+                        :src="`${item.still}`"
+                        alt
+                        @click="isImageShow(index)"
+                      />
                     </li>
                   </ul>
                 </div>
               </div>
+              <van-image-preview
+                v-model="imageShow"
+                :images="stillList1"
+                @change="onChange"
+                :start-position="index"
+                :closeable="true"
+              >
+                <!-- <template v-slot:index>第{{ index }}页</template> -->
+              </van-image-preview>
               <div class="awards box-shadow">
                 <div class="performers-title">
                   <h3>奖项荣誉</h3>
@@ -207,30 +241,65 @@ export default {
   name: 'MovieDetail',
   data () {
     return {
-      showShare:false,
-      options: [
-        [
-          { name: '微信', icon: 'wechat' },
-          { name: '微博', icon: 'weibo' },
-          { name: 'QQ', icon: 'qq' },
-        ],
-        [
-          { name: '复制链接', icon: 'link' },
-          { name: '分享海报', icon: 'poster' },
-          { name: '二维码', icon: 'qrcode' },
-        ],
-      ],
+      showShare: false,
       starValue: 4.5,
       active: 0,
       movieList: [],
-      isActive: null
+      isActive: null,
+      userInfo: {},
+      isSeen: null,
+      comment: '',
+      isScroll: true,
+      stillList: {},
+      stillList1: [],
+      imageShow: false,
+      index: 0
     }
   },
   mounted () {
+    //首先，在mounted钩子window添加一个滚动滚动监听事件
+    window.addEventListener("scroll", this.handleScroll)
+    // 获取用户信息
+    if (this.$store.state.userInfo != null) {
+      this.userInfo = this.$store.state.userInfo
+    }
     this.receiveMovie()
     this.wantLookList()
+    this.seenMovie()
+    // this.movieScore()
+    // 拿到剧照
+    this.$axios.post("http://localhost:8080/stillList", {
+      movieId: this.movieList.movieId
+    }).then((res) => {
+      if (res.data.code == 200) {
+        var str = ''
+        res.data.data.forEach((e) => {
+          str += e.still + ','
+        })
+        str = str.substring(0, str.length - 1)
+        this.stillList1 = str.split(',')
+        this.stillList = res.data.data
+        console.log(this.stillList1)
+
+      }
+
+      // console.log(res.data.data)
+    })
+
   },
   methods: {
+    //然后在方法中，添加这个handleScroll方法来获取滚动的位置，实现导航栏滚动时样式改变
+    handleScroll () {
+      let _this = this;
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      // console.log(scrollTop)
+      if (scrollTop > 0) {
+        _this.isScroll = false
+      } else {
+        _this.isScroll = true
+      }
+      // console.log(_this.isScroll)
+    },
     onClickLeft () {
       this.$router.push('/Tickets')
     },
@@ -238,7 +307,9 @@ export default {
       this.$router.push('/Tickets/TicketsBuy')
     },
     writeReview () {
-      this.$router.push('/Tickets/MovieDetail/Grade')
+      if (this.isSeen != true) {
+        this.$router.push({ path: '/Tickets/MovieDetail/Grade', query: { data: this.movieList } })
+      }
     },
     receiveMovie () {
       // this.movieList = this.$route.query.data
@@ -256,27 +327,67 @@ export default {
       this.$axios.post("http://localhost:8080/wantToLook", {
         wantLook: this.movieList.wantLook,
         movieId: this.movieList.movieId,
-        isActive: this.isActive
+        isActive: this.isActive,
+        userId: this.userInfo.userId,
       }).then((res) => {
         // this.movieList = res.data.data
         console.log(res)
       })
     },
     wantLookList () {
+      // console.log(this.userInfo)
       this.$axios.post("http://localhost:8080/wantLookList", {
-        // wantLook: this.movieList.wantLook,
+        userId: this.userInfo.userId,
         movieId: this.movieList.movieId
       }).then((res) => {
-        // this.movieList = res.data.data
         if (res.data.code == 200) {
-          // var isActive = true
           this.isActive = true
+          // console.log(this.isActive)
         } else {
           this.isActive = false
+          console.log(this.isActive)
+          console.log(res.data.code)
         }
-        console.log(res.data.code)
+        // console.log(res.data.code)
       })
+    },
+    seenMovie () {
+      this.$axios.post("http://localhost:8080/seenMovie", {
+        userId: this.userInfo.userId,
+        movieId: this.movieList.movieId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.isSeen = true
+          this.comment = res.data.data[0].comment
+        }
+        console.log(res.data)
+      })
+    },
+    // 控制图片预览图片切换
+    onChange (index) {
+      // console.log(this.index)
+      this.index = index;
+    },
+    // 控制图片预览显示（在处理index时遇到一个问题，不应该将引用的组件放在v-for里面）
+    isImageShow (index) {
+      this.imageShow = true
+      this.index = index
+      // console.log(this.index)
     }
+    // 电影评分
+    // movieScore () {
+    //   this.$axios.post("http://localhost:8080/movieScore", {
+    //     // userId: this.userInfo.userId,
+    //     movieId: this.movieList.movieId
+    //   }).then((res) => {
+    //     // this.movieList.score=res.data.data[0].score
+    //     console.log(res)
+    //   })
+    // },
+  },
+  //由于是在整个window中添加的事件，所以要在页面离开时摧毁掉，否则会报错
+  beforeDestroy () {
+    window.removeEventListener("scroll", this.handleScroll);
   }
 }
 </script>
@@ -293,7 +404,18 @@ export default {
     padding-left: 10px;
     padding-right: 10px;
   }
-  /deep/ .van-nav-bar {
+  // /deep/ .van-nav-bar {
+  //   // background-color: transparent !important;
+  //   color: white;
+  //   i {
+  //     color: white;
+  //   }
+  //   .van-nav-bar__title {
+  //     color: white;
+  //   }
+  // }
+  .title-top {
+    // font-size: 10px;
     background-color: transparent !important;
     color: white;
     i {
@@ -301,6 +423,16 @@ export default {
     }
     .van-nav-bar__title {
       color: white;
+    }
+  }
+  .title-top-scroll {
+    background-color: white !important;
+    color: black;
+    i {
+      color: black;
+    }
+    .van-nav-bar__title {
+      color: black;
     }
   }
   /deep/ .van-hairline--bottom::after {
@@ -413,6 +545,21 @@ export default {
         // padding: 10px 0;
       }
     }
+    .movie-video {
+      .sortMenu .cell {
+        margin-right: 5px !important;
+      }
+    }
+    .photo {
+      .sortMenu-ul li img {
+        width: auto;
+        height: 120px;
+      }
+      .sortMenu .cell {
+        margin-right: 5px !important;
+        width: auto;
+      }
+    }
     .awards {
       .awards-part {
         img {
@@ -503,11 +650,12 @@ export default {
   .sortMenu-ul li img {
     width: 100px;
     height: 120px;
+    border-radius: 4px;
   }
   .sortMenu .cell {
     display: inline-block;
     font-size: 12px;
-    margin: 0px 1em;
+    margin-right: 10px;
     width: 100px;
     // height: 140px;
     // line-height: 40px;
