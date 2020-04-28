@@ -50,7 +50,11 @@
     <div class="detail-info">
       <van-tabs class="date-tab">
         <div>
-          <van-tab v-for="(item, index) in movieSceneList[movieIndex].sceneDate" :title="item.sceneDate" :key="index">
+          <van-tab
+            v-for="(item, index) in movieSceneList[movieIndex].sceneDate"
+            :title="item.sceneDate"
+            :key="index"
+          >
             <div class="tickets-totle">
               <div class="tickets" v-for="(citem, index) in item.scene" :key="index">
                 <div class="tickets-info">
@@ -61,7 +65,7 @@
                     </div>
                     <div>
                       <span>{{citem.studioType}}</span>
-                      <span>{{citem.movieHall}}</span>
+                      <span>{{citem.cinemaHallName}}</span>
                     </div>
                   </div>
                   <div class="tickets-info-right">
@@ -72,7 +76,7 @@
                       </span>
                       <span>优惠券已抵4元</span>
                     </div>
-                    <span class="choose-seat">选座</span>
+                    <span class="choose-seat" @click="toSelectSeat(citem)">选座</span>
                   </div>
                 </div>
               </div>
@@ -137,7 +141,7 @@ export default {
         }
       ],
       cinemaList: [],
-      movieSceneList: [],
+      movieSceneList: [{ sceneDate: '' }],
       movieIndex: 0
     }
   },
@@ -185,6 +189,9 @@ export default {
       this.movieIndex = index
       console.log(index)
     },
+    toSelectSeat (citem) {
+      this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat', query: { data: citem } })
+    }
 
   }
 }

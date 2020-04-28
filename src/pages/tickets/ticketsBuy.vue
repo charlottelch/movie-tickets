@@ -1,6 +1,6 @@
 <template>
   <div class="main-con">
-    <van-nav-bar fixed title="电影名称" left-text="返回" left-arrow @click-left="onClickLeft">
+    <van-nav-bar fixed :title="movieList.movieName" left-arrow @click-left="onClickLeft">
       <template #right>
         <van-icon name="ellipsis" />
       </template>
@@ -58,24 +58,26 @@
           </van-dropdown-menu>
         </div>
         <div>
-          <van-tab v-for="(item, index) in weekList" :title="item.date" :key="index">
+          <van-tab v-for="(item, index) in movieSceneList" :title="item.sceneDate" :key="index">
             <div class="cinema-totle">
-              <div class="cinema" v-for="(citem, index) in item.cinema" :key="index">
+              <div class="cinema" v-for="(citem, index) in item.cinema" :key="index" @click="toCinemaDetail(citem)">
                 <div class="cinema-info">
                   <div>
-                    <h3>{{citem.cinema}}</h3>
-                    <p>{{citem.address}}</p>
+                    <h3>{{citem.cinemaName}}</h3>
+                    <p>{{citem.cinemaAdress}}</p>
                   </div>
                   <div class="cinema-info-right">
-                    <span>￥28元</span>
+                    <span>￥{{citem.bottomPrice}}元</span>
                     <span>起</span>
-                    <p>28.1km</p>
+                    <p>{{citem.cinemaDistance}}</p>
                   </div>
                 </div>
                 <div class="label">
-                  <van-tag color="#f2826a">3D</van-tag>
-                  <van-tag color="#f2826a">可停车</van-tag>
-                  <van-tag color="#7232dd">儿童优惠</van-tag>
+                  <van-tag
+                    color="#ff3174"
+                    v-for="(Litem,index) in citem.label"
+                    :key="index"
+                  >{{Litem.labelName}}</van-tag>
                 </div>
               </div>
             </div>
@@ -170,8 +172,14 @@ export default {
           "title": "影院品牌",
           "select": ["太平洋影城", "万达电影", "CGV", "横店影视", "星美影商城", "橙天嘉禾", "UME影城", "百老汇电影", "卢米埃影城", "博纳影城", "大地影院", "幸福蓝海国际影城", "保利影城"]
         }
-      ]
+      ],
+      movieList: [],
+      movieSceneList: []
     }
+  },
+  mounted () {
+    this.movieList = JSON.parse(localStorage.getItem('movie'))
+    this.getMovieCinema()
   },
   methods: {
     onClickLeft () {
@@ -184,6 +192,26 @@ export default {
     getSubwayRightData (data) {
       this.businessCircleTitle = data.text
     },
+    // 获取有该电影的影院
+    getMovieCinema () {
+      this.$axios.post("http://localhost:8080/getMovieCinema", {
+        movieId: this.movieList.movieId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          if (res.data.data.length !== 0) {
+            this.movieSceneList = res.data.data
+            console.log(this.movieSceneList)
+          }
+        } else {
+
+        }
+        // console.log(res.data.data.length)
+      })
+    },
+    toCinemaDetail (citem) {
+      this.$router.push('/Tickets/CinemaDetail')
+      localStorage.setItem('cinema', JSON.stringify(citem));
+    }
   }
 }
 </script>
@@ -294,6 +322,9 @@ export default {
         .cinema-info-right {
           text-align: right;
         }
+      }
+      .van-tag {
+        margin-right: 2px;
       }
     }
   }

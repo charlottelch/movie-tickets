@@ -37,7 +37,7 @@
               </p>
             </div>
           </div>
-          <van-button color="#7232dd" size="mini" round @click="goTicketsBuy">购票</van-button>
+          <van-button color="#7232dd" size="mini" round @click="goTicketsBuy(mItem)">购票</van-button>
         </div>
       </van-tab>
       <van-tab title="影院">
@@ -264,8 +264,9 @@ export default {
       localStorage.setItem('cinema', JSON.stringify(item));
 
     },
-    goTicketsBuy () {
+    goTicketsBuy (mItem) {
       this.$router.push('/Tickets/TicketsBuy')
+      localStorage.setItem('movie', JSON.stringify(mItem));
     },
     toCinemaMap () {
       this.$router.push('/Tickets/CinemaMap')
