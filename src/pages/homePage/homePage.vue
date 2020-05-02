@@ -5,7 +5,12 @@
         <p>成都</p>
         <i class="arrow-bottom"></i>
       </div>
-      <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" />
+      <span class="search-form" @click="toSearch">
+        <van-icon name="search" size="20"/>
+        <p>搜影片、影人、影院</p>
+      </span>
+      <img src="../../assets/signIn.png" alt="">
+      <!-- <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" /> -->
     </div>
     <!-- <van-swipe :autoplay="3000">
       <van-swipe-item v-for="(image, index) in images" :key="index">
@@ -68,6 +73,9 @@ export default {
   methods: {
     toCity () {
       this.$router.push('/City')
+    },
+    toSearch () {
+      this.$router.push('/Search')
     }
     
   }
@@ -78,6 +86,7 @@ export default {
 <style lang="less" scoped>
 .main-con {
   padding: 0 10px;
+  font-size: 14px;
   h3,
   h4,
   p {
@@ -87,6 +96,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 46px;
     .van-search {
       width: 85%;
       .van-search__content {
@@ -105,6 +115,19 @@ export default {
         border-top: 6px solid #000000;
         margin-left: 2px;
       }
+    }
+    .search-form {
+      width: 70%;
+      height: 30px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      background: #f7f8fa;
+      color: #adaeb0;
+      padding: 0 10px;
+    }
+    img {
+      width: 28px;
     }
   }
   .van-swipe {

@@ -5,11 +5,16 @@
         <p>成都</p>
         <i class="arrow-bottom"></i>
       </div>
-      <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" />
-      <div class="right">
+      <!-- <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" /> -->
+      <span class="search-form" @click="toSearch">
+        <van-icon name="search" size="16"/>
+        <p>搜影片、影人、影院</p>
+      </span>
+      <img src="../../assets/map.png" alt="" @click="toCinemaMap">
+      <!-- <div class="right">
         <van-icon name="location-o" @click="toCinemaMap" />
         <van-icon name="search" />
-      </div>
+      </div> -->
     </div>
     <van-tabs v-model="active" sticky>
       <van-tab title="热映">
@@ -245,6 +250,9 @@ export default {
 
   },
   methods: {
+    toSearch () {
+      this.$router.push('/Search')
+    },
     watchScroll () {
       var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       //  当滚动超过 50 时，实现吸顶效果
@@ -328,6 +336,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 46px;
     .location {
       display: flex;
       align-items: center;
@@ -339,6 +348,19 @@ export default {
         border-top: 6px solid #000000;
         margin-left: 2px;
       }
+    }
+    .search-form {
+      width: 70%;
+      height: 30px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      background: #f7f8fa;
+      color: #adaeb0;
+      padding: 0 10px;
+    }
+    img {
+      width: 24px;
     }
   }
   .film {

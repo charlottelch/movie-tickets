@@ -24,7 +24,12 @@ import MovieTickets from '@/pages/personalCenter/MovieTickets'
 import TicketDetail from '@/pages/personalCenter/TicketDetail'
 
 import Community from '@/pages/community/community'
+import Video from '@/pages/community/video'
+import PersonalHomepage from '@/pages/community/personalHomepage'
+
 import City from '@/components/city'
+import Search from '@/components/search'
+
 Vue.use(Router)
 
 export default new Router({
@@ -114,10 +119,22 @@ export default new Router({
       path: '/Community',
       name: 'Community',
       component: Community
+    },{
+      path: '/Community/Video',
+      name: 'Video',
+      component: Video
+    },{
+      path: '/Community/PersonalHomepage',
+      name: 'PersonalHomepage',
+      component: PersonalHomepage
     }, {
       path: '/City',
       name: 'City',
       component: City
+    }, {
+      path: '/Search',
+      name: 'Search',
+      component: Search
     }
   ]
 
