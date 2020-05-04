@@ -14,7 +14,11 @@
             <img src="../../assets/头像.jpg" alt />
             <p>{{videoList.userName}}</p>
           </div>
-          <span class="follow" :class="[isFollow?'followed':'un-followed']" @click="follow">{{isFollow?'已关注':'关注'}}</span>
+          <span
+            class="follow"
+            :class="[isFollow?'followed':'un-followed']"
+            @click="follow"
+          >{{isFollow?'已关注':'关注'}}</span>
         </div>
         <p>标签</p>
         <p>{{videoList.videoDescribe}}</p>
@@ -117,6 +121,18 @@ export default {
     this.toCheckThumb()
     this.toCheckCollect()
   },
+  // beforeRouteEnter (to, from, next) {
+  //   if (from.name === 'PersonalHomepage') {
+  //     // refreshFlag = true
+  //     // this.videoList = this.$route.query.data
+  //     console.log("hhh")
+  //   } else {
+  //     // refreshFlag = false
+  //     console.log("xxx")
+
+  //   }
+  //   next()
+  // },
   methods: {
     onClickLeft () {
       this.$router.go(-1)

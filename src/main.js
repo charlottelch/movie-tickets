@@ -11,6 +11,9 @@ import store from './store/store'
 import Carousel3d from 'vue-carousel-3d';
 import Vuex from 'vuex'
 
+import VueBetterCalendar from 'vue-better-calendar'
+Vue.use(VueBetterCalendar)
+
 Vue.use(Vuex)
 Vue.use(Carousel3d);
 Vue.prototype.$axios = axios

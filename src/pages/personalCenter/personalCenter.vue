@@ -6,7 +6,8 @@
       </div>
       <div class="info">
         <div>
-          <h3 @click="toLogin">{{userName || '登录/注册'}} </h3>
+          <h3>{{userInfo.userName}} </h3>
+          <h3 @click="toLogin" v-show="token==false">登录/注册</h3>
         </div>
         <div class="top-right">
           <img src="../../assets/icon/massage.png" alt @click="goMessage" />
@@ -36,8 +37,8 @@
             </div>
             <span>会员</span>
           </div>
-          <div>
-            <div class="gradation-bk03">
+          <div @click="toCoupon">
+            <div class="gradation-bk03" >
               <img src="../../assets/icon/coupon.png" alt />
             </div>
             <span>优惠券</span>
@@ -50,7 +51,7 @@
           </div>
         </div>
         <div class="list">
-          <div>
+          <div @click="toLikeMovie">
             <img src="../../assets/icon/want-to-watch.png" alt />
             <span>想看</span>
           </div>
@@ -71,7 +72,7 @@
             <span>客服</span>
           </div>
         </div>
-        <div class="interaction">
+        <div class="interaction" @click="toMyCommunity">
           <p class="title">互动社区</p>
           <div>
             <p>
@@ -105,7 +106,8 @@ export default {
   data () {
     return {
       userName: '登录/注册',
-      userInfo:{}
+      userInfo:{},
+      token:false
     }
   },
   mounted () {
@@ -127,11 +129,22 @@ export default {
     toMovieTickets () {
       this.$router.push('/PersonalCenter/MovieTickets')
     },
-    receiveUserName () {
-      // console.log(this.$store.state.userInfo)
-      // this.userInfo = this.$store.state.userInfo 
+    toCoupon () {
+      this.$router.push('/PersonalCenter/Coupon')
+    },
+    toLikeMovie () {
+      this.$router.push('/PersonalCenter/LikeMoviePage')
+    },
+    toMyCommunity () {
+      this.$router.push('/PersonalCenter/Coupon')
+    },
+    receiveUserName () { 
       if(this.$store.state.userInfo != null){
-        this.userName = this.$store.state.userInfo.userName
+        this.userInfo = this.$store.state.userInfo
+        // 判断是否登录了
+        this.token = this.$store.state.token
+        // console.log(this.userInfo)
+        // console.log(this.token)
       }
       // console.log(this.userInfo.userName)
       // this.userName = this.userInfo
@@ -157,13 +170,15 @@ export default {
   .personal-top {
     height: 150px;
     // background: #34c372;
-    background-image: radial-gradient(
-      circle at 10% 50%,
-      #99cccc 20%,
-      #7171b7 40%,
-      #cccc99 60%,
-      #4f9c9c 80%
-    );
+    background: url("../../assets/personal-bg.png");
+    background-position: bottom left;
+    // background-image: radial-gradient(
+    //   circle at 10% 50%,
+    //   #99cccc 20%,
+    //   #7171b7 40%,
+    //   #cccc99 60%,
+    //   #4f9c9c 80%
+    // );
     color: white;
     border-radius: 0 0 10% 10%;
     display: flex;

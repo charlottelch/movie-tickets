@@ -151,7 +151,7 @@ export default {
   name: 'Community',
   data () {
     return {
-      active: 1,
+      active: 0,
       value: '',
       userInfo: {},
       videoList: [],

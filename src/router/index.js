@@ -10,6 +10,7 @@ import TicketsBuy from '@/pages/tickets/ticketsBuy'
 import Grade from '@/pages/tickets/grade'
 
 import SelectSeat from '@/pages/tickets/selectSeat'
+import BuyTickets from '@/pages/tickets/buyTickets'
 
 import CinemaDetail from '@/pages/tickets/cinemaDetail'
 import CinemaMap from '@/pages/tickets/CinemaMap'
@@ -22,6 +23,8 @@ import ChangePassword from '@/pages/personalCenter/changePassword'
 import SignIn from '@/pages/personalCenter/signIn'
 import MovieTickets from '@/pages/personalCenter/MovieTickets'
 import TicketDetail from '@/pages/personalCenter/TicketDetail'
+import Coupon from '@/pages/personalCenter/coupon'
+import LikeMoviePage from '@/pages/personalCenter/likeMoviePage'
 
 import Community from '@/pages/community/community'
 import Video from '@/pages/community/video'
@@ -66,6 +69,10 @@ export default new Router({
       path: '/Tickets/MovieDetail/SelectSeat',
       name: 'SelectSeat',
       component: SelectSeat
+    },{
+      path: '/Tickets/MovieDetail/SelectSeat/BuyTickets',
+      name: 'BuyTickets',
+      component: BuyTickets
     },
     {
       path: '/Tickets/MovieDetail/Grade',
@@ -106,6 +113,14 @@ export default new Router({
       path: '/PersonalCenter/SignIn',
       name: 'SignIn',
       component: SignIn
+    },{
+      path: '/PersonalCenter/Coupon',
+      name: 'Coupon',
+      component: Coupon
+    },{
+      path: '/PersonalCenter/LikeMoviePage',
+      name: 'LikeMoviePage',
+      component: LikeMoviePage
     },
     {
       path: '/PersonalCenter/MovieTickets',

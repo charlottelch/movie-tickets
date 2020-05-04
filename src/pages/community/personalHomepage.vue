@@ -13,7 +13,7 @@
       </div>
       <div class="follow-fans">
         <span>
-          <span @click="ok">{{followlist[0].follow}}</span>关注
+          <span>{{followlist[0].follow}}</span>关注
         </span>
         <span>
           <span>{{fans[0].fans}}</span>粉丝
@@ -103,9 +103,6 @@ export default {
     this.getVideoData()
   },
   methods: {
-    ok () {
-      console.log("xixi")
-    },
     onClickLeft () {
       this.$router.go(-1)
     },
@@ -172,16 +169,14 @@ export default {
     },
     toVideoDetail(item){
       console.log("jjj")
-
-      this.$router.push({ path: '/Community/Video'})
-      localStorage.setItem('video', JSON.stringify(item));
+      this.$router.push({ path: '/Community/Video',query:{data:item}})
+      // localStorage.setItem('video', JSON.stringify(item));
       console.log("jjj")
     },
     toVideoCollectDetail(item){
-      this.$router.push({ path: '/Community/Video'})
-      localStorage.setItem('video', JSON.stringify(item));
+      this.$router.push({ path: '/Community/Video',query:{data:item}})
+      // localStorage.setItem('video', JSON.stringify(item));
       console.log("hhh")
-
     }
   }
 }

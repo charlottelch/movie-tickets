@@ -190,7 +190,8 @@ export default {
       console.log(index)
     },
     toSelectSeat (citem) {
-      this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat', query: { data: citem } })
+      this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat'})
+      localStorage.setItem('scene', JSON.stringify(citem));
     }
 
   }

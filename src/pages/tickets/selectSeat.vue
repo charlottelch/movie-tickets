@@ -64,7 +64,7 @@
       </div>
     </div>
     <div>
-      <div class="ticket-purchase">
+      <div class="ticket-purchase" @click="toBuyTickets">
         <span>选座购票</span>
       </div>
     </div>
@@ -176,7 +176,6 @@ export default {
       return finalReuslt
     },
 
-
     //推荐选座,参数是推荐座位数目
     smartChoose: function (num) {
       //找到影院座位水平垂直中间位置的后一排
@@ -239,7 +238,7 @@ export default {
       }
       this.seatArray = oldArray;
       console.log(this.seatArray)
-            this.seatArr = []
+      this.seatArr = []
 
       for (let i = 0; i < this.seatArray.length; i++) {
         for (let j = 0; j < this.seatArray[i].length; j++) {
@@ -254,6 +253,7 @@ export default {
           }
         }
       }
+      console.log(this.seatArr)
     },
 
 
@@ -306,7 +306,7 @@ export default {
           c, r
         }
         this.seatArr.push(test)
-        // console.log(this.arr)
+        console.log(this.seatArr)
       }
       if (seatValue === 1) {
         for (let i = 0; i < this.seatArr.length; i++) {
@@ -315,6 +315,7 @@ export default {
             this.seatArr.splice(i, 1)
           }
         }
+        console.log(this.seatArr)
       }
       // console.log(row + 1, col + 1)
       // console.log(this.seatArray)
@@ -334,7 +335,7 @@ export default {
       //初始化不是座位的地方
       this.initNonSeatPlace();
     },
-    //初始化不是座位的地方
+    //初始化座位类型
     initNonSeatPlace: function () {
       // for (let i = 0; i < 9; i++) {
       //   this.seatArray[i][0] = -1;
@@ -378,15 +379,18 @@ export default {
           this.initSeatArray(this.seatRow, this.seatCol)
           // console.log( res.data.data[0].seatRow)
         }
-        console.log(this.hallList)
+        // console.log(this.hallList)
       })
+    },
+    toBuyTickets () {
+      this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets'})
+      localStorage.setItem('seat', JSON.stringify(this.seatArr));
     }
-
   },
 
   mounted () {
-    this.sceneInfo = this.$route.query.data
-    // console.log(this.sceneInfo)
+    this.sceneInfo = JSON.parse(localStorage.getItem('scene'))
+    console.log(this.sceneInfo)
     this.getHall()
   }
 }
