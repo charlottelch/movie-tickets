@@ -171,6 +171,8 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           this.couponList = res.data.data
+          this.disabledCoupons = []
+          this.coupons = []
           for (let i = 0; i < this.couponList.length; i++) {
             console.log(this.couponList[i].endAt)
             if (this.couponList[i].endAt < this.timeNumber) {

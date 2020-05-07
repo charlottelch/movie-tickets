@@ -74,29 +74,28 @@ export default {
       userInfo: {},
       clickSign: '',
       couponList: [
-        { value: '200', cost: '400', unitDesc: '元',condition:'无门槛',name:'抵扣券',valueDesc:'2'},
-        { value: '500', cost: '800', unitDesc: '元',condition:'无门槛',name:'抵扣券',valueDesc:'5'},
+        { value: '200', cost: '400', unitDesc: '元', condition: '无门槛', name: '抵扣券', valueDesc: '2' },
+        { value: '500', cost: '800', unitDesc: '元', condition: '无门槛', name: '抵扣券', valueDesc: '5' },
         // startAt:'',
         //     endAt:'',
-        
+
       ],
-      currentdate:'',
-      timeNumber:'',
-      startAt:null,
-      endAt:null
+      currentdate: '',
+      timeNumber: '',
+      startAt: null,
+      endAt: null
     }
   },
   mounted () {
     // 获取用户信息
     if (this.$store.state.userInfo != null) {
       this.userInfo = this.$store.state.userInfo
-
     }
     console.log(this.userInfo.integral)
     this.getSignInData()
     this.getNowFormatDate()
     this.startAt = this.timeNumber
-    this.endAt = this.timeNumber+86400*3
+    this.endAt = this.timeNumber + 86400 * 3
     // console.log(this.startAt)
     console.log(this.endAt)
 
@@ -122,9 +121,9 @@ export default {
       var timeStamp = new Date(this.currentdate).getTime()
       var timeString = timeStamp.toString()
       // console.log(timeStamp.toString())
-      var shortName = timeString.substr(0,10)
+      var shortName = timeString.substr(0, 10)
       // console.log(typeof(shortName))
-      this.timeNumber=Number(shortName)
+      this.timeNumber = Number(shortName)
       console.log(this.timeNumber)
       // console.log(this.coupons[0].endAt)
     },
@@ -165,7 +164,7 @@ export default {
             } else {
               alert(responseDataMsg)
             }
-            this.getSignInData()
+            this.getSignInData() //签到成功之后，再次调用函数，刷新签到天数
           } else {
           }
         })
@@ -243,19 +242,20 @@ export default {
             value: item.value,
             cost: item.cost,
             startAt: this.startAt,
-            endAt:this.endAt,
+            endAt: this.endAt,
             unitDesc: item.unitDesc,
-            condition:item.condition,
-            name:item.name,
-            valueDesc:item.valueDesc,
+            condition: item.condition,
+            name: item.name,
+            valueDesc: item.valueDesc,
             // integral: this.integral
           }).then((res) => {
             if (res.data.code == 200) {
               console.log("兑换成功")
+              this.getSignInData() //兑换成功之后再次调用函数，更新影豆数量
             }
             // console.log(res.data)
           })
-        }else{
+        } else {
           console.log("影豆不足")
         }
         // this.$store.commit(CLEAR_USERINFO)
