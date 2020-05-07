@@ -6,7 +6,10 @@
       <div class="coupon-all">
         <div class="coupon" v-for="(item,index) in couponList" :key="index">
           <div class="coupon-paper">
-            <div>￥{{item.couponValue}}抵扣劵</div>
+            <div>
+              <span>￥{{item.couponValue}}抵扣劵</span>
+              <span class="end">有效期至:{{item.endTime}}</span>
+            </div>
           </div>
           <!-- <p>{{item.value}}元抵扣劵</p>
           <div class="convert-coupon">
@@ -85,8 +88,15 @@ export default {
           background: url('../../assets/coupon-bg.png');
           background-size: 150px 86px;
           color: rgb(143, 169, 235);
-          text-align: center;
-          line-height: 86px;
+          // text-align: center;
+          // line-height: 86px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          .end {
+            font-size: 12px;
+          }
         }
       }
       p {

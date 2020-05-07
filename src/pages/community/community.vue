@@ -133,7 +133,7 @@
       </van-tab>
     </van-tabs>
 
-    <div class="add">
+    <div class="add" @click="toEditCommunity">
       <img src="../../assets/icon/edit.png" alt />
       <!-- <van-icon name="plus" color="#ffffff" size="30" /> -->
     </div>
@@ -182,8 +182,10 @@ export default {
       })
     },
     toVideoDetail (item) {
+      var videoArr=[]
+      videoArr.push(item)
+      localStorage.setItem('video', JSON.stringify(videoArr));
       this.$router.push({ path: '/Community/Video'})
-      localStorage.setItem('video', JSON.stringify(item));
     },
     toCheckThumb () {
         this.$axios.post("http://localhost:8080/toCheckThumb", {
@@ -198,11 +200,12 @@ export default {
           console.log(res.data)
         })
     },
-    toThumb () {
-
-    },
-    toCancelThumb () {
-
+    // toThumb () {
+    // },
+    // toCancelThumb () {
+    // },
+    toEditCommunity () {
+      this.$router.push({ path: '/Community/EditCommunity'})
     }
   }
 }

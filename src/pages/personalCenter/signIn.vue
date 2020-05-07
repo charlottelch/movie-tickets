@@ -41,9 +41,9 @@
         <div class="coupon-all">
           <div class="coupon" v-for="(item,index) in couponList" :key="index">
             <div class="coupon-paper">
-              <div>￥{{item.value}}抵扣劵</div>
+              <div>￥{{item.valueDesc}}抵扣劵</div>
             </div>
-            <p>{{item.value}}元抵扣劵</p>
+            <p>{{item.valueDesc}}元抵扣劵</p>
             <div class="convert-coupon">
               <span>{{item.cost}}影豆</span>
               <van-button round type="info" size="small" @click="exchange(item)">兑换</van-button>
@@ -68,15 +68,22 @@ export default {
       active: 0,
       day: '',
       integral: '',
-      signedDates: ['2020-05-01', '2020-05-02'],
+      signedDates: [],
       isSigned: false,
       isSigning: false,
       userInfo: {},
       clickSign: '',
       couponList: [
-        { value: '2', cost: '100' },
-        { value: '5', cost: '200' }
-      ]
+        { value: '200', cost: '400', unitDesc: '元',condition:'无门槛',name:'抵扣券',valueDesc:'2'},
+        { value: '500', cost: '800', unitDesc: '元',condition:'无门槛',name:'抵扣券',valueDesc:'5'},
+        // startAt:'',
+        //     endAt:'',
+        
+      ],
+      currentdate:'',
+      timeNumber:'',
+      startAt:null,
+      endAt:null
     }
   },
   mounted () {
@@ -87,8 +94,40 @@ export default {
     }
     console.log(this.userInfo.integral)
     this.getSignInData()
+    this.getNowFormatDate()
+    this.startAt = this.timeNumber
+    this.endAt = this.timeNumber+86400*3
+    // console.log(this.startAt)
+    console.log(this.endAt)
+
   },
   methods: {
+    // 获取当天的时间，及时间戳
+    getNowFormatDate () {
+      // endData.setDate(date.getDate()+3)
+      var date = new Date();
+      var seperator1 = "-";
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+      }
+      this.currentdate = year + seperator1 + month + seperator1 + strDate;
+      // return currentdate;
+      console.log(this.currentdate)
+      var timeStamp = new Date(this.currentdate).getTime()
+      var timeString = timeStamp.toString()
+      // console.log(timeStamp.toString())
+      var shortName = timeString.substr(0,10)
+      // console.log(typeof(shortName))
+      this.timeNumber=Number(shortName)
+      console.log(this.timeNumber)
+      // console.log(this.coupons[0].endAt)
+    },
     onClickLeft () {
       this.$router.go(-1)
     },
@@ -201,8 +240,14 @@ export default {
         if (item.cost <= this.integral) {
           this.$axios.post("http://localhost:8080/toExchangeCoupon", {
             userId: this.userInfo.userId,
-            couponValue: item.value,
+            value: item.value,
             cost: item.cost,
+            startAt: this.startAt,
+            endAt:this.endAt,
+            unitDesc: item.unitDesc,
+            condition:item.condition,
+            name:item.name,
+            valueDesc:item.valueDesc,
             // integral: this.integral
           }).then((res) => {
             if (res.data.code == 200) {

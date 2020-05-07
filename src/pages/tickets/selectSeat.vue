@@ -29,7 +29,7 @@
             <div class="illustration-img-wrapper bought-seat"></div>
             <span class="illustration-text">不可选</span>
           </div>-->
-          <div class="screen">3号激光厅银幕</div>
+          <div class="screen">{{sceneInfo.cinemaHallName}}</div>
           <div class="screen-center">
             银幕中央
             <div class="mid-line"></div>
@@ -65,7 +65,10 @@
     </div>
     <div>
       <div class="ticket-purchase" @click="toBuyTickets">
-        <span>选座购票</span>
+        <span>
+          <span v-if="seatArr.length>0">{{sceneInfo.ticketPrice * seatArr.length}}元</span>
+          {{seatArr.length>0 ?'确认选座':'选座购票'}}
+        </span>
       </div>
     </div>
   </div>
@@ -383,8 +386,13 @@ export default {
       })
     },
     toBuyTickets () {
-      this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets'})
-      localStorage.setItem('seat', JSON.stringify(this.seatArr));
+      if (this.seatArr.length > 0) {
+        this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets' })
+        localStorage.setItem('seat', JSON.stringify(this.seatArr));
+      } else {
+        this.$toast('未选座')
+      }
+
     }
   },
 
@@ -545,6 +553,9 @@ export default {
   text-align: center;
   border-radius: 40px;
   color: white;
+}
+.ticket-purchase > span > span {
+  margin-right: 4px;
 }
 .selectedSeat > span {
   padding: 10px 10px 10px 0;

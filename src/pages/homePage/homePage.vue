@@ -9,7 +9,7 @@
         <van-icon name="search" size="20"/>
         <p>搜影片、影人、影院</p>
       </span>
-      <img src="../../assets/signIn.png" alt="">
+      <img src="../../assets/signIn.png" alt="" @click="toSignIn">
       <!-- <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" /> -->
     </div>
     <!-- <van-swipe :autoplay="3000">
@@ -76,6 +76,9 @@ export default {
     },
     toSearch () {
       this.$router.push('/Search')
+    },
+    toSignIn () {
+      this.$router.push('/PersonalCenter/SignIn')
     }
     
   }

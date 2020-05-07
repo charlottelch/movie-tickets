@@ -1,6 +1,7 @@
 <template>
   <div class="main-con">
     <nav-title-fixed :title="title"></nav-title-fixed>
+    <!-- <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed/> -->
     <!-- <div class="top-bg">
       <img src="../../assets/timg (1).jpg" alt />
     </div>-->
@@ -97,7 +98,10 @@ export default {
     }
     // 视频数据
     // this.videoList = this.$route.query.data
-    this.videoList = JSON.parse(localStorage.getItem('video'))
+    var videoPlayList=JSON.parse(localStorage.getItem('video'))
+    this.videoList = videoPlayList[videoPlayList.length-1]
+    
+    // this.videoList = JSON.parse(localStorage.getItem('video'))
     this.getUserInfo()
     this.toCheckFollow()
     this.getVideoData()
@@ -169,11 +173,17 @@ export default {
     },
     toVideoDetail(item){
       console.log("jjj")
+      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      videoPlayList.push(item)
+      localStorage.setItem('video', JSON.stringify(videoPlayList));
       this.$router.push({ path: '/Community/Video',query:{data:item}})
-      // localStorage.setItem('video', JSON.stringify(item));
+      
       console.log("jjj")
     },
     toVideoCollectDetail(item){
+      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      videoPlayList.push(item)
+      localStorage.setItem('video', JSON.stringify(videoPlayList));
       this.$router.push({ path: '/Community/Video',query:{data:item}})
       // localStorage.setItem('video', JSON.stringify(item));
       console.log("hhh")

@@ -3,17 +3,22 @@
     <nav-title :title="title"></nav-title>
     <div class="tickets-body">
       <van-swipe-cell :before-close="beforeClose">
-        <div class="ticket" @click="toTicketDetail">
+        <div
+          class="ticket"
+          @click="toTicketDetail(item)"
+          v-for="(item,index) in userOrderList"
+          :key="index"
+        >
           <div>
             <h3>
-              沉睡魔咒2
-              <span>2张</span>
+              {{item.movieName}}
+              <!-- <span>2张</span> -->
             </h3>
             <p>
-              <span>2019-12-31</span>
-              <span>17:50</span>
+              <span>{{item.sceneDate}}</span>
+              <span>{{item.startTime}}</span>
             </p>
-            <p>鑫苑星空影城</p>
+            <p>{{item.cinemaName}}</p>
           </div>
           <div>
             <img src="../../assets/img/refunded.png" alt />
@@ -37,16 +42,34 @@ export default {
   data () {
     return {
       title: '我的电影票',
+      userInfo: '',
+      userOrderList: []
     }
   },
   mounted () {
+    // 获取用户信息
+    if (this.$store.state.userInfo != null) {
+      this.userInfo = this.$store.state.userInfo
+    }
+    this.getUserOrderData()
   },
   methods: {
     onClickLeft () {
       this.$router.go(-1)
     },
-    toTicketDetail () {
+    toTicketDetail (item) {
       this.$router.push('/PersonalCenter/MovieTickets/TicketDetail')
+      localStorage.setItem("order", JSON.stringify(item.orderId))
+    },
+    getUserOrderData () {
+      this.$axios.post("http://localhost:8080/getUserOrderData", {
+        userId: this.userInfo.userId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.userOrderList = res.data.data
+          console.log(this.userOrderList)
+        }
+      })
     },
     beforeClose ({ position, instance }) {
       switch (position) {
@@ -92,10 +115,14 @@ export default {
     height: 100%;
   }
   .ticket {
-    padding: 0 10px;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 5px;
+    border-radius: 5px;
+    box-shadow: rgb(240, 240, 240) 0px 0px 10px 1px;
+
     img {
       width: 75px;
       height: 64px;

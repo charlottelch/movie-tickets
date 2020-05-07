@@ -1,6 +1,8 @@
 <template>
   <div class="main-con">
-    <nav-title-fixed :title="title"></nav-title-fixed>
+    <!-- <nav-title-fixed :title="title"></nav-title-fixed> -->
+    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed/>
+
     <div class="vid-wrap">
       <video width="100%" height="100%" controls>
         <source :src="`../../../static/video/${videoList.video}`" type="video/mp4" />您的浏览器不支持 HTML5 video 标签。
@@ -111,7 +113,9 @@ export default {
       this.userInfo = this.$store.state.userInfo
     }
     // 视频数据
-    this.videoList = JSON.parse(localStorage.getItem('video'))
+    var videoPlayList=JSON.parse(localStorage.getItem('video'))
+    this.videoList = videoPlayList[videoPlayList.length-1]
+    // this.videoList = JSON.parse(localStorage.getItem('video'))
 
     // this.videoList = this.$route.query.data
     console.log(this.videoList)
@@ -135,6 +139,11 @@ export default {
   // },
   methods: {
     onClickLeft () {
+      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      console.log(videoPlayList)
+      videoPlayList.pop()
+      console.log(videoPlayList)
+      localStorage.setItem('video', JSON.stringify(videoPlayList));
       this.$router.go(-1)
     },
     toUserDetailPage () {

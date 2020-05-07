@@ -4,36 +4,41 @@
     <span class="comment">查看影片评价</span>
     <div class="ticket-info">
       <div>
-        <h3>沉睡魔咒2</h3>
-        <p>2019-10-26 17:50-19:49 (英语3D)</p>
-        <p>鑫苑星空影城 2号巨幕厅</p>
-        <p>6排8座|6排9座</p>
+        <h3>{{orderDetailList.movieName}}</h3>
+        <p>{{orderDetailList.sceneDate}} {{orderDetailList.startTime}}-{{orderDetailList.endTime}} ({{orderDetailList.studioType}})</p>
+        <p>{{orderDetailList.cinemaName}} {{orderDetailList.cinemaHallName}}</p>
+        <p class="seat">
+          <span
+            v-for="(item,index) in orderDetailList.seat"
+            :key="index"
+          >{{item.seatY+1+'排'}}{{item.seatX+1+'座'}}</span>
+        </p>
       </div>
       <van-divider dashed></van-divider>
       <div>
         <h3>取电影票</h3>
         <div class="qrcode" ref="qrCodeUrl" id="qrcode"></div>
-        <p>出票号:8090 8801 2033 1203</p>
+        <p>出票号:{{orderList.ticketCode}}</p>
       </div>
       <van-divider dashed></van-divider>
       <div class="cinema-info">
         <div class="cinema-info-left">
-          <h3>鑫苑星空影城</h3>
-          <p>天府新区华阳街道瑞祥路150号摩邻天地4楼</p>
+          <h3>{{orderDetailList.cinemaName}}</h3>
+          <p>{{orderDetailList.cinemaAdress}}</p>
         </div>
         <img src="../../assets/icon/phone.png" alt />
       </div>
       <van-divider dashed></van-divider>
-      <div>
+      <div class="order-info-price">
         <div class="select" @click="settlementDetails=true">
-          <span>实际金额:￥45</span>
+          <span>实际金额:￥{{orderList.cost}}</span>
           <div class="select-right">
             <span>结算明细</span>
             <van-icon name="arrow" />
           </div>
         </div>
-        <p>订单号:1234567890</p>
-        <p>购买时间:2019-10-25 23:32:58</p>
+        <p>订单号:{{orderList.orderNum}}</p>
+        <p>购买时间:{{orderList.orderTime}}</p>
         <p>手机号:18702821964</p>
         <van-action-sheet
           v-model="settlementDetails"
@@ -42,14 +47,14 @@
           @cancel="onSettlementDetailsCancel"
         >
           <div class="content">
-            <p>电影票(含服务费)</p>
+            <h4>电影票(含服务费)</h4>
             <p>
               <span>票价</span>
-              <span>￥28*2</span>
+              <span>￥{{orderDetailList.ticketPrice}}*{{ticketsCount}}</span>
             </p>
             <p>
               <span>通用券</span>
-              <span>-￥3</span>
+              <span>-￥{{orderList.couponValue}}</span>
             </p>
           </div>
         </van-action-sheet>
@@ -65,24 +70,24 @@
         </div>
       </div>
       <van-divider dashed></van-divider>
-      <div>
+      <div class="watch-tips">
         <h3>观影需知</h3>
         <ul>
           <li>
-            请提前到达影院现场，找到自助取票机，打印纸质
+            1. 请提前到达影院现场，找到自助取票机，打印纸质
             电影票，完成取票。
           </li>
           <li>
-            如现场自助取票机无法打印电影票，请联系影院工作
+            2. 如现场自助取票机无法打印电影票，请联系影院工作
             人员处理。
           </li>
-          <li>凭打印好的纸质电影票，检票入场观影</li>
+          <li>3. 凭打印好的纸质电影票，检票入场观影</li>
           <li>
-            如果订单使用了兑换券，或购买了特殊场次，暂不支持退
+            4. 如果订单使用了兑换券，或购买了特殊场次，暂不支持退
             票和改签。
           </li>
           <li>
-            改签、退票服务由影城决定，特殊场次及使用兑换券的场
+            5. 改签、退票服务由影城决定，特殊场次及使用兑换券的场
             次不支持改签、退票
           </li>
         </ul>
@@ -103,17 +108,24 @@ export default {
     return {
       title: '电影票',
       settlementDetails: false,
-
+      orderId: '',
+      orderList: {},
+      ticketsCount: '',
+      orderDetailList: [],
+      ticketsCode: ''
     }
   },
   mounted () {
-    this.creatQrCode();
+    this.orderId = JSON.parse(localStorage.getItem('order'))
+    this.getOrderData()
+    // this.creatQrCode();
   },
   created () {
   },
   methods: {
     onClickLeft () {
-      this.$router.go(-1)
+      // this.$router.go(-1)
+      this.$router.push('/PersonalCenter/MovieTickets')
     },
     onSettlementDetailsCancel () {
       // console.log(this.settlementDetails)
@@ -121,16 +133,47 @@ export default {
     },
     // 生成二维码
     creatQrCode () {
+      console.log(this.ticketsCode)
       var qrcode = new QRCode(this.$refs.qrCodeUrl, {
         // 这里选择器也可以直接写 'qrcode' 用的是id选择器,指示不需要带 # 而已
         // text: '沉睡魔咒2 2019-10-26 17:50-19:49 (英语3D) 鑫苑星空影城 2号巨幕厅 6排8座|6排9座', 
-        text: '8090 8801 2033 1203', //  生成二维码的 内容
+        text: this.ticketsCode, //  生成二维码的 内容
         width: 150,    //  宽,单位 px
         height: 150,   //  高,单位 px 
         // render: 'canvas' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）  
         // background: '#f0f'  
         // foreground: '#ff0'  
         correctLevel: QRCode.CorrectLevel.H   // 二维码容错 级别
+      })
+    },
+    // 获取订单信息
+    getOrderData () {
+      this.$axios.post("http://localhost:8080/getOrderData", {
+        orderId: this.orderId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          // console.log(res.data.data)
+          this.orderList = res.data.data[0]
+          console.log(this.orderList)
+          this.ticketsCode = this.orderList.ticketCode
+          console.log(this.ticketsCode)
+          this.creatQrCode()
+          this.getOrderDetailData()
+        }
+      })
+    },
+    // 获取页面影院、电影等的具体信息
+    getOrderDetailData () {
+      this.$axios.post("http://localhost:8080/getOrderDetailData", {
+        orderId: this.orderId,
+        sceneId: this.orderList.sceneId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          // console.log(res.data.data)
+          this.orderDetailList = res.data.data[0]
+          this.ticketsCount = this.orderDetailList.seat.length
+          console.log(this.orderDetailList.seat.length)
+        }
       })
     }
   }
@@ -160,6 +203,11 @@ export default {
     padding: 10px;
     background-color: #fff;
     border-radius: 5px;
+    .seat {
+      span{
+        padding: 0 4px;
+      }
+    }
     .qrcode {
       display: flex;
       justify-content: center;
@@ -181,6 +229,20 @@ export default {
       p {
         margin: 5px 0;
       }
+    }
+    .order-info-price {
+      text-align: left;
+      .content {
+        padding: 0 10px;
+        p {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+    }
+    .watch-tips {
+      text-align: left;
     }
   }
   .select {

@@ -11,6 +11,10 @@ import Grade from '@/pages/tickets/grade'
 
 import SelectSeat from '@/pages/tickets/selectSeat'
 import BuyTickets from '@/pages/tickets/buyTickets'
+import PaymentOptions from '@/pages/tickets/paymentOptions'
+import PayNow from '@/pages/tickets/payNow'
+import PaySuccess from '@/pages/tickets/paySuccess'
+
 
 import CinemaDetail from '@/pages/tickets/cinemaDetail'
 import CinemaMap from '@/pages/tickets/CinemaMap'
@@ -25,10 +29,12 @@ import MovieTickets from '@/pages/personalCenter/MovieTickets'
 import TicketDetail from '@/pages/personalCenter/TicketDetail'
 import Coupon from '@/pages/personalCenter/coupon'
 import LikeMoviePage from '@/pages/personalCenter/likeMoviePage'
+import Member from '@/pages/personalCenter/member'
 
 import Community from '@/pages/community/community'
 import Video from '@/pages/community/video'
 import PersonalHomepage from '@/pages/community/personalHomepage'
+import EditCommunity from '@/pages/community/editCommunity'
 
 import City from '@/components/city'
 import Search from '@/components/search'
@@ -41,13 +47,11 @@ export default new Router({
       path: '/Login',
       name: 'Login',
       component: Login
-    },
-    {
+    }, {
       path: '/Register',
       name: 'Register',
       component: Register
-    },
-    {
+    }, {
       path: '/',
       name: 'HomePage',
       component: HomePage
@@ -55,8 +59,7 @@ export default new Router({
       path: '/Tickets',
       name: 'Tickets',
       component: Tickets
-    },
-    {
+    }, {
       path: '/Tickets/CinemaMap',
       name: 'CinemaMap',
       component: CinemaMap
@@ -64,17 +67,27 @@ export default new Router({
       path: '/Tickets/MovieDetail',
       name: 'MovieDetail',
       component: MovieDetail
-    },
-    {
+    }, {
       path: '/Tickets/MovieDetail/SelectSeat',
       name: 'SelectSeat',
       component: SelectSeat
-    },{
+    }, {
       path: '/Tickets/MovieDetail/SelectSeat/BuyTickets',
       name: 'BuyTickets',
       component: BuyTickets
-    },
-    {
+    },{
+      path: '/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions',
+      name: 'PaymentOptions',
+      component: PaymentOptions
+    },{
+      path: '/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions/PayNow',
+      name: 'PayNow',
+      component: PayNow
+    },{
+      path: '/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions/PayNow/PaySuccess',
+      name: 'PaySuccess',
+      component: PaySuccess
+    }, {
       path: '/Tickets/MovieDetail/Grade',
       name: 'Grade',
       component: Grade
@@ -113,11 +126,15 @@ export default new Router({
       path: '/PersonalCenter/SignIn',
       name: 'SignIn',
       component: SignIn
-    },{
+    }, {
       path: '/PersonalCenter/Coupon',
       name: 'Coupon',
       component: Coupon
     },{
+      path: '/PersonalCenter/Member',
+      name: 'Member',
+      component: Member
+    }, {
       path: '/PersonalCenter/LikeMoviePage',
       name: 'LikeMoviePage',
       component: LikeMoviePage
@@ -134,14 +151,18 @@ export default new Router({
       path: '/Community',
       name: 'Community',
       component: Community
-    },{
+    }, {
       path: '/Community/Video',
       name: 'Video',
       component: Video
-    },{
+    }, {
       path: '/Community/PersonalHomepage',
       name: 'PersonalHomepage',
       component: PersonalHomepage
+    }, {
+      path: '/Community/EditCommunity',
+      name: 'EditCommunity',
+      component: EditCommunity
     }, {
       path: '/City',
       name: 'City',

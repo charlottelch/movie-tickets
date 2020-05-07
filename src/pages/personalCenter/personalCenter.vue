@@ -6,7 +6,7 @@
       </div>
       <div class="info">
         <div>
-          <h3>{{userInfo.userName}} </h3>
+          <h3>{{userInfo.userName}}</h3>
           <h3 @click="toLogin" v-show="token==false">登录/注册</h3>
         </div>
         <div class="top-right">
@@ -31,14 +31,14 @@
             </div>
             <span>电影票</span>
           </div>
-          <div>
+          <div @click="toMember">
             <div class="gradation-bk02">
               <img src="../../assets/icon/member.png" alt />
             </div>
             <span>会员</span>
           </div>
           <div @click="toCoupon">
-            <div class="gradation-bk03" >
+            <div class="gradation-bk03">
               <img src="../../assets/icon/coupon.png" alt />
             </div>
             <span>优惠券</span>
@@ -106,12 +106,13 @@ export default {
   data () {
     return {
       userName: '登录/注册',
-      userInfo:{},
-      token:false
+      userInfo: {},
+      token: false
     }
   },
   mounted () {
     this.receiveUserName()
+    // this.getLoginUserCommunity()
   },
   methods: {
     toLogin () {
@@ -129,6 +130,9 @@ export default {
     toMovieTickets () {
       this.$router.push('/PersonalCenter/MovieTickets')
     },
+    toMember () {
+      this.$router.push('/PersonalCenter/Member')
+    },
     toCoupon () {
       this.$router.push('/PersonalCenter/Coupon')
     },
@@ -136,21 +140,36 @@ export default {
       this.$router.push('/PersonalCenter/LikeMoviePage')
     },
     toMyCommunity () {
-      this.$router.push('/PersonalCenter/Coupon')
+      var videoArr = []
+      console.log(this.userInfo)
+      videoArr.push(this.userInfo)
+      localStorage.setItem('video', JSON.stringify(videoArr));
+      this.$router.push('/Community/PersonalHomepage')
     },
-    receiveUserName () { 
-      if(this.$store.state.userInfo != null){
+    receiveUserName () {
+      if (this.$store.state.userInfo != null) {
         this.userInfo = this.$store.state.userInfo
         // 判断是否登录了
         this.token = this.$store.state.token
-        // console.log(this.userInfo)
+        console.log(this.userInfo)
         // console.log(this.token)
       }
       // console.log(this.userInfo.userName)
       // this.userName = this.userInfo
       // 路由传值
       // this.userName = this.$route.query.data 
-    }
+    },
+    // getLoginUserCommunity () {
+    //   this.$axios.post("http://localhost:8080/getLoginUserCommunity", {
+    //     userId: this.userInfo.userId,
+    //   }).then((res) => {
+    //     if (res.data.code == 200) {
+    //       // this.toCheckFollow()
+    //       console.log(res)
+    //     } else {
+    //     }
+    //   })
+    // }
   }
 
 }
@@ -170,7 +189,7 @@ export default {
   .personal-top {
     height: 150px;
     // background: #34c372;
-    background: url("../../assets/personal-bg.png");
+    background: url('../../assets/personal-bg.png');
     background-position: bottom left;
     // background-image: radial-gradient(
     //   circle at 10% 50%,
