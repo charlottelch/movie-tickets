@@ -1,7 +1,7 @@
 <template>
   <div class="main-con">
     <!-- <nav-title-fixed :title="title"></nav-title-fixed> -->
-    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed/>
+    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed />
 
     <div class="vid-wrap">
       <video width="100%" height="100%" controls>
@@ -113,8 +113,9 @@ export default {
       this.userInfo = this.$store.state.userInfo
     }
     // 视频数据
-    var videoPlayList=JSON.parse(localStorage.getItem('video'))
-    this.videoList = videoPlayList[videoPlayList.length-1]
+    // 每次页面都拿取localstorage里面最后一条数据
+    var videoPlayList = JSON.parse(localStorage.getItem('video'))
+    this.videoList = videoPlayList[videoPlayList.length - 1]
     // this.videoList = JSON.parse(localStorage.getItem('video'))
 
     // this.videoList = this.$route.query.data
@@ -125,21 +126,10 @@ export default {
     this.toCheckThumb()
     this.toCheckCollect()
   },
-  // beforeRouteEnter (to, from, next) {
-  //   if (from.name === 'PersonalHomepage') {
-  //     // refreshFlag = true
-  //     // this.videoList = this.$route.query.data
-  //     console.log("hhh")
-  //   } else {
-  //     // refreshFlag = false
-  //     console.log("xxx")
-
-  //   }
-  //   next()
-  // },
   methods: {
     onClickLeft () {
-      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      // 返回上一个页面就删除一条localstorage的数据
+      var videoPlayList = JSON.parse(localStorage.getItem('video'))
       console.log(videoPlayList)
       videoPlayList.pop()
       console.log(videoPlayList)
@@ -147,7 +137,13 @@ export default {
       this.$router.go(-1)
     },
     toUserDetailPage () {
-      this.$router.push({ path: '/Community/PersonalHomepage', query: { data: this.videoList } })
+      // 去到一个页面就想localstorage发一次
+      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      videoPlayList.push(this.videoList)
+      console.log(videoPlayList)
+      localStorage.setItem('video', JSON.stringify(videoPlayList));
+      // 
+      this.$router.push({ path: '/Community/PersonalHomepage' })
     },
     // 拿取发布动态用户的信息
     getAuthorInfo () {

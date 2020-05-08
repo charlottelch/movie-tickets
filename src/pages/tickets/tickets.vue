@@ -7,14 +7,14 @@
       </div>
       <!-- <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" /> -->
       <span class="search-form" @click="toSearch">
-        <van-icon name="search" size="16"/>
+        <van-icon name="search" size="16" />
         <p>搜影片、影人、影院</p>
       </span>
-      <img src="../../assets/map.png" alt="" @click="toCinemaMap">
+      <img src="../../assets/map.png" alt @click="toCinemaMap" />
       <!-- <div class="right">
         <van-icon name="location-o" @click="toCinemaMap" />
         <van-icon name="search" />
-      </div> -->
+      </div>-->
     </div>
     <van-tabs v-model="active" sticky>
       <van-tab title="热映">
@@ -49,55 +49,96 @@
         <div class="select" :class="navBarFixed == true ? 'navBarWrap' :''">
           <van-dropdown-menu>
             <van-dropdown-item :title="businessCircleTitle" class="first">
-              <van-tabs v-model="active1">
-                <van-tab title="商圈">
-                  <van-tree-select
-                    :items="businessCircleItems"
-                    :active-id.sync="activeId"
-                    :main-active-index.sync="activeIndex"
-                    @click-item="getRightData"
-                  />
-                </van-tab>
-                <van-tab title="地铁">
+              <!-- <van-tabs v-model="active1"> -->
+              <!-- <van-tab title="商圈"> -->
+              <van-tree-select
+                :items="businessCircleItems"
+                :active-id.sync="activeId"
+                :main-active-index.sync="activeIndex"
+                @click-nav="getLeftData"
+                @click-item="getRightData"
+              />
+              <!-- </van-tab> -->
+              <!-- <van-tab title="地铁">
                   <van-tree-select
                     :items="subwayItems"
                     :active-id.sync="subwayActiveId"
                     :main-active-index.sync="subwayActiveIndex"
                     @click-item="getSubwayRightData"
                   />
-                </van-tab>
-              </van-tabs>
+              </van-tab>-->
+              <!-- </van-tabs> -->
             </van-dropdown-item>
             <van-dropdown-item title="筛选" v-model="value1" class="second">
               <div class="pick-cinema">
-                <div v-for="(item, index) in selectCinemaPartsList" :key="index">
+                <div>
                   <p>
-                    <span>{{item.title}}</span>
-                    <span>
+                    <span>影院服务</span>
+                    <!-- <span>
                       展开
                       <van-icon name="arrow-down" />
-                    </span>
+                    </span>-->
                   </p>
                   <p class="parts">
-                    <span v-for="(sitem, index) in item.select" :key="index">{{sitem}}</span>
+                    <span
+                      v-for="(item, index) in cinemaServer"
+                      :key="index"
+                      :class="[isCinemaServerSelected==index?'selected':'']"
+                      @click="toSelectCinemaServer(index)"
+                    >{{item.name}}</span>
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <span>放映影厅</span>
+                    <!-- <span>
+                      展开
+                      <van-icon name="arrow-down" />
+                    </span>-->
+                  </p>
+                  <p class="parts parts-block">
+                    <span
+                      v-for="(item, index) in hallType"
+                      :key="index"
+                      :class="[isHallTypeSelected==index?'selected':'']"
+                      @click="toSelectHallType(index)"
+                    >{{item.name}}</span>
                   </p>
                 </div>
               </div>
               <div class="pick-buttons">
-                <van-button round type="info" size="small">清空</van-button>
-                <van-button round type="info" size="small">确定</van-button>
+                <van-button round color="#ff3174" plain size="small" @click="clearSelect">重置</van-button>
+                <van-button
+                  round
+                  color="linear-gradient(to right, #ff3174, #fe756b)"
+                  size="small"
+                  @click="makeSureSelect"
+                >确定</van-button>
               </div>
             </van-dropdown-item>
             <van-dropdown-item
-              :title="option2.text"
-              v-model="value2"
+              :title="brandList.text"
+              v-model="brandListValue"
               class="third"
-              :options="option2"
+              :options="brandList"
+              @change="chooseBrand"
+            ></van-dropdown-item>
+            <van-dropdown-item
+              :title="sortOrderList.text"
+              v-model="sortOrderValue"
+              class="fourth"
+              :options="sortOrderList"
+              @change="chooseSortOrder"
             ></van-dropdown-item>
           </van-dropdown-menu>
         </div>
         <div class="cinema-all">
-          <div class="cinema" v-for="(item,index) in cinemaList" :key="index" @click="toCinemaDetail(item)">
+          <div
+            class="cinema"
+            v-for="(item,index) in cinemaList"
+            :key="index"
+            @click="toCinemaDetail(item)"
+          >
             <div class="cinema-info">
               <div>
                 <h3>{{item.cinemaName}}</h3>
@@ -110,7 +151,11 @@
               </div>
             </div>
             <div class="label">
-              <van-tag color="#ff3174" v-for="(Litem,index) in item.label" :key="index">{{Litem.labelName}}</van-tag>
+              <van-tag
+                color="#ff3174"
+                v-for="(Litem,index) in item.label"
+                :key="index"
+              >{{Litem.labelName}}</van-tag>
             </div>
           </div>
         </div>
@@ -200,45 +245,88 @@ export default {
     return {
       value: "",
       value1: 0,
-      value2: 'a',
       active: 0,
       active1: '',
-      option2: [
-        { text: '综合排序', value: 'a' },
-        { text: '离我最近', value: 'b' },
-        { text: '价格最低', value: 'c' },
+      sortOrderValue: 0,
+      sortOrderList: [
+        { text: '综合排序', value: 0 },
+        { text: '离我最近', value: 1 },
+        { text: '价格最低', value: 2 },
       ],
       navBarFixed: false,
       businessCircleItems: [
-        { text: '浙江', children: [{ text: '宁海宁海宁海宁海' }, { text: '浙江' }] },
-        { text: '江苏', children: [{ text: '海' }, { text: '江' }] }
+        { text: '全部', children: [{ text: '全部' }] },
+        { text: '武侯区', children: [{ text: '全部' }, { text: '火车南站' }, { text: '石羊场' }] },
+        { text: '锦江区', children: [{ text: '全部' }, { text: '春熙路' }] },
+        { text: '双流区', children: [{ text: '全部' }, { text: '华阳' }] },
+        { text: '金牛区', children: [{ text: '全部' }, { text: '五块石' }] },
+        { text: '郫都区', children: [{ text: '全部' }, { text: '红光' }, { text: '犀浦' }] },
+        { text: '成华区', children: [{ text: '全部' }, { text: 'SM广场' }] },
+
       ],
       activeId: 1,
       activeIndex: 0,
       businessCircleTitle: '全城',
-      subwayItems: [
-        { text: '1号线', children: [{ text: '天府广场' }, { text: '金融城' }] },
-        { text: '2号线', children: [{ text: '春熙路' }, { text: '犀浦' }] }
+      zoneTitle:'',
+      // 放映影厅
+      hallType: [
+        { name: "全部" },
+        { name: "IMAX厅" },
+        { name: "杜比影院" },
+        { name: "120帧", },
+        { name: "巨幕厅", },
+        { name: "激光厅", },
+        { name: "CGS中国巨幕厅", },
+        { name: "MX4D厅", },
+        { name: "DTS临境厅", },
+        { name: "4D厅", },
+        { name: "融合厅", }
       ],
-      subwayActiveId: 1,
-      subwayActiveIndex: 0,
-      selectCinemaPartsList: [
-        {
-          "title": "放映影厅",
-          "select": ["IMAX厅", "杜比影院", "120帧", "巨幕厅", "激光厅", "艺术影厅", "CGS中国巨幕厅", "MX4D厅", "DTS临境厅", "4D厅", "融合厅"]
-        },
-        {
-          "title": "影院服务",
-          "select": ["退票", "改签", "影城卡", "观影小食", "3D眼镜收费", "VIP厅", "可停车"]
-        }
-        ,
-        {
-          "title": "影院品牌",
-          "select": ["太平洋影城", "万达电影", "CGV", "横店影视", "星美影商城", "橙天嘉禾", "UME影城", "百老汇电影", "卢米埃影城", "博纳影城", "大地影院", "幸福蓝海国际影城", "保利影城"]
-        }
+      // 影院服务
+      cinemaServer: [
+        { name: "全部" },
+        { name: "退票", },
+        { name: "改签", },
+      ],
+      brandListValue: 0,
+      brandList: [
+        { text: "全部", value: 0 },
+        { text: "太平洋影城", value: 1 },
+        { text: "万达", value: 2 },
+        { text: "CGV", value: 3 },
+        { text: "横店影视", value: 4 },
+        { text: "星美影商城", value: 5 },
+        { text: "橙天嘉禾", value: 6 },
+        { text: "UME影城", value: 7 },
+        { text: "百老汇电影", value: 8 },
+        { text: "卢米埃影城", value: 9 },
+        { text: "博纳影城", value: 10 },
+        { text: "大地影院", value: 11 },
+        { text: "幸福蓝海国际影城", value: 12 },
+        { text: "保利影城", value: 13 },
+        { text: "左岸国际影城", value: 14 },
+        { text: "烽禾影城", value: 15 },
+
       ],
       movieList: [],
-      cinemaList: []
+      cinemaList: [],
+      // 筛选
+      screenList: [],
+      // 城市筛选
+      // 区
+      zoneSelected: '',
+      // 商圈
+      tradeAreaSelected: '',
+      // 品牌筛选条件
+      brandSelectText: '',
+      // isSelected: false,
+      isCinemaServerSelected: 0,
+      // 筛选影院服务和影厅
+      cinemaServerSelected: '',
+      isHallTypeSelected: 0,
+      hallTypeSelected: '',
+      // 选择排序方式
+      sortOrderText:'bottomPrice,cinemaDistance'
       // subwayTitle: '全城',
     }
   },
@@ -279,16 +367,35 @@ export default {
     toCinemaMap () {
       this.$router.push('/Tickets/CinemaMap')
     },
+    // 点击选择区
+    getLeftData (index) {
+      console.log(index)
+      this.zoneSelected = this.businessCircleItems[index].text
+      // 筛选框显示区
+      this.zoneTitle = this.businessCircleItems[index].text
+      // console.log(this.zoneSelected)
+      // console.log(this.zoneTitle)
+    },
+    // 获取选择的商圈
     getRightData (data) {
+      // 显示商圈
       this.businessCircleTitle = data.text
-      console.log(data.text)
+      if(this.businessCircleTitle == '全部'){
+        this.businessCircleTitle = this.zoneTitle
+      }
+      console.log(this.businessCircleTitle)
+      this.tradeAreaSelected = data.text
+      // console.log(this.tradeAreaSelected)
+      this.selectMovie()
     },
-    getSubwayRightData (data) {
-      this.businessCircleTitle = data.text
-    },
+    // getSubwayRightData (data) {
+    //   this.businessCircleTitle = data.text
+    // },
+    // 想看
     wantToWatch () {
       console.log("want to look")
     },
+    // 拿取到电影信息
     getMovie () {
       this.$axios.post("http://localhost:8080/getMovie", {
         // user_id: "1"
@@ -306,6 +413,103 @@ export default {
         this.cinemaList = res.data.data
         console.log(this.cinemaList)
         // this.movieList.score = res.data.data[0].score
+      })
+    },
+    // 选择影厅类型
+    toSelectHallType (index) {
+      this.isHallTypeSelected = index
+      this.hallTypeSelected = this.hallType[index].name
+    },
+    // 选择影院服务
+    toSelectCinemaServer (index) {
+      this.isCinemaServerSelected = index
+      this.cinemaServerSelected = this.cinemaServer[index].name
+    },
+    // 重置筛选
+    clearSelect () {
+      this.isHallTypeSelected = 0
+      this.isCinemaServerSelected = 0
+    },
+    // 确认筛选
+    makeSureSelect () {
+      // console.log(this.hallTypeSelected)
+      // console.log(this.cinemaServerSelected)
+      this.selectMovie()
+
+    },
+    // 选择品牌
+    chooseBrand (value) {
+      this.brandListValue = value
+      this.brandSelectText = this.brandList[value].text
+      // console.log(this.brandSelectText)
+      // console.log(value)
+      // if (value == 0) {
+      //   this.getCinemaData()
+      // } else {
+      this.selectMovie()
+      // }
+    },
+    // 选择排序方式
+    chooseSortOrder(value) {
+      this.sortOrderValue = value
+      // this.sortOrderText = this.sortOrderList[value].text
+      // console.log(this.sortOrderText)
+      if(value==0){
+        this.sortOrderText = 'bottomPrice,cinemaDistance'
+      }else if(value==1){
+        this.sortOrderText = 'cinemaDistance'
+      }else if(value==2){
+        this.sortOrderText = 'bottomPrice'
+      }
+      this.selectMovie()
+    },
+    // 筛选影院服务
+    selectHallType () {
+      this.$axios.post('http://localhost:8080/selectHallType', {
+
+        hallTypeSelected: this.hallTypeSelected
+      }).then((res) => {
+        if (res.data.code == 200) {
+          // console.log(res.data.data)
+          // this.cinemaList = res.data.data
+        }
+      })
+    },
+    // 筛选影院品牌
+    selectMovie () {
+      if(this.zoneSelected == '全部'){
+        this.zoneSelected = ''
+      }
+      if(this.tradeAreaSelected == '全部'){
+        this.tradeAreaSelected = ''
+      }
+      if (this.hallTypeSelected == '全部') {
+        this.hallTypeSelected = ''
+      }
+      if (this.cinemaServerSelected == '全部') {
+        this.cinemaServerSelected = ''
+      }
+      if (this.brandSelectText == '全部') {
+        this.brandSelectText = ''
+      }
+      // console.log(this.zoneSelected) //选择的区
+      // console.log(this.tradeAreaSelected) //选择的商圈
+      // console.log(this.hallTypeSelected) //影厅类型
+      // console.log(this.cinemaServerSelected) //影院服务
+      // console.log(this.brandSelectText) //影院品牌
+      // console.log(this.sortOrderText)
+      this.$axios.post('http://localhost:8080/selectMovie', {
+        cinemaServerSelected:this.cinemaServerSelected,
+        hallTypeSelected:this.hallTypeSelected,
+        brandSelectText: this.brandSelectText,
+        zoneSelected: this.zoneSelected,
+        tradeAreaSelected: this.tradeAreaSelected,
+        sortOrderText: this.sortOrderText,
+      }).then((res) => {
+        if (res.data.code == 200) {
+          console.log(res.data.data)
+          this.cinemaList = res.data.data
+        }
       })
     }
 
@@ -403,7 +607,7 @@ export default {
       justify-content: flex-start;
       padding: 10px 0;
       /deep/.van-dropdown-menu__item {
-        margin-right: 10px;
+        margin: 0 3px;
         flex: inherit;
         padding: 4px 10px;
         border: 1px solid #ebedf0;
@@ -415,7 +619,7 @@ export default {
     }
     .pick-cinema {
       padding: 0 10px;
-      height: 390px;
+      height: 320px;
       width: 100%;
       overflow-y: scroll;
       overflow-x: hidden;
@@ -436,12 +640,16 @@ export default {
           height: 28px;
           line-height: 28px;
           border-radius: 3px;
-          background: rgb(241, 240, 235);
+          background: rgb(243, 243, 242);
           text-align: center;
           margin-top: 5px;
         }
+        .selected {
+          background: rgb(245, 225, 229);
+          color: crimson;
+        }
       }
-      .parts:after {
+      .parts-block:after {
         content: '';
         display: inline-block;
         width: 108px;

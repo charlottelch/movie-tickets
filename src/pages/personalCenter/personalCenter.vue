@@ -20,8 +20,8 @@
         <div class="sign-in" @click="toSignIn">
           <img src="../../assets/icon/sign-in.png" alt />
           <p>
+            <span>每日签到</span>
             <span>签到有惊喜</span>
-            <span>你已经签到2天</span>
           </p>
         </div>
         <div class="list">
@@ -67,25 +67,25 @@
             <img src="../../assets/icon/comment.png" alt />
             <span>评论</span>
           </div>
-          <div>
+          <!-- <div>
             <img src="../../assets/icon/customer-service.png" alt />
             <span>客服</span>
-          </div>
+          </div> -->
         </div>
         <div class="interaction" @click="toMyCommunity">
           <p class="title">互动社区</p>
           <div>
             <p>
               关注
-              <span>3</span>
+              <span>{{followlist.length}}</span>
             </p>
             <p>
               粉丝
-              <span>0</span>
+              <span>{{fans.length}}</span>
             </p>
             <p>
               动态
-              <span>2</span>
+              <span>{{ownReleaseList.length}}</span>
             </p>
           </div>
         </div>
@@ -107,11 +107,17 @@ export default {
     return {
       userName: '登录/注册',
       userInfo: {},
-      token: false
+      token: false,
+      followlist:[],
+      fans:[],
+      ownReleaseList: [],
+      ownCollectList: []
     }
   },
   mounted () {
     this.receiveUserName()
+    this.getVideoData()
+    this.getUserInfo()
     // this.getLoginUserCommunity()
   },
   methods: {
@@ -145,6 +151,39 @@ export default {
       videoArr.push(this.userInfo)
       localStorage.setItem('video', JSON.stringify(videoArr));
       this.$router.push('/Community/PersonalHomepage')
+    },
+    // 获取动态数
+    getVideoData () {
+      this.$axios.post("http://localhost:8080/getVideoData", {
+        userId: this.userInfo.userId,
+        // concernedId: this.videoList.userId,
+        // isFollow: this.isFollow
+      }).then((res) => {
+        if (res.data.code == 200) {
+          console.log(res.data.data)
+          this.ownReleaseList = res.data.data[0]
+          this.ownCollectList = res.data.data[1]
+          console.log(this.ownReleaseList)
+          console.log(this.ownCollectList)
+        } else {
+        }
+      })
+    },
+    // 获取关注和粉丝数
+    getUserInfo () {
+      this.$axios.post("http://localhost:8080/getUserInfo", {
+        userId: this.userInfo.userId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          if (res.data.data.length !== 0) {
+            this.followAndFansList = res.data.data
+            this.followlist = res.data.data[0]
+            this.fans = res.data.data[1]
+            // console.log(this.followlist)
+            // console.log(this.fans)
+          }
+        }
+      })
     },
     receiveUserName () {
       if (this.$store.state.userInfo != null) {

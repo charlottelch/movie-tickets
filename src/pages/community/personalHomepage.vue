@@ -1,7 +1,7 @@
 <template>
   <div class="main-con">
-    <nav-title-fixed :title="title"></nav-title-fixed>
-    <!-- <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed/> -->
+    <!-- <nav-title-fixed :title="title"></nav-title-fixed> -->
+    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed/>
     <!-- <div class="top-bg">
       <img src="../../assets/timg (1).jpg" alt />
     </div>-->
@@ -13,17 +13,18 @@
         <span>{{videoList.userName}}</span>
       </div>
       <div class="follow-fans">
-        <span>
-          <span>{{followlist[0].follow}}</span>关注
+        <span @click="toFollowFansList(index)" v-for="(item,index) in followAndFansList" :key="index">
+          <span>{{item.length}}</span>{{index==0?'关注':'粉丝'}}
         </span>
-        <span>
-          <span>{{fans[0].fans}}</span>粉丝
-        </span>
+        <!-- <span>
+          <span>{{item.length}}</span>粉丝
+        </span> -->
       </div>
       <span
         class="follow"
         :class="[isFollow?'followed':'un-followed']"
         @click="follow"
+        v-if="videoList.userId != userInfo.userId"
       >{{isFollow?'已关注':'关注'}}</span>
     </div>
     <van-tabs v-model="active" sticky offset-top="46">
@@ -84,11 +85,12 @@ export default {
       active: 0,
       videoList: {},
       userInfo: {},
-      followlist: [{ "follow": '--' }],
-      fans: [{ "fans": '--' }],
+      // followlist: [{ "follow": '--' }],
+      // fans: [{ "fans": '--' }],
+      followAndFansList:[],
       isFollow: null,
-      ownReleaseList: {},
-      ownCollectList: {}
+      ownReleaseList: [],
+      ownCollectList: []
     }
   },
   mounted () {
@@ -108,6 +110,13 @@ export default {
   },
   methods: {
     onClickLeft () {
+      // cs
+      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      console.log(videoPlayList)
+      videoPlayList.pop()
+      console.log(videoPlayList)
+      localStorage.setItem('video', JSON.stringify(videoPlayList));
+      // cs
       this.$router.go(-1)
     },
     // 拿取该用户信息
@@ -117,15 +126,16 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           if (res.data.data.length !== 0) {
-            // this.followFansList = res.data.data
-            this.followlist = res.data.data[0]
-            this.fans = res.data.data[1]
-            console.log(this.followlist)
-            console.log(this.fans)
+            this.followAndFansList = res.data.data
+            // this.followlist = res.data.data[0]
+            // this.fans = res.data.data[1]
+            // console.log(this.followlist)
+            // console.log(this.fans)
           }
         }
       })
     },
+    // 是否关注了
     toCheckFollow () {
       this.$axios.post("http://localhost:8080/toCheckFollow", {
         userId: this.userInfo.userId,
@@ -171,6 +181,7 @@ export default {
         }
       })
     },
+    // 自己的动态页
     toVideoDetail(item){
       console.log("jjj")
       var videoPlayList=JSON.parse(localStorage.getItem('video'))
@@ -180,6 +191,7 @@ export default {
       
       console.log("jjj")
     },
+    // 收藏用户的动态页
     toVideoCollectDetail(item){
       var videoPlayList=JSON.parse(localStorage.getItem('video'))
       videoPlayList.push(item)
@@ -187,6 +199,17 @@ export default {
       this.$router.push({ path: '/Community/Video',query:{data:item}})
       // localStorage.setItem('video', JSON.stringify(item));
       console.log("hhh")
+    },
+    // 查看关注或者粉丝的列表
+    toFollowFansList (index) {
+      localStorage.setItem('followOrFans', JSON.stringify(index));
+      // cs
+      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      videoPlayList.push(this.videoList)
+      console.log(videoPlayList)
+      localStorage.setItem('video', JSON.stringify(videoPlayList));
+      // cs
+      this.$router.push({ path: '/Community/FollowAndFansList'})
     }
   }
 }

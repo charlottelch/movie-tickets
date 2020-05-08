@@ -35,6 +35,7 @@ import Community from '@/pages/community/community'
 import Video from '@/pages/community/video'
 import PersonalHomepage from '@/pages/community/personalHomepage'
 import EditCommunity from '@/pages/community/editCommunity'
+import FollowAndFansList from '@/pages/community/followAndFansList'
 
 import City from '@/components/city'
 import Search from '@/components/search'
@@ -163,6 +164,10 @@ export default new Router({
       path: '/Community/EditCommunity',
       name: 'EditCommunity',
       component: EditCommunity
+    },{
+      path: '/Community/FollowAndFansList',
+      name: 'FollowAndFansList',
+      component: FollowAndFansList
     }, {
       path: '/City',
       name: 'City',
