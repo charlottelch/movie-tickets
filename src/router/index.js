@@ -8,6 +8,7 @@ import Tickets from '@/pages/tickets/tickets'
 import MovieDetail from '@/pages/tickets/movieDetail'
 import TicketsBuy from '@/pages/tickets/ticketsBuy'
 import Grade from '@/pages/tickets/grade'
+import Performer from '@/pages/tickets/performer'
 
 import SelectSeat from '@/pages/tickets/selectSeat'
 import BuyTickets from '@/pages/tickets/buyTickets'
@@ -68,6 +69,10 @@ export default new Router({
       path: '/Tickets/MovieDetail',
       name: 'MovieDetail',
       component: MovieDetail
+    },{
+      path: '/Tickets/MovieDetail/Performer',
+      name: 'Performer',
+      component: Performer
     }, {
       path: '/Tickets/MovieDetail/SelectSeat',
       name: 'SelectSeat',

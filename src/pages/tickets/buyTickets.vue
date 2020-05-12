@@ -75,7 +75,7 @@ export default {
   data () {
     return {
       title: '订单',
-      couponList: [],
+      // couponList: [],
       userInfo: {},
       sceneInfo: [],
       cinemaList: [],
@@ -86,36 +86,36 @@ export default {
       chosenCoupon: -1,
       coupons: [
         {
-        // available: 1,
-        condition: '无门槛',
-        // reason: '',
-        value: 150,
-        name: '优惠券名称',
-        startAt: 1588723200-259200,
-        endAt: 1314592000,
-        valueDesc: '1.5',
-        unitDesc: '元',
-      }
+          // available: 1,
+          condition: '无门槛',
+          // reason: '',
+          value: 150,
+          name: '优惠券名称',
+          startAt: 1588723200 - 259200,
+          endAt: 1314592000,
+          valueDesc: '1.5',
+          unitDesc: '元',
+        }
       ],
       disabledCoupons: [
         {
-        available: 1,
-        condition: '无使用门槛',
-        reason: '',
-        value: 150,
-        name: '优惠券名称',
-        startAt: 1489104000,
-        endAt: 1514592000,
-        valueDesc: '1.5',
-        unitDesc: '元',
-      }
+          available: 1,
+          condition: '无使用门槛',
+          reason: '',
+          value: 150,
+          name: '优惠券名称',
+          startAt: 1489104000,
+          endAt: 1514592000,
+          valueDesc: '1.5',
+          unitDesc: '元',
+        }
       ],
       couponList: [],
       currentdate: '',
-      timeNumber:null,
-      isSeatAvailable:true,
+      timeNumber: null,
+      isSeatAvailable: true,
       // 优惠劵减少的价格
-      allowance:''
+      allowance: ''
     }
   },
   mounted () {
@@ -155,9 +155,9 @@ export default {
       var timeStamp = new Date(this.currentdate).getTime()
       var timeString = timeStamp.toString()
       // console.log(timeStamp.toString())
-      var shortName = timeString.substr(0,10)
+      var shortName = timeString.substr(0, 10)
       // console.log(typeof(shortName))
-      this.timeNumber=Number(shortName)
+      this.timeNumber = Number(shortName)
       console.log(this.timeNumber)
       console.log(this.coupons[0].endAt)
     },
@@ -178,7 +178,7 @@ export default {
             if (this.couponList[i].endAt < this.timeNumber) {
               this.disabledCoupons.push(this.couponList[i])
               // console.log(this.disabledCoupons)
-            }else{
+            } else {
               this.coupons.push(this.couponList[i])
               console.log(this.coupons)
             }
@@ -199,19 +199,19 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           console.log(res.data.data)
-          for(let i=0;i<res.data.data.length;i++){
-            if(res.data.data[i][0].seatType == 2){
+          for (let i = 0; i < res.data.data.length; i++) {
+            if (res.data.data[i][0].seatType != 0) {
               this.isSeatAvailable = false
               console.log(this.isSeatAvailable)
             }
           }
           console.log(this.isSeatAvailable)
-          if(this.isSeatAvailable == true){
-            this.$router.push({path:'/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions'})
-            var orderPrice = this.sceneInfo.ticketPrice * this.seatList.length-this.allowance
+          if (this.isSeatAvailable == true) {
+            var orderPrice = this.sceneInfo.ticketPrice * this.seatList.length - this.allowance
             localStorage.setItem('orderPrice', JSON.stringify(orderPrice))
+            this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions'})
             // this.getSeatData()
-          }else{
+          } else {
             this.$toast('座位已经被选了，请重新选座')
           }
         }
@@ -232,7 +232,7 @@ export default {
     onChange (index) {
       this.showList = false;
       this.chosenCoupon = index;
-      this.allowance = this.coupons[this.chosenCoupon].value/100
+      this.allowance = this.coupons[this.chosenCoupon].value / 100
       // localStorage.setItem('coupon',JSON.stringify(this.coupons[this.chosenCoupon]))
       console.log(this.coupons[this.chosenCoupon])
     },
@@ -241,14 +241,14 @@ export default {
     },
     toPayment () {
       // if(this.coupons[this.chosenCoupon] != undefined){
-        localStorage.setItem('coupon',JSON.stringify(this.coupons[this.chosenCoupon]))
+      localStorage.setItem('coupon', JSON.stringify(this.coupons[this.chosenCoupon]))
       // }eles{
 
       // }
       console.log(this.coupons[this.chosenCoupon])
       this.selectSeatType()
       // if(this.isSeatAvailable == true){
-        
+
       // }
       console.log("去付款")
     }

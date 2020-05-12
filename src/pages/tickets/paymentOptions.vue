@@ -44,11 +44,11 @@ export default {
       title: '支付订单',
       couponList: [],
       userInfo: {},
-      sceneInfo:[],
-      seatList:[],
+      sceneInfo: [],
+      seatList: [],
       isSeatAvailable: true,
       radio: '1',
-      orderPrice:''
+      orderPrice: ''
     }
   },
   mounted () {
@@ -73,20 +73,20 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           console.log(res.data.data)
-          for(let i=0;i<res.data.data.length;i++){
-            if(res.data.data[i][0].seatType == 2){
+          for (let i = 0; i < res.data.data.length; i++) {
+            if (res.data.data[i][0].seatType != 0) {
               this.isSeatAvailable = false
               console.log(this.isSeatAvailable)
             }
           }
           console.log(this.isSeatAvailable)
-          if(this.isSeatAvailable == true){
+          if (this.isSeatAvailable == true) {
             // this.$router.push({path:'/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions'})
-            this.$router.push({path:'/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions/PayNow',query:{data:this.radio}})
+            this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions/PayNow', query: { data: this.radio } })
             // var orderPrice = this.sceneInfo.ticketPrice * this.seatList.length-this.allowance
             // localStorage.setItem('orderPrice', JSON.stringify(orderPrice))
             // this.getSeatData()
-          }else{
+          } else {
             this.$toast('座位已经被选了，请重新选座')
           }
         }

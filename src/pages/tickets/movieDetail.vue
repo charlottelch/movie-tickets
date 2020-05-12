@@ -121,7 +121,7 @@
                     <li
                       class="cell"
                       v-for="(item,index) in movieList.directorAndActor"
-                      :key="index"
+                      :key="index" @click="toPerformerDetail(item)"
                     >
                       <img :src="`../../../static/images/${item.image}`" alt />
                       <p>{{item.performerName}}</p>
@@ -227,7 +227,6 @@
           </van-tabs>
         </div>
       </div>
-
       <div class="ticket-purchase">
         <!-- <van-button round type="info" size="large">选座购票</van-button> -->
         <span @click="goTicketsBuy">选座购票</span>
@@ -266,7 +265,7 @@ export default {
     this.receiveMovie()
     this.wantLookList()
     this.seenMovie()
-    // this.movieScore()
+    this.movieScore()
     // 拿到剧照
     this.$axios.post("http://localhost:8080/stillList", {
       movieId: this.movieList.movieId
@@ -280,12 +279,9 @@ export default {
         this.stillList1 = str.split(',')
         this.stillList = res.data.data
         console.log(this.stillList1)
-
       }
-
       // console.log(res.data.data)
     })
-
   },
   methods: {
     //然后在方法中，添加这个handleScroll方法来获取滚动的位置，实现导航栏滚动时样式改变
@@ -308,7 +304,7 @@ export default {
     },
     writeReview () {
       if (this.isSeen != true) {
-        this.$router.push({ path: '/Tickets/MovieDetail/Grade', query: { data: this.movieList } })
+        this.$router.push({ path: '/Tickets/MovieDetail/Grade'})
       }
     },
     receiveMovie () {
@@ -363,6 +359,11 @@ export default {
         console.log(res.data)
       })
     },
+    // 去演员简介页面
+    toPerformerDetail(item){
+      localStorage.setItem('performer',JSON.stringify(item))
+      this.$router.push('/Tickets/MovieDetail/Performer')
+    },
     // 控制图片预览图片切换
     onChange (index) {
       // console.log(this.index)
@@ -373,17 +374,17 @@ export default {
       this.imageShow = true
       this.index = index
       // console.log(this.index)
-    }
+    },
     // 电影评分
-    // movieScore () {
-    //   this.$axios.post("http://localhost:8080/movieScore", {
-    //     // userId: this.userInfo.userId,
-    //     movieId: this.movieList.movieId
-    //   }).then((res) => {
-    //     // this.movieList.score=res.data.data[0].score
-    //     console.log(res)
-    //   })
-    // },
+    movieScore () {
+      this.$axios.post("http://localhost:8080/movieScore", {
+        // userId: this.userInfo.userId,
+        movieId: this.movieList.movieId
+      }).then((res) => {
+        this.movieList.score=res.data.data[0].score
+        console.log(res)
+      })
+    },
   },
   //由于是在整个window中添加的事件，所以要在页面离开时摧毁掉，否则会报错
   beforeDestroy () {

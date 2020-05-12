@@ -40,7 +40,7 @@ export default {
     }
   },
   mounted () {
-    this.movieList = this.$route.query.data
+    this.movieList = JSON.parse(localStorage.getItem('movie'))
     console.log(this.movieList)
     if (this.$store.state.userInfo != null) {
       this.userInfo = this.$store.state.userInfo
@@ -55,6 +55,7 @@ export default {
       // console.log(this.message)
       this.$router.push({ path: '/Tickets/MovieDetail'})
       // this.$router.go(-1)
+      // 新增评论
       this.$axios.post("http://localhost:8080/score", {
         userId: this.userInfo.userId,
         movieId: this.movieList.movieId,

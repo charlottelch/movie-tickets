@@ -72,10 +72,10 @@ export default {
       // 取票码
       ticketCode: '',
       // 订单生成时间
-      orderTime:'',
-      couponValue:'',
+      orderTime: '',
+      couponValue: '',
       // 订单ID
-      orderId:''
+      orderId: ''
     }
   },
   mounted () {
@@ -89,7 +89,7 @@ export default {
     this.cinemalist = JSON.parse(localStorage.getItem('cinema'))
 
     this.orderPrice = JSON.parse(localStorage.getItem('orderPrice'))
-    this.couponValue = this.sceneInfo.ticketPrice*this.seatList.length-this.orderPrice
+    this.couponValue = this.sceneInfo.ticketPrice * this.seatList.length - this.orderPrice
     console.log(this.couponValue)
     this.radio = this.$route.query.data
     if (this.radio == 1) {
@@ -135,9 +135,9 @@ export default {
       // console.log(typeof (this.ticketCode))
 
       let newdate = date.toLocaleString('chinese', { hour12: false });
-      var SFMtime = newdate.substring(newdate.length-8,newdate.length)
+      var SFMtime = newdate.substring(newdate.length - 8, newdate.length)
       // console.log(SFMtime)
-      this.orderTime = this.currentdate + ' '+ SFMtime
+      this.orderTime = this.currentdate + ' ' + SFMtime
       // console.log(ordertime)
 
     },
@@ -161,7 +161,7 @@ export default {
         if (res.data.code == 200) {
           console.log(res.data.data)
           for (let i = 0; i < res.data.data.length; i++) {
-            if (res.data.data[i][0].seatType == 2) {
+            if (res.data.data[i][0].seatType != 0) {
               this.isSeatAvailable = false
               console.log(this.isSeatAvailable)
             }
@@ -233,7 +233,7 @@ export default {
           // this.couponList = res.data.data
           this.orderId = res.data.data.insertId
           this.getSeatData()
-          localStorage.setItem("order",JSON.stringify(this.orderId))
+          localStorage.setItem("order", JSON.stringify(this.orderId))
         }
         console.log(res.data.data)
       })

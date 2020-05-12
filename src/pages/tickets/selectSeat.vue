@@ -97,7 +97,8 @@ export default {
       smartChooseMaxNum: 5,
       sceneInfo: [],
       hallList: [],
-      seatArr: []
+      seatArr: [],
+      isSeatAvailable: true,
     }
   },
   computed: {
@@ -241,8 +242,9 @@ export default {
       }
       this.seatArray = oldArray;
       console.log(this.seatArray)
-      this.seatArr = []
 
+      // 将已选座位数组初始化为空
+      this.seatArr = []
       for (let i = 0; i < this.seatArray.length; i++) {
         for (let j = 0; j < this.seatArray[i].length; j++) {
           if (this.seatArray[i][j] == 1) {
@@ -261,31 +263,33 @@ export default {
 
 
     //重置座位
-    resetSeat: function () {
-      //将所有座位的值变为0
-      let oldArray = this.seatArray.slice();
-      for (let i = 0; i < this.seatRow; i++) {
-        for (let j = 0; j < this.seatCol; j++) {
-          if (oldArray[i][j] !== -1) {
-            oldArray[i][j] = 0
-          }
-        }
-      }
-      this.seatArray = oldArray;
-    },
+    // resetSeat: function () {
+    //   //将所有座位的值变为0
+    //   let oldArray = this.seatArray.slice();
+    //   for (let i = 0; i < this.seatRow; i++) {
+    //     for (let j = 0; j < this.seatCol; j++) {
+    //       if (oldArray[i][j] !== -1) {
+    //         oldArray[i][j] = 0
+    //       }
+    //     }
+    //   }
+    //   this.seatArray = oldArray;
+    // },
+
     //选定且购买座位
-    buySeat: function () {
-      //遍历seatArray，将值为1的座位变为2
-      let oldArray = this.seatArray.slice();
-      for (let i = 0; i < this.seatRow; i++) {
-        for (let j = 0; j < this.seatCol; j++) {
-          if (oldArray[i][j] === 1) {
-            oldArray[i][j] = 2
-          }
-        }
-      }
-      this.seatArray = oldArray;
-    },
+    // buySeat: function () {
+    //   //遍历seatArray，将值为1的座位变为2
+    //   let oldArray = this.seatArray.slice();
+    //   for (let i = 0; i < this.seatRow; i++) {
+    //     for (let j = 0; j < this.seatCol; j++) {
+    //       if (oldArray[i][j] === 1) {
+    //         oldArray[i][j] = 2
+    //       }
+    //     }
+    //   }
+    //   this.seatArray = oldArray;
+    // },
+
     //处理座位选择逻辑
     handleChooseSeat: function (row, col) {
       // console.log(row + 1, col + 1)
@@ -299,7 +303,6 @@ export default {
       } else if (seatValue === 0) {
         newArray[row][col] = 1
       }
-
 
       // var arr = []
       if (seatValue === 0) {
@@ -335,7 +338,7 @@ export default {
       this.seatSize = this.$refs.innerSeatWrapper
         ? parseInt(parseInt(window.getComputedStyle(this.$refs.innerSeatWrapper).width, 10) / this.seatCol, 10)
         : 0;
-      //初始化不是座位的地方
+      //初始化座位
       this.initNonSeatPlace();
     },
     //初始化座位类型
@@ -387,15 +390,41 @@ export default {
     },
     toBuyTickets () {
       if (this.seatArr.length > 0) {
-        this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets' })
-        localStorage.setItem('seat', JSON.stringify(this.seatArr));
+        // this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets' })
+        // localStorage.setItem('seat', JSON.stringify(this.seatArr));
+        // this.selectSeatType()
+        this.selectSeatType()
       } else {
         this.$toast('未选座')
       }
 
+    },
+    // 验证座位
+    selectSeatType () {
+      this.$axios.post("http://localhost:8080/selectSeatType", {
+        seatList: this.seatArr,
+        sceneId: this.sceneInfo.sceneId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          console.log(res.data.data)
+          for (let i = 0; i < res.data.data.length; i++) {
+            if (res.data.data[i][0].seatType != 0) {
+              this.isSeatAvailable = false
+              console.log(this.isSeatAvailable)
+            }
+          }
+          console.log(this.isSeatAvailable)
+          if (this.isSeatAvailable == true) {
+            localStorage.setItem('seat', JSON.stringify(this.seatArr));
+            this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets' })
+            // this.getSeatData()
+          } else {
+            this.$toast('座位已经被选了，请重新选座')
+          }
+        }
+      })
     }
   },
-
   mounted () {
     this.sceneInfo = JSON.parse(localStorage.getItem('scene'))
     console.log(this.sceneInfo)

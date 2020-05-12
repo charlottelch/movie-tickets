@@ -2,8 +2,20 @@
   <div class="main-con">
     <nav-title :title="title"></nav-title>
     <div>
-      hhhh
+      <van-field
+        v-model="message"
+        rows="2"
+        autosize
+        type="textarea"
+        maxlength="50"
+        placeholder="请输入留言"
+        show-word-limit
+      />
     </div>
+    <div>
+      <van-uploader v-model="fileList" :after-read="afterRead" accept="video/*,image/*"/>
+    </div>
+    <span @click="toUpload">发布</span>
   </div>
 </template>
 
@@ -17,11 +29,23 @@ export default {
   data () {
     return {
       title: '发布动态',
-      // couponList: [],
+      message: '',
       userInfo: {},
-      sceneInfo:[],
-      cinemaList:[],
-      seatList:[]
+      // fileList: [
+      //   {
+      //     url: 'https://img.yzcdn.cn/vant/leaf.jpg',
+      //     status: 'uploading',
+      //     message: '上传中...',
+      //   },
+      //   {
+      //     url: 'https://img.yzcdn.cn/vant/tree.jpg',
+      //     status: 'failed',
+      //     message: '上传失败',
+      //   },
+      // ],
+      fileList:[],
+      videoFile:{},
+      videoUrl:''
     }
   },
   mounted () {
@@ -43,11 +67,42 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           // this.couponList = res.data.data
-          
+
         }
         console.log(res)
       })
-    }
+    },
+    afterRead (file) {
+      console.log(file)
+      this.videoFile = file
+      let formData = new FormData()
+      formData.append('file', file.file)
+      console.log(formData)
+      this.$axios.post("/upload",formData).then((res)=>{
+        if(res.data.code==200){
+          file.message = '上传成功！';
+          console.log(res.data.data.url)
+          this.videoUrl = res.data.data.url
+        }
+      })
+      // this.upload()
+      // setTimeout(() => {
+      //   file.status = 'failed';
+      //   file.message = '上传失败';
+      // }, 1000);
+    },
+    toUpload(){
+      console.log(this.message)
+      this.$axios.post("/toUpload",{
+        userId:this.userInfo.userId,
+        videoDescribe:this.message,
+        video:this.videoUrl,
+      }).then((res)=>{
+        if(res.data.code==200){
+          console.log(res.data.data)
+        }
+      })
+    },
 
   }
 }
@@ -55,6 +110,6 @@ export default {
 
 <style lang="less" scoped>
 .main-con {
-  
+
 }
 </style>

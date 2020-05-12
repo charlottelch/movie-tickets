@@ -100,56 +100,10 @@ export default {
   data () {
     return {
       isCollect: true,
-      weekList: [
-        {
-          date: '星期一 04.11',
-          cinema: [
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(1店-1)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' }]        },
-        {
-          date: '星期一 04.12',
-          cinema: [
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(2店-1)', address: '温江星艺大道300号艺苑生活圈2楼' }]
-        },
-        {
-          date: '星期一 04.13',
-          cinema: [
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(3店-1)', address: '温江星艺大道300号艺苑生活圈2楼' }
-          ]
-        },
-        {
-          date: '星期一 04.14',
-          cinema: [
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(4店-1)', address: '温江星艺大道300号艺苑生活圈2楼' }
-          ]
-        },
-        {
-          date: '星期一 04.15',
-          cinema: [
-            { cinema: '太平洋影城(1店)', address: '温江星艺大道300号艺苑生活圈2楼' },
-            { cinema: '太平洋影城(5店-1)', address: '温江星艺大道300号艺苑生活圈2楼' }
-          ]
-        }
-      ],
       cinemaList: [],
       movieSceneList: [{ sceneDate: '' }],
       movieIndex: 0
     }
-  },
-  beforeMount () {
-
-  },
-  beforeCreate () {
-
   },
   mounted () {
     // 获取影院数据

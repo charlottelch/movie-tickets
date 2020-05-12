@@ -69,7 +69,7 @@
               </van-tab>-->
               <!-- </van-tabs> -->
             </van-dropdown-item>
-            <van-dropdown-item title="筛选" v-model="value1" class="second">
+            <van-dropdown-item title="筛选" v-model="value1" class="second" ref="item">
               <div class="pick-cinema">
                 <div>
                   <p>
@@ -145,9 +145,10 @@
                 <p>{{item.cinemaAdress}}</p>
               </div>
               <div class="cinema-info-right">
-                <span>￥{{item.bottomPrice}}元</span>
-                <span>起</span>
-                <p>{{item.cinemaDistance}}</p>
+                <span v-if="item.bottomPrice!=0">￥{{item.bottomPrice}}元</span>
+                <span v-if="item.bottomPrice==0">暂无</span>
+                <span v-if="item.bottomPrice!=0">起</span>
+                <p>{{item.cinemaDistance}}km</p>
               </div>
             </div>
             <div class="label">
@@ -386,7 +387,7 @@ export default {
       console.log(this.businessCircleTitle)
       this.tradeAreaSelected = data.text
       // console.log(this.tradeAreaSelected)
-      this.selectMovie()
+      this.selectCinema()
     },
     // getSubwayRightData (data) {
     //   this.businessCircleTitle = data.text
@@ -432,9 +433,10 @@ export default {
     },
     // 确认筛选
     makeSureSelect () {
+      this.$refs.item.toggle() //自定义下拉菜单之后，手动控制显示
       // console.log(this.hallTypeSelected)
       // console.log(this.cinemaServerSelected)
-      this.selectMovie()
+      this.selectCinema()
 
     },
     // 选择品牌
@@ -446,7 +448,7 @@ export default {
       // if (value == 0) {
       //   this.getCinemaData()
       // } else {
-      this.selectMovie()
+      this.selectCinema()
       // }
     },
     // 选择排序方式
@@ -461,7 +463,7 @@ export default {
       }else if(value==2){
         this.sortOrderText = 'bottomPrice'
       }
-      this.selectMovie()
+      this.selectCinema()
     },
     // 筛选影院服务
     selectHallType () {
@@ -475,8 +477,8 @@ export default {
         }
       })
     },
-    // 筛选影院品牌
-    selectMovie () {
+    // 筛选
+    selectCinema () {
       if(this.zoneSelected == '全部'){
         this.zoneSelected = ''
       }
@@ -498,7 +500,7 @@ export default {
       // console.log(this.cinemaServerSelected) //影院服务
       // console.log(this.brandSelectText) //影院品牌
       // console.log(this.sortOrderText)
-      this.$axios.post('http://localhost:8080/selectMovie', {
+      this.$axios.post('http://localhost:8080/selectCinema', {
         cinemaServerSelected:this.cinemaServerSelected,
         hallTypeSelected:this.hallTypeSelected,
         brandSelectText: this.brandSelectText,
@@ -669,6 +671,9 @@ export default {
         margin: 0 5px;
       }
     }
+  }
+  .cinema-all {
+    margin-bottom: 60px;
   }
   .cinema {
     text-align: left;

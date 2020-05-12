@@ -98,7 +98,6 @@ export default {
     this.endAt = this.timeNumber + 86400 * 3
     // console.log(this.startAt)
     console.log(this.endAt)
-
   },
   methods: {
     // 获取当天的时间，及时间戳

@@ -2,13 +2,12 @@
   <div class="main-con">
     <nav-title :title="title"></nav-title>
     <div class="tickets-body">
-      <van-swipe-cell :before-close="beforeClose">
-        <div
-          class="ticket"
-          @click="toTicketDetail(item)"
-          v-for="(item,index) in userOrderList"
-          :key="index"
-        >
+      <van-swipe-cell
+        :before-close="beforeClose"
+        v-for="(item,index) in userOrderList"
+        :key="index"
+      >
+        <div class="ticket" @click="toTicketDetail(item)">
           <div>
             <h3>
               {{item.movieName}}
