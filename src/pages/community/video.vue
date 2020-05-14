@@ -13,7 +13,7 @@
       <div class="description">
         <div class="top">
           <div class="user" @click="toUserDetailPage">
-            <img src="../../assets/头像.jpg" alt />
+            <img :src="`${videoList.headPortrait}`" alt />
             <p>{{videoList.userName}}</p>
           </div>
           <span
@@ -22,7 +22,7 @@
             @click="follow"
           >{{isFollow?'已关注':'关注'}}</span>
         </div>
-        <p>标签</p>
+        <p>{{videoList.videoLabel}}</p>
         <p>{{videoList.videoDescribe}}</p>
       </div>
       <div class="functional-area">
@@ -39,7 +39,7 @@
             alt
             @click="toCancelThumb"
           />
-          <span>{{videoList.likeNumber}}</span>
+          <span>{{videoList.likeNumber==null?'0':videoList.likeNumber}}</span>
         </div>
         <div>
           <img
@@ -61,30 +61,53 @@
           <span>分享</span>
         </div>
       </div>
+      <van-divider />
       <div class="comment">
         <p>评论</p>
-        <div class="comment-detail">
-          <img src="../../assets/头像.jpg" alt />
+        <!-- -->
+        <div class="comment-detail" v-for="(item,index) in commentsList" :key="index">
+          <img :src="`${item.headPortrait}`" alt />
           <div>
-            <p>用户</p>
-            <p>好看，快乐源泉</p>
-            <div class="reply">
-              <img src="../../assets/头像.jpg" alt />
-              <div>
-                <p>用户1</p>
-                <p>好看，快乐源泉</p>
-              </div>
-            </div>
-            <div class="reply">
-              <img src="../../assets/头像.jpg" alt />
-              <div>
-                <p>用户1</p>
-                <p>好看，快乐源泉</p>
-              </div>
+            <p>{{item.userName}}</p>
+            <p @click="replyUser(item)">{{item.commentContent}}</p>
+            <div class="reply-area">
+              <p v-for="(Ritem,index) in item.reply" :key="index">
+                <span>{{Ritem.userSend[0].userName}}</span>
+                <span v-if="Ritem.userReplied.length>0">回复</span>
+                <span v-if="Ritem.userReplied.length>0">{{Ritem.userReplied[0].userName}}</span>
+                <span>：</span>
+                <span @click="replySomeOne(item,Ritem)">{{Ritem.replyContent}}</span>
+              </p>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="input">
+      <van-field
+        v-model="message"
+        rows="1"
+        autosize
+        type="textarea"
+        :placeholder="placeholder"
+        v-show="isReply==false"
+      >
+        <template #button>
+          <span @click="sendComment">发布</span>
+        </template>
+      </van-field>
+      <van-field
+        v-model="message"
+        rows="1"
+        autosize
+        type="textarea"
+        :placeholder="placeholder"
+        v-show="isReply==true"
+      >
+        <template #button>
+          <span @click="sendReplyComment">cc</span>
+        </template>
+      </van-field>
     </div>
   </div>
 </template>
@@ -104,7 +127,15 @@ export default {
       userInfo: {},
       isthumb: null,
       isCollect: null,
-      isFollow: null
+      isFollow: null,
+      commentsList: [],
+      message: '',
+      placeholder: '说点什么吧',
+      isReply: false,
+      currentdate: '',
+
+      videoCommentId: '',
+      repliedUserId: ''
     }
   },
   mounted () {
@@ -124,6 +155,7 @@ export default {
     // this.getAuthorInfo()
     this.toCheckFollow()
     this.toCheckThumb()
+    this.getCommentData()
     this.toCheckCollect()
   },
   methods: {
@@ -138,7 +170,7 @@ export default {
     },
     toUserDetailPage () {
       // 去到一个页面就想localstorage发一次
-      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      var videoPlayList = JSON.parse(localStorage.getItem('video'))
       videoPlayList.push(this.videoList)
       console.log(videoPlayList)
       localStorage.setItem('video', JSON.stringify(videoPlayList));
@@ -199,7 +231,7 @@ export default {
         }
       })
     },
-    // 点赞
+    // 初始化点赞
     toCheckThumb () {
       this.$axios.post("http://localhost:8080/toCheckThumb", {
         userId: this.userInfo.userId,
@@ -280,6 +312,94 @@ export default {
           this.toCheckCollect()
         }
       })
+    },
+    // 获取时间
+    getNowFormatDate () {
+      var date = new Date();
+      var seperator1 = "-";
+      var seperator2 = ":";
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
+      var hours = data.getHours();
+      var minutes = data.getMinutes()
+      var seconds = data.getSeconds()
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+      }
+      if (hours >= 0 && hours <= 9) {
+        hours = "0" + hours;
+      }
+      if (minutes >= 0 && minutes <= 9) {
+        minutes = "0" + minutes;
+      }
+      if (seconds >= 0 && seconds <= 9) {
+        seconds = "0" + seconds;
+      }
+      this.currentdate = year + seperator1 + month + seperator1 + strDate + " " + hours + seperator2 + date.minutes + seperator2 + seconds;;
+      // return currentdate;
+      console.log(this.currentdate)
+    },
+    // 回复
+    replyUser (item) {
+      this.isReply = true
+      this.placeholder = '回复@' + item.userName
+      this.videoCommentId = item.videoCommentId
+      this.repliedUserId = item.userCommentId
+      // console.log(this.message)
+
+      // console.log("hhhh")
+      // this.getCommentData()
+    },
+    // 回复
+    replySomeOne (item, Ritem) {
+      this.isReply = true
+      this.videoCommentId = item.videoCommentId
+      this.repliedUserId = Ritem.userSend[0].userId
+      console.log(this.repliedUserId)
+      this.placeholder = '回复@' + Ritem.userSend[0].userName
+
+    },
+    // 获取评论数据
+    getCommentData () {
+      this.$axios.post("/getCommentData", {
+        videoId: this.videoList.videoId,
+      }).then((res) => {
+        if (res.data.code == 200) {
+          // this.isthumb = true
+          // this.toCheckCollect()
+          this.commentsList = res.data.data
+          console.log(this.commentsList)
+        }
+      })
+    },
+    sendComment () {
+      console.log(this.videoList.videoId, this.userInfo.userId, this.message, this.currentdate)
+      this.getNowFormatDate()
+      this.$axios.post("/sendComment", {
+        videoId: this.videoList.videoId,
+        userCommentId: this.userInfo.userId,
+        commentContent: this.message,
+        commentTime: this.currentdate
+      }).then((res) => {
+
+      })
+    },
+    sendReplyComment () {
+      this.getNowFormatDate()
+      console.log(this.videoCommentId, this.userInfo.userId, this.repliedUserId, this.message, this.currentdate)
+      this.$axios.post("/sendReplyComment", {
+        videoCommentId: this.videoCommentId,
+        userSendId: this.userInfo.userId,
+        userRepliedId: this.repliedUserId,
+        replyContent: this.message,
+        replyTime: this.currentdate
+      }).then((res) => {
+
+      })
     }
   }
 }
@@ -345,19 +465,23 @@ export default {
   }
   .functional-area {
     display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid gray;
+    justify-content: space-around;
+    // padding: 10px;
+    // border-bottom: 1px solid gray;
     div {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      font-size: 12px;
       img {
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
       }
     }
+  }
+  .van-divider {
+    margin: 10px 0 !important;
   }
   .comment {
     padding: 0 10px;
@@ -371,13 +495,20 @@ export default {
         margin-right: 10px;
       }
       p {
-        margin: 0;
+        margin: 5px;
       }
-      .reply {
-        display: flex;
-        align-items: flex-start;
+      .reply-area {
+        background: #e4e2e273;
+        width: 310px;
       }
     }
+  }
+  /deep/ .van-field__control {
+    height: 33px;
+    line-height: 33px;
+    border-radius: 33px;
+    padding: 0 10px;
+    background: #e4e2e273;
   }
 }
 </style>

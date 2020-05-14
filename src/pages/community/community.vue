@@ -1,6 +1,10 @@
 <template>
   <div class="main-con">
-    <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" />
+    <!-- <span class="search-form" @click="toSearchVideo">
+        <van-icon name="search" size="16" />
+        <p>搜影片、影人、影院</p>
+      </span> -->
+    <van-search v-model="value" shape="round" placeholder="输入关键词搜索动态" input-align="center" @click="toSearchVideo"/>
     <van-tabs v-model="active" swipeable sticky>
       <van-tab title="热门">
         <div class="videos-parts">
@@ -11,13 +15,13 @@
             @click="toVideoDetail(item)"
           >
             <div class="video">
-              <img :src="`../../../static/images/${item.videoCover}`" alt />
-              <!-- <img src="../../../static/images/video-img01.png" alt=""> -->
+              <img :src="`${item.videoCover}`" alt />
+              <!-- <img src="../../../static/images/video-img01.png" alt="">  headPortrait-->
             </div>
-            <p>{{item.videoDescribe}}</p>
+            <p class="describe">{{item.videoDescribe}}</p>
             <div class="video-bottom">
               <div class="left-person">
-                <img src="../../assets/头像.jpg" alt />
+                <img :src="`${item.headPortrait}`" alt />
                 <p>{{item.userName}}</p>
               </div>
               <!-- <div class="right-great">
@@ -168,6 +172,9 @@ export default {
     // this.toCheckThumb()
   },
   methods: {
+    toSearchVideo () {
+      this.$router.push('/SearchVideo')
+    },
     getVideo () {
       this.$axios.post("http://localhost:8080/getVideo", {
       }).then((res) => {
@@ -214,6 +221,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 .main-con {
+  .search-form {
+      width: 100%;
+      height: 30px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      background: #f7f8fa;
+      color: #adaeb0;
+      padding: 0 10px;
+    }
   /deep/ .van-tabs {
     .van-tabs__wrap {
       display: flex;
@@ -225,6 +242,7 @@ export default {
     }
   }
   .videos-parts {
+    padding: 10px 10px 50px 10px;
     text-align: left;
     // display: flex;
     // flex-flow: column wrap;
@@ -233,28 +251,34 @@ export default {
     column-gap: 2%;
     h3,
     p {
-      margin: 0 5px;
+      margin: 0px;
     }
     .videos {
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: rgb(240, 240, 240) 0px 0px 10px 1px;
       // width: 48%;
       // margin-right: 2%;
       // margin-top: 10px;
-      background-color: rgb(230, 230, 230);
+      background-color: white;
       break-inside: avoid;
       margin-bottom: 10px;
       // margin: 10px;
       // width: calc(100% / 2 - 20px);
       .video {
         height: 200px;
-        background-color: rgb(69, 121, 121);
+        background-color: #2c2d2d;
         overflow: hidden;
         img {
           // height: 200px;
           width: 100%;
         }
       }
+      .describe{
+        padding: 5px;
+      }
       .video-bottom {
-        padding: 10px 0;
+        padding: 0px 5px 10px 5px;
         // display: flex;
         // justify-content: space-between;
         // align-items: center;
@@ -265,6 +289,7 @@ export default {
             width: 20px;
             height: 20px;
             border-radius: 50%;
+            margin-right: 5px;
           }
         }
       }

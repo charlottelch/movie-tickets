@@ -11,7 +11,7 @@
         @click="toFollowOrFansHomepage(item)"
       >
         <div class="list-user-img">
-          <img src="../../assets/头像.jpg" alt />
+          <img :src="`${item.headPortrait}`" alt />
         </div>
         <div>
           <h3>{{item.userName}}</h3>

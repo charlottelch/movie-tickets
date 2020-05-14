@@ -121,7 +121,8 @@
                     <li
                       class="cell"
                       v-for="(item,index) in movieList.directorAndActor"
-                      :key="index" @click="toPerformerDetail(item)"
+                      :key="index"
+                      @click="toPerformerDetail(item)"
                     >
                       <img :src="`../../../static/images/${item.image}`" alt />
                       <p>{{item.performerName}}</p>
@@ -157,11 +158,7 @@
                 <div class="sortMenu clearfix">
                   <ul class="sortMenu-ul">
                     <li class="cell" v-for="(item,index) in stillList" :key="index">
-                      <img
-                        :src="`${item.still}`"
-                        alt
-                        @click="isImageShow(index)"
-                      />
+                      <img :src="`${item.still}`" alt @click="isImageShow(index)" />
                     </li>
                   </ul>
                 </div>
@@ -193,28 +190,45 @@
               <div class="film-review box-shadow">
                 <div class="film-review-title">
                   <h3>观众评论</h3>
-                  <span @click="writeReview">写影评</span>
+                  <span
+                    :class="[isSeen?'write-comment-unable':'write-comment']"
+                    @click="writeReview"
+                  >{{isSeen?"已评论":"写影评"}}</span>
                 </div>
-                <div class="film-review-part" v-for="item in 3">
+                <div
+                  class="film-review-part"
+                  v-for="(item,index) in commentList"
+                  :key="index"
+                  v-if="index<3"
+                  @click="toMovieCommentAndReply(item)"
+                >
                   <div class="film-review-user">
-                    <img src="../../assets/头像.jpg" alt />
-                    <p>用户名</p>
+                    <img :src="`${item.headPortrait}`" alt />
+                    <span>{{item.userName}}</span>
                   </div>
-                  <p>很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人很不错的片子，特别好看，很感人</p>
+                  <p>{{item.comment}}</p>
                   <div class="review-bottom">
-                    <span>2019-12-12</span>
-                    <div>
-                      <span>
-                        <van-icon name="good-job-o" />
-                        <span>539</span>
+                    <span>{{item.commentTime}}</span>
+                    <div class="like-comment">
+                      <span class="like">
+                        <!-- <van-icon name="good-job-o" /> -->
+                        <img
+                          v-show="isLike==false || isLike==null"
+                          src="../../assets/icon/movie-like-grey.png"
+                          alt
+                        />
+                        <img v-show="isLike==true" src="../../assets/icon/movie-like-red.png" alt />
+                        <span>{{item.likeCommentNum}}</span>
                       </span>
-                      <span>
-                        <van-icon name="chat-o" />
-                        <span>13</span>
+                      <span class="comment">
+                        <!-- <van-icon name="chat-o" /> -->
+                        <img src="../../assets/icon/movie-comment-grey.png" alt />
+                        <span>{{item.reply.length}}</span>
                       </span>
                     </div>
                   </div>
                 </div>
+                <p class="to-look-comment" @click="toLookComment">查看全部影评</p>
               </div>
             </van-tab>
             <van-tab title="更多">
@@ -252,7 +266,9 @@ export default {
       stillList: {},
       stillList1: [],
       imageShow: false,
-      index: 0
+      index: 0,
+      commentList: [],
+      isLike: null,
     }
   },
   mounted () {
@@ -266,6 +282,7 @@ export default {
     this.wantLookList()
     this.seenMovie()
     this.movieScore()
+    this.getMovieCommentData()
     // 拿到剧照
     this.$axios.post("http://localhost:8080/stillList", {
       movieId: this.movieList.movieId
@@ -302,16 +319,19 @@ export default {
     goTicketsBuy () {
       this.$router.push('/Tickets/TicketsBuy')
     },
+    //去写评论
     writeReview () {
       if (this.isSeen != true) {
-        this.$router.push({ path: '/Tickets/MovieDetail/Grade'})
+        this.$router.push({ path: '/Tickets/MovieDetail/Grade' })
       }
     },
+    // 接收电影数据
     receiveMovie () {
       // this.movieList = this.$route.query.data
       this.movieList = JSON.parse(localStorage.getItem('movie'))
       console.log(this.movieList)
     },
+    // 操作“想看”
     wantToLook (index) {
       this.isActive = !this.isActive
       if (this.isActive) {
@@ -330,6 +350,7 @@ export default {
         console.log(res)
       })
     },
+    // 渲染“想看”
     wantLookList () {
       // console.log(this.userInfo)
       this.$axios.post("http://localhost:8080/wantLookList", {
@@ -347,21 +368,42 @@ export default {
         // console.log(res.data.code)
       })
     },
+    // 渲染"看过"
     seenMovie () {
-      this.$axios.post("http://localhost:8080/seenMovie", {
+      this.$axios.post("/seenMovie", {
         userId: this.userInfo.userId,
         movieId: this.movieList.movieId
       }).then((res) => {
         if (res.data.code == 200) {
           this.isSeen = true
           this.comment = res.data.data[0].comment
+          console.log(res.data.data)
         }
         console.log(res.data)
       })
     },
+
+    // 获取这部电影的影评
+    getMovieCommentData () {
+      this.$axios.post("/getMovieCommentData", {
+        movieId: this.movieList.movieId
+      }).then((res) => {
+        this.commentList = res.data.data
+        console.log(res.data.data)
+      })
+    },
+    toLookComment () {
+      localStorage.setItem('movieComment', JSON.stringify(this.commentList))
+      this.$router.push('/Tickets/MovieDetail/AllMovieComments')
+    },
+    toMovieCommentAndReply(item){
+      console.log(item)
+      localStorage.setItem('movieCommentReply', JSON.stringify(item))
+      this.$router.push('/Tickets/MovieDetail/AllMovieComments/MovieCommentReply')
+    },
     // 去演员简介页面
-    toPerformerDetail(item){
-      localStorage.setItem('performer',JSON.stringify(item))
+    toPerformerDetail (item) {
+      localStorage.setItem('performer', JSON.stringify(item))
       this.$router.push('/Tickets/MovieDetail/Performer')
     },
     // 控制图片预览图片切换
@@ -381,7 +423,7 @@ export default {
         // userId: this.userInfo.userId,
         movieId: this.movieList.movieId
       }).then((res) => {
-        this.movieList.score=res.data.data[0].score
+        this.movieList.score = res.data.data[0].score
         console.log(res)
       })
     },
@@ -577,7 +619,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        span {
+        .write-comment {
           background-image: linear-gradient(to left, #ff3174, #fe756b);
           display: inline-block;
           text-align: center;
@@ -587,12 +629,23 @@ export default {
           border-radius: 30px;
           color: white;
         }
+        .write-comment-unable {
+          display: inline-block;
+          text-align: center;
+          width: 80px;
+          height: 30px;
+          line-height: 30px;
+          border-radius: 30px;
+          color: #ff3174;
+          border: 1px solid #ff3174;
+        }
       }
       .film-review-part {
         padding: 10px 0;
-        border-bottom: 1px solid #ddd;
+        // border-bottom: 1px solid #ddd;
         .film-review-user {
           display: flex;
+          align-items: center;
           img {
             width: 50px;
             height: 50px;
@@ -607,8 +660,34 @@ export default {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 10px 0;
+          padding-bottom: 10px;
+          .like-comment {
+            display: flex;
+            align-items: center;
+            .like {
+              display: flex;
+              align-items: center;
+              span {
+                padding-left: 3px;
+              }
+              margin-right: 10px;
+            }
+            .comment {
+              display: flex;
+              align-items: center;
+              span {
+                padding-left: 3px;
+              }
+            }
+            img {
+              width: 20px;
+            }
+          }
         }
+      }
+      .to-look-comment {
+        text-align: center;
+        color: #fe756b;
       }
     }
   }

@@ -276,7 +276,7 @@ export default {
     // background: rgb(247, 179, 155);
     color: white;
     background: url('../../assets/sign-in-bg.png');
-    border-radius: 10px;
+    // border-radius: 10px;
   }
   .do-sign-in {
     margin-top: 20px;
@@ -352,8 +352,8 @@ export default {
     }
   }
   #app {
-    width: 375px;
-    height: 776px;
+    // width: 375px;
+    // height: 776px;
     .sign-btn {
       margin: 30px;
       padding: 8px 16px;
@@ -366,6 +366,19 @@ export default {
         background: #ebebeb;
         border: #ebebeb;
       }
+    }
+    /deep/ .vue-better-calendar .calendar-body .calendar-dates .date-row ul .calendar-day .text {
+      margin: 0 !important;
+    }
+    /deep/ .vue-better-calendar .calendar-body .calendar-dates .date-row ul .calendar-day.disabled{
+      background-color: #f5f5f5;
+    }
+    /deep/ .vue-better-calendar .calendar-body .calendar-dates{
+      background-color: transparent !important;
+    }
+    /deep/ .vue-better-calendar .calendar-body .calendar-dates .date-row ul .calendar-day.is-today{
+      // background-color: #bf7fba;
+      background-image: linear-gradient(to top, #ff3174, #fe756b);
     }
   }
 }

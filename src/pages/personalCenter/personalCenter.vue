@@ -2,7 +2,7 @@
   <div class="main-con">
     <div class="personal-top container">
       <div class="portrait">
-        <img src="../../assets/头像.jpg" alt />
+        <img v-if="userInfo.headPortrait!=null" :src="`${userInfo.headPortrait}`" alt />
       </div>
       <div class="info">
         <div>
@@ -242,6 +242,12 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    .portrait{
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: cornsilk;
+    }
     img {
       width: 60px;
       height: 60px;

@@ -1,24 +1,29 @@
 <template>
   <div class="main-con">
     <!-- <nav-title-fixed :title="title"></nav-title-fixed> -->
-    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed/>
+    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed />
     <!-- <div class="top-bg">
       <img src="../../assets/timg (1).jpg" alt />
     </div>-->
     <div class="infoCard">
       <div class="user-info-show">
         <div>
-          <img src="../../assets/头像.jpg" alt />
+          <img :src="`${videoList.headPortrait}`" alt />
         </div>
         <span>{{videoList.userName}}</span>
       </div>
       <div class="follow-fans">
-        <span @click="toFollowFansList(index)" v-for="(item,index) in followAndFansList" :key="index">
-          <span>{{item.length}}</span>{{index==0?'关注':'粉丝'}}
+        <span
+          @click="toFollowFansList(index)"
+          v-for="(item,index) in followAndFansList"
+          :key="index"
+        >
+          <span>{{item.length}}</span>
+          {{index==0?'关注':'粉丝'}}
         </span>
         <!-- <span>
           <span>{{item.length}}</span>粉丝
-        </span> -->
+        </span>-->
       </div>
       <span
         class="follow"
@@ -30,27 +35,37 @@
     <van-tabs v-model="active" sticky offset-top="46">
       <van-tab title="动态">
         <div class="videos-parts">
-          <div class="videos" v-for="(item,index) in ownReleaseList" :key="index" @click="toVideoDetail(item)">
+          <div
+            class="videos"
+            v-for="(item,index) in ownReleaseList"
+            :key="index"
+            @click="toVideoDetail(item)"
+          >
             <div class="video">
-              <img :src="`../../../static/images/${item.videoCover}`" alt />
+              <img :src="`${item.videoCover}`" alt />
             </div>
-            <p>{{item.videoDescribe}}</p>
+            <p class="describe">{{item.videoDescribe}}</p>
             <div class="video-bottom">
               <div class="left-person">
-                <img src="../../assets/头像.jpg" alt />
+                <img :src="`${item.headPortrait}`" alt />
                 <p>{{item.userName}}</p>
               </div>
               <!-- <div class="right-great">
                 <van-icon name="good-job-o" />
                 <span>5</span>
-              </div> -->
+              </div>-->
             </div>
           </div>
         </div>
       </van-tab>
       <van-tab title="收藏">
         <div class="videos-parts">
-          <div class="videos" v-for="(item,index) in ownCollectList" :key="index" @click="toVideoCollectDetail(item)">
+          <div
+            class="videos"
+            v-for="(item,index) in ownCollectList"
+            :key="index"
+            @click="toVideoCollectDetail(item)"
+          >
             <div class="video">
               <img :src="`../../../static/images/${item.videoCover}`" alt />
             </div>
@@ -63,7 +78,7 @@
               <!-- <div class="right-great">
                 <van-icon name="good-job-o" />
                 <span>5</span>
-              </div> -->
+              </div>-->
             </div>
           </div>
         </div>
@@ -87,7 +102,7 @@ export default {
       userInfo: {},
       // followlist: [{ "follow": '--' }],
       // fans: [{ "fans": '--' }],
-      followAndFansList:[],
+      followAndFansList: [],
       isFollow: null,
       ownReleaseList: [],
       ownCollectList: []
@@ -100,9 +115,9 @@ export default {
     }
     // 视频数据
     // this.videoList = this.$route.query.data
-    var videoPlayList=JSON.parse(localStorage.getItem('video'))
-    this.videoList = videoPlayList[videoPlayList.length-1]
-    
+    var videoPlayList = JSON.parse(localStorage.getItem('video'))
+    this.videoList = videoPlayList[videoPlayList.length - 1]
+
     // this.videoList = JSON.parse(localStorage.getItem('video'))
     this.getUserInfo()
     this.toCheckFollow()
@@ -111,7 +126,7 @@ export default {
   methods: {
     onClickLeft () {
       // cs
-      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      var videoPlayList = JSON.parse(localStorage.getItem('video'))
       console.log(videoPlayList)
       videoPlayList.pop()
       console.log(videoPlayList)
@@ -182,21 +197,21 @@ export default {
       })
     },
     // 自己的动态页
-    toVideoDetail(item){
+    toVideoDetail (item) {
       console.log("jjj")
-      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      var videoPlayList = JSON.parse(localStorage.getItem('video'))
       videoPlayList.push(item)
       localStorage.setItem('video', JSON.stringify(videoPlayList));
-      this.$router.push({ path: '/Community/Video',query:{data:item}})
-      
+      this.$router.push({ path: '/Community/Video', query: { data: item } })
+
       console.log("jjj")
     },
     // 收藏用户的动态页
-    toVideoCollectDetail(item){
-      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+    toVideoCollectDetail (item) {
+      var videoPlayList = JSON.parse(localStorage.getItem('video'))
       videoPlayList.push(item)
       localStorage.setItem('video', JSON.stringify(videoPlayList));
-      this.$router.push({ path: '/Community/Video',query:{data:item}})
+      this.$router.push({ path: '/Community/Video', query: { data: item } })
       // localStorage.setItem('video', JSON.stringify(item));
       console.log("hhh")
     },
@@ -204,12 +219,12 @@ export default {
     toFollowFansList (index) {
       localStorage.setItem('followOrFans', JSON.stringify(index));
       // cs
-      var videoPlayList=JSON.parse(localStorage.getItem('video'))
+      var videoPlayList = JSON.parse(localStorage.getItem('video'))
       videoPlayList.push(this.videoList)
       console.log(videoPlayList)
       localStorage.setItem('video', JSON.stringify(videoPlayList));
       // cs
-      this.$router.push({ path: '/Community/FollowAndFansList'})
+      this.$router.push({ path: '/Community/FollowAndFansList' })
     }
   }
 }
@@ -269,6 +284,7 @@ export default {
     background-image: linear-gradient(to right, #ff3174, #fe756b);
   }
   .videos-parts {
+    padding: 10px 10px 50px 10px;
     text-align: left;
     // display: flex;
     // flex-flow: column wrap;
@@ -277,13 +293,15 @@ export default {
     column-gap: 2%;
     h3,
     p {
-      margin: 0 5px;
+      margin: 0px;
     }
     .videos {
       // width: 48%;
       // margin-right: 2%;
       // margin-top: 10px;
-      background-color: rgb(230, 230, 230);
+      border-radius: 5px;
+      box-shadow: rgb(240, 240, 240) 0px 0px 10px 1px;
+      background-color: white;
       break-inside: avoid;
       margin-bottom: 10px;
       // margin: 10px;
@@ -297,8 +315,11 @@ export default {
           width: 100%;
         }
       }
+      .describe {
+        padding: 5px;
+      }
       .video-bottom {
-        padding: 10px 0;
+        padding: 0px 5px 10px 5px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -309,6 +330,7 @@ export default {
             width: 20px;
             height: 20px;
             border-radius: 50%;
+            margin-right: 5px;
           }
         }
       }

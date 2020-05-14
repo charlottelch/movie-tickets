@@ -6,7 +6,7 @@
         <span>头像</span>
         <div class="select-right">
           <div class="select-picture">
-            <img src="../../assets/timg.jpg" alt />
+            <img v-if="userInfo.headPortrait!=null" :src="`${userInfo.headPortrait}`" alt />
           </div>
           <van-icon name="arrow" />
         </div>
@@ -63,8 +63,9 @@
       <van-button type="primary" size="large" @click="logout">退出登录</van-button>
       <van-action-sheet v-model="show" title="标题" cancel-text="取消" @cancel="onCancel">
         <div class="content">
-          <p>拍照</p>
-          <p>从相册中选择</p>
+          <van-uploader :after-read="afterReadImage" accept="image/*" :max-count="1">
+            <p>从相册中选择</p>
+          </van-uploader>
         </div>
       </van-action-sheet>
       <van-action-sheet v-model="genderShow" title="标题" cancel-text="取消" @cancel="onGenderCancel">
@@ -89,7 +90,8 @@
 
 <script>
 import NavTitle from "@/components/navTitle"
-import {CLEAR_USERINFO} from "../../store/mutations-type"
+import { GET_USERINFO } from "../../store/mutations-type"
+import { CLEAR_USERINFO } from "../../store/mutations-type"
 
 export default {
   components: {
@@ -106,12 +108,16 @@ export default {
       minDate: new Date(1920, 0, 1),
       maxDate: new Date(),
       currentDate: new Date(),
-      userInfo: {}
+      userInfo: {},
+      // userImage:[],
+      imgFile: {},
+      imageUrl: '',
     }
   },
   mounted () {
     if (this.$store.state.userInfo != null) {
       this.userInfo = this.$store.state.userInfo
+      console.log(this.userInfo.headPortrait)
     }
   },
   methods: {
@@ -132,18 +138,55 @@ export default {
       console.log(this.genderShow)
       this.genderShow = false
     },
+    // 上传头像
+    afterReadImage (file) {
+      // file.status = 'uploading';
+      // file.message = '上传中...';
+      console.log(file)
+      this.imgFile = file
+      let formData = new FormData()
+      formData.append('file', file.file)
+      console.log(formData)
+      this.$axios.post("/uploadImage", formData).then((res) => {
+        if (res.data.code == 200) {
+          file.message = '上传成功！';
+          this.imageUrl = res.data.data.url
+          console.log(this.imageUrl)
+          this.$axios.post("http://localhost:8080/uploadHeadPortrait", {
+            headPortrait: this.imageUrl,
+            userId: this.userInfo.userId
+          }).then((res) => {
+            if (res.data.code == 200) {
+              // console.log(res.data.code)
+              this.userInfo.headPortrait = this.imageUrl
+              // console.log(this.userInfo)
+              // 将修改头像，重新传值到仓库
+              this.$store.commit(GET_USERINFO, this.userInfo)
+            }
+
+          })
+        }
+      })
+      // this.upload()
+      // setTimeout(() => {
+      //   file.status = 'failed';
+      //   file.message = '上传失败';
+      // }, 1000);
+    },
     // 更改生日
     confirmDate (value) {
       this.dateShow = false
       value = this.date(value)
-      this.userInfo.birthday = value
+      // this.userInfo.birthday = value
       this.$axios.post("http://localhost:8080/confirmDate", {
         birthday: this.userInfo.birthday,
         userId: this.userInfo.userId
       }).then((res) => {
-        console.log(res)
+        if (res.data.code == 200) {
+          this.userInfo.birthday = value
+          this.$store.commit(GET_USERINFO, this.userInfo)
+        }
       })
-      console.log(value)
     },
 
     // 改变日期时间格式
@@ -180,24 +223,36 @@ export default {
       })
     },
     genderBoy () {
-      this.userInfo.gender = '男'
-      this.onGenderCancel()
-      this.$axios.post("http://localhost:8080/genderBoy", {
-        gender: this.userInfo.gender,
-        userId: this.userInfo.userId
-      }).then((res) => {
-        console.log(res)
-      })
+      if (this.userInfo.gender == '女') {
+        this.$axios.post("http://localhost:8080/genderBoy", {
+          gender: this.userInfo.gender,
+          userId: this.userInfo.userId
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.userInfo.gender = '男'
+            this.onGenderCancel()
+            this.$store.commit(GET_USERINFO, this.userInfo)
+          }
+          console.log(res)
+        })
+      }
+
     },
     genderGirl () {
-      this.userInfo.gender = '女'
-      this.onGenderCancel()
-      this.$axios.post("http://localhost:8080/genderGirl", {
-        gender: this.userInfo.gender,
-        userId: this.userInfo.userId
-      }).then((res) => {
-        console.log(res)
-      })
+      if (this.userInfo.gender == '男') {
+        this.$axios.post("http://localhost:8080/genderGirl", {
+          gender: this.userInfo.gender,
+          userId: this.userInfo.userId
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.userInfo.gender = '女'
+            this.onGenderCancel()
+            this.$store.commit(GET_USERINFO, this.userInfo)
+          }
+          console.log(res)
+        })
+      }
+
     }
   }
 }

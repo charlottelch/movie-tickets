@@ -15,7 +15,8 @@ import BuyTickets from '@/pages/tickets/buyTickets'
 import PaymentOptions from '@/pages/tickets/paymentOptions'
 import PayNow from '@/pages/tickets/payNow'
 import PaySuccess from '@/pages/tickets/paySuccess'
-
+import AllMovieComments from '@/pages/tickets/allMovieComments'
+import MovieCommentReply from '@/pages/tickets/movieCommentReply'
 
 import CinemaDetail from '@/pages/tickets/cinemaDetail'
 import CinemaMap from '@/pages/tickets/CinemaMap'
@@ -40,6 +41,7 @@ import FollowAndFansList from '@/pages/community/followAndFansList'
 
 import City from '@/components/city'
 import Search from '@/components/search'
+import SearchVideo from '@/components/searchVideo'
 
 Vue.use(Router)
 
@@ -93,6 +95,14 @@ export default new Router({
       path: '/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions/PayNow/PaySuccess',
       name: 'PaySuccess',
       component: PaySuccess
+    },{
+      path: '/Tickets/MovieDetail/AllMovieComments',
+      name: 'AllMovieComments',
+      component: AllMovieComments
+    },{
+      path: '/Tickets/MovieDetail/AllMovieComments/MovieCommentReply',
+      name: 'MovieCommentReply',
+      component: MovieCommentReply
     }, {
       path: '/Tickets/MovieDetail/Grade',
       name: 'Grade',
@@ -181,6 +191,10 @@ export default new Router({
       path: '/Search',
       name: 'Search',
       component: Search
+    }, {
+      path: '/SearchVideo',
+      name: 'SearchVideo',
+      component: SearchVideo
     }
   ]
 

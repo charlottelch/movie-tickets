@@ -22,11 +22,8 @@
           round
           position="bottom"
           style="height: 90%; padding-top: 4px;"
-        > -->
-          <van-coupon-list
-            :coupons="coupons"
-            :disabled-coupons="disabledCoupons"
-          />
+        >-->
+        <van-coupon-list :coupons="coupons" :disabled-coupons="disabledCoupons" />
         <!-- </van-popup> -->
       </div>
     </div>
@@ -44,7 +41,7 @@ export default {
     return {
       title: '我的优惠券',
       couponList: [],
-      timeNumber:null,
+      timeNumber: null,
       currentdate: '',
 
       showList: false,
@@ -52,29 +49,29 @@ export default {
       chosenCoupon: -1,
       coupons: [
         {
-        // available: 1,
-        condition: '无门槛',
-        // reason: '',
-        value: 150,
-        name: '优惠券名称',
-        startAt: 1588723200-259200,
-        endAt: 1314592000,
-        valueDesc: '1.5',
-        unitDesc: '元',
-      }
+          // available: 1,
+          condition: '无门槛',
+          // reason: '',
+          value: 150,
+          name: '优惠券名称',
+          startAt: 1588723200 - 259200,
+          endAt: 1314592000,
+          valueDesc: '1.5',
+          unitDesc: '元',
+        }
       ],
       disabledCoupons: [
         {
-        available: 1,
-        condition: '无使用门槛',
-        reason: '',
-        value: 150,
-        name: '优惠券名称',
-        startAt: 1489104000,
-        endAt: 1514592000,
-        valueDesc: '1.5',
-        unitDesc: '元',
-      }
+          available: 1,
+          condition: '无使用门槛',
+          reason: '',
+          value: 150,
+          name: '优惠券名称',
+          startAt: 1489104000,
+          endAt: 1514592000,
+          valueDesc: '1.5',
+          unitDesc: '元',
+        }
       ],
       userInfo: {},
     }
@@ -109,9 +106,9 @@ export default {
       var timeStamp = new Date(this.currentdate).getTime()
       var timeString = timeStamp.toString()
       // console.log(timeStamp.toString())
-      var shortName = timeString.substr(0,10)
+      var shortName = timeString.substr(0, 10)
       // console.log(typeof(shortName))
-      this.timeNumber=Number(shortName)
+      this.timeNumber = Number(shortName)
       console.log(this.timeNumber)
       console.log(this.coupons[0].endAt)
     },
@@ -129,7 +126,7 @@ export default {
             if (this.couponList[i].endAt < this.timeNumber) {
               this.disabledCoupons.push(this.couponList[i])
               // console.log(this.disabledCoupons)
-            }else{
+            } else {
               this.coupons.push(this.couponList[i])
               console.log(this.coupons)
             }

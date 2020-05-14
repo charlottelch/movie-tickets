@@ -57,8 +57,8 @@ export default {
       this.$router.go(-1)
     },
     toTicketDetail (item) {
-      this.$router.push('/PersonalCenter/MovieTickets/TicketDetail')
       localStorage.setItem("order", JSON.stringify(item.orderId))
+      this.$router.push('/PersonalCenter/MovieTickets/TicketDetail')
     },
     getUserOrderData () {
       this.$axios.post("http://localhost:8080/getUserOrderData", {
