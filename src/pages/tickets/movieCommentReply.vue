@@ -4,15 +4,14 @@
     <div class="movie-comment">
       <div class="film-review-part">
         <div class="film-review-user">
-          <img :src="`${commentReplyList.headPortrait}`" alt />
-          <span>{{commentReplyList.userName}}</span>
+          <img :src="`${commentListOne.headPortrait}`" alt />
+          <span>{{commentListOne.userName}}</span>
         </div>
-        <p>{{commentReplyList.comment}}</p>
+        <p @click="replyUser">{{commentListOne.comment}}</p>
         <div class="review-bottom">
-          <span>{{commentReplyList.commentTime}}</span>
+          <span>{{commentListOne.commentTime}}</span>
           <div class="like-comment">
-            <span class="like">
-              <!-- <van-icon name="good-job-o" /> -->
+            <!-- <span class="like">
               <img
                 v-show="isLike==false || isLike==null"
                 src="../../assets/icon/movie-like-grey.png"
@@ -20,7 +19,7 @@
               />
               <img v-show="isLike==true" src="../../assets/icon/movie-like-red.png" alt />
               <span>{{commentReplyList.likeCommentNum}}</span>
-            </span>
+            </span>-->
             <span class="comment">
               <!-- <van-icon name="chat-o" /> -->
               <img src="../../assets/icon/movie-comment-grey.png" alt />
@@ -29,35 +28,28 @@
           </div>
         </div>
       </div>
-      <div class="film-review-part" v-for="(item,index) in commentReplyList.reply" :key="index">
+      <h4>最新评论</h4>
+      <div class="film-review-part" v-for="(item,index) in commentListOne.reply" :key="index">
         <div class="film-review-user">
-          <img :src="`${item.userReplied[0].headPortrait}`" alt />
-          <span>{{item.userReplied[0].userName}}</span>
+          <img :src="`${item.userSend[0].headPortrait}`" alt />
+          <span>{{item.userSend[0].userName}}</span>
         </div>
         <p>
           <span>回复</span>
-          <span>@{{item.userSend[0].userName}}：</span>
-          <span>{{item.filmReplyContent}}</span>
+          <span>@{{item.userReplied[0].userName}}：</span>
+          <span @click="replySomeOne(item)">{{item.filmReplyContent}}</span>
         </p>
         <div class="review-bottom">
           <span>{{item.filmReplyTime}}</span>
-          <!-- <div class="like-comment">
-            <span class="like">
-              <img
-                v-show="isLike==false || isLike==null"
-                src="../../assets/icon/movie-like-grey.png"
-                alt
-              />
-              <img v-show="isLike==true" src="../../assets/icon/movie-like-red.png" alt />
-              <span>{{commentReplyList.likeCommentNum}}</span>
-            </span>
-            <span class="comment">
-              <img src="../../assets/icon/movie-comment-grey.png" alt />
-              <span>{{commentReplyList.reply.length}}</span>
-            </span>
-          </div> -->
         </div>
       </div>
+    </div>
+    <div class="input">
+      <van-field v-model="message" rows="1" autosize type="textarea" :placeholder="placeholder">
+        <template #button>
+          <span @click="sendReplyComment">发布</span>
+        </template>
+      </van-field>
     </div>
   </div>
 </template>
@@ -74,12 +66,14 @@ export default {
       title: '影评回复',
       // couponList: [],
       userInfo: {},
-      sceneInfo: [],
-      cinemaList: [],
-      seatList: [],
-      isLike:null,
-      commentReplyList:[],
-      commentNum:''
+      currentdate: '',
+      isLike: null,
+      commentReplyList: [],
+      commentNum: '',
+      message: '',
+      placeholder: '',
+      userFilmRepliedId: '',
+      commentListOne:[]
     }
   },
   mounted () {
@@ -89,14 +83,84 @@ export default {
     }
     this.commentReplyList = JSON.parse(localStorage.getItem('movieCommentReply'))
     this.commentNum = this.commentReplyList.reply.length
+    this.userFilmRepliedId = this.commentReplyList.userId
     console.log(this.commentReplyList.reply.length)
+    this.getMovieCommentDataOne()
     // this.getSeatData()
   },
   methods: {
     onClickLeft () {
       this.$router.go(-1)
     },
-    
+    getNowFormatDate () {
+      var date = new Date();
+      var seperator1 = "-";
+      var seperator2 = ":";
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
+      var hours = date.getHours();
+      var minutes = date.getMinutes()
+      var seconds = date.getSeconds()
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+      }
+      if (hours >= 0 && hours <= 9) {
+        hours = "0" + hours;
+      }
+      if (minutes >= 0 && minutes <= 9) {
+        minutes = "0" + minutes;
+      }
+      if (seconds >= 0 && seconds <= 9) {
+        seconds = "0" + seconds;
+      }
+      this.currentdate = year + seperator1 + month + seperator1 + strDate + " " + hours + seperator2 + minutes + seperator2 + seconds;;
+      // return currentdate;
+      console.log(this.currentdate)
+    },
+    // 获取的影评
+    getMovieCommentDataOne () {
+      this.$axios.post("/getMovieCommentDataOne", {
+        id: this.commentReplyList.id,
+        movieId: this.commentReplyList.movieId
+      }).then((res) => {
+        this.commentListOne = res.data.data[0]
+        // if(this.commentListOne.reply.length>0){
+        this.commentNum =  this.commentListOne.reply.length
+        // }
+        console.log(this.commentListOne)
+      })
+    },
+    replyUser () {
+      this.placeholder = '@' + this.commentReplyList.userName
+      this.userFilmRepliedId = this.commentReplyList.userId
+      console.log(this.userFilmRepliedId)
+
+    },
+    replySomeOne (item) {
+      this.placeholder = '@' + item.userSend[0].userName
+      this.userFilmRepliedId = item.userSend[0].userId
+      console.log(this.userFilmRepliedId)
+      // this.filmReplyContent=item.filmReplyContent
+    },
+    sendReplyComment () {
+      this.getNowFormatDate()
+      this.$axios.post("/sendFilmReplyComment", {
+        filmCommentId: this.commentReplyList.id,
+        userFilmSendId: this.userInfo.userId,
+        userFilmRepliedId: this.userFilmRepliedId,
+        filmReplyContent: this.message,
+        filmReplyTime: this.currentdate
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.getMovieCommentDataOne()
+        }
+      })
+    }
+
   }
 }
 </script>
@@ -107,7 +171,7 @@ export default {
   p {
     margin: 10px 0;
   }
-  .movie-comment{
+  .movie-comment {
     padding: 46px 10px 0 10px;
   }
   .film-review-part {
@@ -154,6 +218,18 @@ export default {
         }
       }
     }
+  }
+  /deep/ .van-field__control {
+    height: 33px;
+    line-height: 33px;
+    border-radius: 33px;
+    padding: 0 10px;
+    background: #e4e2e273;
+  }
+  .input{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
   }
 }
 </style>

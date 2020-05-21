@@ -1,11 +1,11 @@
 <template>
   <div class="main-con">
-    <nav-title :title="title"></nav-title>
+    <nav-title-fixed :title="title"></nav-title-fixed>
     <div class="sign-in">
       <div class="sign-in-show">
-        <p>本周累计签到{{day}}天</p>
+        <p>本周累计签到<span class="light-high">{{day}}</span>天</p>
         <p>
-          <span>{{integral}}</span>
+          <span class="light-high">{{integral}}</span>
           <span>影豆</span>
         </p>
       </div>
@@ -17,13 +17,13 @@
           @select-sign-date="selectSign"
           :sign-success-txt="'签到成功，获取5个影豆'"
         ></vue-better-calendar>
-        <button
+        <!-- <button
           class="sign-btn"
           :class="{'sign-btn_disabled':isSigned || isSigning}"
           ref="signBtn"
           :disabled="isSigned || isSigning"
           @click="sign"
-        >{{isSigned ? '今日已签到' : (isSigning ? '正 在 签 到' : '立 即 签 到')}}</button>
+        >{{isSigned ? '今日已签到' : (isSigning ? '正 在 签 到' : '立 即 签 到')}}</button> -->
       </div>
       <!-- <div class="do-sign-in">
         <ul>
@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import NavTitle from "@/components/navTitle"
+import NavTitleFixed from "@/components/navTitleFixed"
 export default {
   components: {
-    NavTitle
+    NavTitleFixed
   },
   name: 'SignIn',
   data () {
@@ -140,7 +140,7 @@ export default {
         this.clickSign = signInfo.signedDates[signInfo.signedDates.length - 1]
         console.log(this.clickSign)
 
-        this.$axios.post("http://localhost:8080/insertSignData", {
+        this.$axios.post("/insertSignData", {
           userId: this.userInfo.userId,
           signDate: this.clickSign,
           integral: this.integral
@@ -155,13 +155,13 @@ export default {
               this.isSigned = true
 
               // 提示签到成功，可以通过signSuccessTxt属性设置
-              alert(signInfo.msg)
+              this.$toast(signInfo.msg)
 
               // 更新已签到日期
               this.signedDates = signInfo.signedDates
               // console.log(this.signedDates)
             } else {
-              alert(responseDataMsg)
+              this.$toast(responseDataMsg)
             }
             this.getSignInData() //签到成功之后，再次调用函数，刷新签到天数
           } else {
@@ -194,7 +194,7 @@ export default {
          * notSignInOtherDaysTxt，签到时点击本月内非当天日期时的文本提示，默认值为“notSignInOtherDaysTxt”
          * alreadySignTxt，签到时点击已经签过到的日期时的文本提示，默认值为“本日已经进行过签到”
          */
-        alert(signInfo.msg)
+        this.$toast(signInfo.msg)
       }
     },
     sign () {
@@ -202,7 +202,7 @@ export default {
     },
     // 签到信息
     getSignInData () {
-      this.$axios.post("http://localhost:8080/getSignInData", {
+      this.$axios.post("/getSignInData", {
         userId: this.userInfo.userId,
       }).then((res) => {
         if (res.data.code == 200) {
@@ -236,7 +236,7 @@ export default {
       }).then(() => {
         console.log('点击了确认')
         if (item.cost <= this.integral) {
-          this.$axios.post("http://localhost:8080/toExchangeCoupon", {
+          this.$axios.post("/toExchangeCoupon", {
             userId: this.userInfo.userId,
             value: item.value,
             cost: item.cost,
@@ -249,13 +249,13 @@ export default {
             // integral: this.integral
           }).then((res) => {
             if (res.data.code == 200) {
-              console.log("兑换成功")
+              this.$toast("兑换成功")
               this.getSignInData() //兑换成功之后再次调用函数，更新影豆数量
             }
             // console.log(res.data)
           })
         } else {
-          console.log("影豆不足")
+          this.$toast("影豆不足")
         }
         // this.$store.commit(CLEAR_USERINFO)
         // this.$router.push({ path: '/PersonalCenter' })
@@ -271,11 +271,21 @@ export default {
 
 <style lang="less" scoped>
 .sign-in {
+  padding: 46px 0 20px 0;
   .sign-in-show {
     padding: 10px 20px;
+    // height: 150px;
     // background: rgb(247, 179, 155);
     color: white;
     background: url('../../assets/sign-in-bg.png');
+    p{
+      font-size: 16px;
+    }
+    .light-high{
+      color: #FFD700;
+      font-size: 20px;
+
+    }
     // border-radius: 10px;
   }
   .do-sign-in {
@@ -379,6 +389,7 @@ export default {
     /deep/ .vue-better-calendar .calendar-body .calendar-dates .date-row ul .calendar-day.is-today{
       // background-color: #bf7fba;
       background-image: linear-gradient(to top, #ff3174, #fe756b);
+      border: 0;
     }
   }
 }

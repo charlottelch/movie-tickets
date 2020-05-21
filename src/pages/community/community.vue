@@ -3,8 +3,14 @@
     <!-- <span class="search-form" @click="toSearchVideo">
         <van-icon name="search" size="16" />
         <p>搜影片、影人、影院</p>
-      </span> -->
-    <van-search v-model="value" shape="round" placeholder="输入关键词搜索动态" input-align="center" @click="toSearchVideo"/>
+    </span>-->
+    <van-search
+      v-model="value"
+      shape="round"
+      placeholder="输入关键词搜索动态"
+      input-align="center"
+      @click="toSearchVideo"
+    />
     <van-tabs v-model="active" swipeable sticky>
       <van-tab title="热门">
         <div class="videos-parts">
@@ -38,98 +44,28 @@
                   @click="toCancelThumb"
                 />
                 <span>{{item.likeNumber}}</span>
-              </div> -->
+              </div>-->
             </div>
           </div>
         </div>
       </van-tab>
       <van-tab title="推荐">
         <div class="videos-parts">
-          <div class="videos">
-            <div class="video"></div>
-            <p>2解读奥斯卡赢家《小丑》 解读奥斯卡赢家《小丑》解读奥斯卡赢家《小丑》解读奥斯卡赢家《小丑》解读奥斯卡赢家《小丑》解读奥斯卡赢家《小丑》解读奥斯卡赢家《小丑》解读奥斯卡赢家《小丑》解读奥斯卡赢家《小丑》</p>
-            <div class="video-bottom">
-              <div class="left-person">
-                <img src="../../assets/头像.jpg" alt />
-                <p>胶片看电影</p>
-              </div>
-              <div class="right-great">
-                <van-icon name="good-job-o" />
-                <span>5</span>
-              </div>
+          <div
+            class="videos"
+            v-for="(item,index) in recommendVideoList"
+            :key="index"
+            @click="toVideoDetail(item)"
+          >
+            <div class="video">
+              <img :src="`${item.videoCover}`" alt />
+              <!-- <img src="../../../static/images/video-img01.png" alt="">  headPortrait-->
             </div>
-          </div>
-
-          <div class="videos">
-            <div class="video"></div>
-            <p>3解读奥斯卡赢家《小丑》读奥斯卡赢家《小丑读奥斯卡赢家《小丑读奥斯卡赢家《小丑</p>
+            <p class="describe">{{item.videoDescribe}}</p>
             <div class="video-bottom">
               <div class="left-person">
-                <img src="../../assets/头像.jpg" alt />
-                <p>胶片看电影</p>
-              </div>
-              <div class="right-great">
-                <van-icon name="good-job-o" />
-                <span>5</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="videos">
-            <div class="video"></div>
-            <p>4解读奥斯卡赢家《小丑》</p>
-            <div class="video-bottom">
-              <div class="left-person">
-                <img src="../../assets/头像.jpg" alt />
-                <p>胶片看电影</p>
-              </div>
-              <div class="right-great">
-                <van-icon name="good-job-o" />
-                <span>5</span>
-              </div>
-            </div>
-          </div>
-          <div class="videos">
-            <div class="video"></div>
-            <p>4解读奥斯卡赢家《小丑》</p>
-            <div class="video-bottom">
-              <div class="left-person">
-                <img src="../../assets/头像.jpg" alt />
-                <p>胶片看电影</p>
-              </div>
-              <div class="right-great">
-                <van-icon name="good-job-o" />
-                <span>5</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="videos">
-            <div class="video"></div>
-            <p>4解读奥斯卡赢家《小丑》</p>
-            <div class="video-bottom">
-              <div class="left-person">
-                <img src="../../assets/头像.jpg" alt />
-                <p>胶片看电影</p>
-              </div>
-              <div class="right-great">
-                <van-icon name="good-job-o" />
-                <span>5</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="videos">
-            <div class="video"></div>
-            <p>4解读奥斯卡赢家《小丑》</p>
-            <div class="video-bottom">
-              <div class="left-person">
-                <img src="../../assets/头像.jpg" alt />
-                <p>胶片看电影</p>
-              </div>
-              <div class="right-great">
-                <van-icon name="good-job-o" />
-                <span>5</span>
+                <img :src="`${item.headPortrait}`" alt />
+                <p>{{item.userName}}</p>
               </div>
             </div>
           </div>
@@ -159,6 +95,7 @@ export default {
       value: '',
       userInfo: {},
       videoList: [],
+      recommendVideoList: []
       // isthumb: null
     }
   },
@@ -169,6 +106,7 @@ export default {
     }
     console.log(this.userInfo)
     this.getVideo()
+    this.getRecommendVideo()
     // this.toCheckThumb()
   },
   methods: {
@@ -176,7 +114,7 @@ export default {
       this.$router.push('/SearchVideo')
     },
     getVideo () {
-      this.$axios.post("http://localhost:8080/getVideo", {
+      this.$axios.post("/getVideo", {
       }).then((res) => {
         if (res.data.code == 200) {
           if (res.data.data.length !== 0) {
@@ -188,31 +126,44 @@ export default {
         // console.log(res.data)
       })
     },
+    getRecommendVideo () {
+      this.$axios.post("/getRecommendVideo", {
+      }).then((res) => {
+        if (res.data.code == 200) {
+          if (res.data.data.length !== 0) {
+            this.recommendVideoList = res.data.data
+            console.log(this.recommendVideoList)
+          }
+        } else {
+        }
+        // console.log(res.data)
+      })
+    },
     toVideoDetail (item) {
-      var videoArr=[]
+      var videoArr = []
       videoArr.push(item)
       localStorage.setItem('video', JSON.stringify(videoArr));
-      this.$router.push({ path: '/Community/Video'})
+      this.$router.push({ path: '/Community/Video' })
     },
     toCheckThumb () {
-        this.$axios.post("http://localhost:8080/toCheckThumb", {
-          userId: this.userInfo.userId,
-          videoId: this.videoList.videoId
-        }).then((res) => {
-          if (res.data.code == 200) {
-            this.isthumb = true
-          } else {
-            this.isthumb = true
-          }
-          console.log(res.data)
-        })
+      this.$axios.post("/toCheckThumb", {
+        userId: this.userInfo.userId,
+        videoId: this.videoList.videoId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.isthumb = true
+        } else {
+          this.isthumb = true
+        }
+        console.log(res.data)
+      })
     },
     // toThumb () {
     // },
     // toCancelThumb () {
     // },
     toEditCommunity () {
-      this.$router.push({ path: '/Community/EditCommunity'})
+      this.$router.push({ path: '/Community/EditCommunity' })
     }
   }
 }
@@ -221,16 +172,23 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 .main-con {
+  /deep/ .van-tabs__line {
+    background-color: #ff3174;
+  }
+  /deep/ .van-hairline--top-bottom::after,
+  .van-hairline-unset--top-bottom::after {
+    border-width: 0px 0;
+  }
   .search-form {
-      width: 100%;
-      height: 30px;
-      border-radius: 30px;
-      display: flex;
-      align-items: center;
-      background: #f7f8fa;
-      color: #adaeb0;
-      padding: 0 10px;
-    }
+    width: 100%;
+    height: 30px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    background: #f7f8fa;
+    color: #adaeb0;
+    padding: 0 10px;
+  }
   /deep/ .van-tabs {
     .van-tabs__wrap {
       display: flex;
@@ -244,14 +202,20 @@ export default {
   .videos-parts {
     padding: 10px 10px 50px 10px;
     text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     // display: flex;
     // flex-flow: column wrap;
     // height: 50vh;
-    column-count: 2;
-    column-gap: 2%;
+    // column-count: 2;
+    // column-gap: 2%;
     h3,
     p {
       margin: 0px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
     .videos {
       border-radius: 5px;
@@ -261,8 +225,10 @@ export default {
       // margin-right: 2%;
       // margin-top: 10px;
       background-color: white;
-      break-inside: avoid;
+      // break-inside: avoid;
       margin-bottom: 10px;
+      width: 48%;
+      overflow: hidden;
       // margin: 10px;
       // width: calc(100% / 2 - 20px);
       .video {
@@ -274,7 +240,7 @@ export default {
           width: 100%;
         }
       }
-      .describe{
+      .describe {
         padding: 5px;
       }
       .video-bottom {
@@ -314,6 +280,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 14px;
     img {
       width: 30px;
     }

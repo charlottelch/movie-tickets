@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav-title :title="title"></nav-title>
+    <nav-title-fixed :title="title"></nav-title-fixed>
     <div class="wrapper">
       <div class="cinema-wrapper">
         <!-- <h1 class="title">电影院推荐座位功能</h1> -->
@@ -54,9 +54,10 @@
           </div>
         </div>
         <div class="btn-wrapper">
-          <template v-for="(item,index) in smartChooseMaxNum">
-            <div class="btn-buy smart" @click="smartChoose(index+1)">推荐{{index+1}}人</div>
-          </template>
+          <div>推荐座位</div>
+          <div v-for="(item,index) in smartChooseMaxNum" class="btns">
+            <div class="btn-buy smart" @click="smartChoose(index+1)">{{index+1}}人</div>
+          </div>
         </div>
         <div class="selectedSeat">
           <span v-if="seatArr.length>0" v-for="item in seatArr">{{item.r+1+'排'}}{{item.c+1+'座'}}</span>
@@ -75,11 +76,11 @@
 </template>
 
 <script>
-import NavTitle from "@/components/navTitle"
+import NavTitleFixed from "@/components/navTitleFixed"
 
 export default {
   components: {
-    NavTitle
+    NavTitleFixed
   },
   name: 'SelectSeat',
   data () {
@@ -197,7 +198,7 @@ export default {
         return
       }
       //提示用户无合法位置可选
-      alert('无合法位置可选!')
+      this.$toast('无合法位置可选!')
       console.log(this.seatArray)
       // var arr = []
       // for(let i=0;i<this.seatArray.length;i++){
@@ -374,7 +375,7 @@ export default {
     },
     // 获取影厅座位
     getHall () {
-      this.$axios.post("http://localhost:8080/getHall", {
+      this.$axios.post("/getHall", {
         hallId: this.sceneInfo.hallId,
         sceneId: this.sceneInfo.sceneId
       }).then((res) => {
@@ -401,7 +402,7 @@ export default {
     },
     // 验证座位
     selectSeatType () {
-      this.$axios.post("http://localhost:8080/selectSeatType", {
+      this.$axios.post("/selectSeatType", {
         seatList: this.seatArr,
         sceneId: this.sceneInfo.sceneId
       }).then((res) => {
@@ -439,7 +440,7 @@ export default {
   height: 100%;
   padding: 10px;
   box-sizing: border-box;
-  margin-bottom: 40px;
+  margin: 46px 0;
 }
 .cinema-wrapper {
   height: 100%;
@@ -522,22 +523,25 @@ export default {
   /* width: 1000px; */
   /* width: 100%; */
   height: 30px;
-  text-align: center;
+  /* text-align: center; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .btn-buy {
   height: 100%;
   line-height: 30px;
   font-size: 14px;
   border-radius: 5px;
-  padding: 0 5px;
+  padding: 0 10px;
   background-color: #ffa349;
-  color: #ffffff;
+  color: #000;
   display: inline-block;
   cursor: pointer;
-  margin-right: 10px;
+  /* margin-right: 10px; */
 }
 .smart {
-  background-color: #39ac6a;
+  background-color: #f2f5f3;
 }
 .illustration {
   /* position: absolute;

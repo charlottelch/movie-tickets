@@ -7,12 +7,11 @@
           <img :src="`${item.headPortrait}`" alt />
           <span>{{item.userName}}</span>
         </div>
-        <p>{{item.comment}}</p>
+        <p @click="toMovieCommentAndReply(item)">{{item.comment}}</p>
         <div class="review-bottom">
           <span>{{item.commentTime}}</span>
           <div class="like-comment">
-            <span class="like">
-              <!-- <van-icon name="good-job-o" /> -->
+            <!-- <span class="like">
               <img
                 v-show="isLike==false || isLike==null"
                 src="../../assets/icon/movie-like-grey.png"
@@ -20,7 +19,7 @@
               />
               <img v-show="isLike==true" src="../../assets/icon/movie-like-red.png" alt />
               <span>{{item.likeCommentNum}}</span>
-            </span>
+            </span>-->
             <span class="comment">
               <!-- <van-icon name="chat-o" /> -->
               <img src="../../assets/icon/movie-comment-grey.png" alt />
@@ -45,11 +44,12 @@ export default {
       title: '影评',
       // couponList: [],
       userInfo: {},
+      movieList: [],
       sceneInfo: [],
       cinemaList: [],
       seatList: [],
-      isLike:null,
-      commentList:[]
+      isLike: null,
+      commentList: []
     }
   },
   mounted () {
@@ -57,14 +57,29 @@ export default {
     if (this.$store.state.userInfo != null) {
       this.userInfo = this.$store.state.userInfo
     }
-    this.commentList = JSON.parse(localStorage.getItem('movieComment'))
+    this.movieList = JSON.parse(localStorage.getItem('movie'))
+    this.getMovieCommentData()
+    // this.commentList = JSON.parse(localStorage.getItem('movieComment'))
     // this.getSeatData()
   },
   methods: {
     onClickLeft () {
       this.$router.go(-1)
     },
-    
+    // 获取这部电影的影评
+    getMovieCommentData () {
+      this.$axios.post("/getMovieCommentData", {
+        movieId: this.movieList.movieId
+      }).then((res) => {
+        this.commentList = res.data.data
+        console.log(res.data.data)
+      })
+    },
+    toMovieCommentAndReply (item) {
+      console.log(item)
+      localStorage.setItem('movieCommentReply', JSON.stringify(item))
+      this.$router.push('/Tickets/MovieDetail/AllMovieComments/MovieCommentReply')
+    },
   }
 }
 </script>
@@ -75,7 +90,7 @@ export default {
   p {
     margin: 10px 0;
   }
-  .movie-comment{
+  .movie-comment {
     padding: 46px 10px 0 10px;
   }
   .film-review-part {

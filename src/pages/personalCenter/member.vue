@@ -45,7 +45,7 @@ export default {
       this.$router.go(-1)
     },
     getSeatData () {
-      this.$axios.post("http://localhost:8080/getSeatData", {
+      this.$axios.post("/getSeatData", {
         // seatList: this.seatList,
         // sceneId:this.sceneInfo.sceneId
       }).then((res) => {

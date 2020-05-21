@@ -31,7 +31,7 @@
       <van-divider dashed></van-divider>
       <div class="order-info-price">
         <div class="select" @click="settlementDetails=true">
-          <span>实际金额:￥{{orderList.cost}}</span>
+          <h3>实际金额:￥{{orderList.cost}}</h3>
           <div class="select-right">
             <span>结算明细</span>
             <van-icon name="arrow" />
@@ -59,7 +59,7 @@
           </div>
         </van-action-sheet>
       </div>
-      <van-divider dashed></van-divider>
+      <!-- <van-divider dashed></van-divider>
       <div>
         <div class="select">
           <span>帮助中心</span>
@@ -68,7 +68,7 @@
             <van-icon name="arrow" />
           </div>
         </div>
-      </div>
+      </div> -->
       <van-divider dashed></van-divider>
       <div class="watch-tips">
         <h3>观影需知</h3>
@@ -148,7 +148,7 @@ export default {
     },
     // 获取订单信息
     getOrderData () {
-      this.$axios.post("http://localhost:8080/getOrderData", {
+      this.$axios.post("/getOrderData", {
         orderId: this.orderId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -164,7 +164,7 @@ export default {
     },
     // 获取页面影院、电影等的具体信息
     getOrderDetailData () {
-      this.$axios.post("http://localhost:8080/getOrderDetailData", {
+      this.$axios.post("/getOrderDetailData", {
         orderId: this.orderId,
         sceneId: this.orderList.sceneId
       }).then((res) => {

@@ -53,7 +53,7 @@ export default {
           // 设置定位超时时间，默认：无穷大
           timeout: 10000,
         })
-         self.trafficMap.addControl(geolocation);
+        self.trafficMap.addControl(geolocation);
         // this.trafficMap.addControl(geolocation)
         geolocation.getCurrentPosition()
         AMap.event.addListener(geolocation, 'complete', onComplete)
@@ -62,6 +62,31 @@ export default {
         function onComplete (data) {
           // data是具体的定位信息
           console.log('定位成功信息：', data)
+          self.trafficMap.plugin(["AMap.PlaceSearch"], function () {
+            //构造地点查询类
+            var placeSearch = new AMap.PlaceSearch({
+              type: '', // 兴趣点类别
+              pageSize: 20, // 单页显示结果条数
+              pageIndex: 1, // 页码
+              city: "成都", // 兴趣点城市
+              citylimit: true,  //是否强制限制在设置的城市内搜索
+              map: self.trafficMap, // 展现结果的地图实例
+              autoFitView: true // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
+            });
+
+            var cpoint = [data.position.lng, data.position.lat]; //中心点坐标
+            placeSearch.searchNearBy('影院', cpoint, 30000, function (status, result) {
+              console.log(result)
+              var arr = result.poiList.pois
+              for (let i = 0; i < arr.length; i++) {
+                var marker = new AMap.Marker({
+                  position: new AMap.LngLat(arr[i].entr_location.lng, arr[i].entr_location.lat),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                });
+
+                self.trafficMap.add(marker)
+              }
+            });
+          })
         }
 
         function onError (data) {

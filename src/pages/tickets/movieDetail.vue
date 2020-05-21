@@ -33,7 +33,7 @@
           <img src="../../assets/icon/QQ .png" alt />
         </div>
       </van-action-sheet>
-      <div class="video">
+      <div class="video" v-if="movieList.video!= ''">
         <video width="100%" height="100%" controls>
           <source :src="`../../../static/video/${movieList.video}`" type="video/mp4" />您的浏览器不支持 HTML5 video 标签。
           <!-- <source src="../../../static/video/meirenyu.mp4" type="video/mp4"/>> -->
@@ -45,7 +45,7 @@
             <img :src="`../../../static/${movieList.movieImg}`" alt />
             <div class="movie-info-content">
               <!-- <h3>{{item.movieName}}</h3> -->
-              <h3>{{movieList.movieName}}</h3>
+              <h4>{{movieList.movieName}}</h4>
               <span class="want-to-watch">
                 <van-icon name="browsing-history" size="20" />
                 <span>{{movieList.wantLook}}人想看</span>
@@ -103,18 +103,18 @@
               >{{movieList.filmIntroduction}}</div>
               <div class="introduction-myreview box-shadow" v-if="this.isSeen == true">
                 <div class="introduction-myreview-title">
-                  <h3>我的影评</h3>
-                  <van-icon name="upgrade" size="20" color="orange" />
+                  <h4>我的影评</h4>
+                  <!-- <van-icon name="upgrade" size="20" color="orange" /> -->
                 </div>
                 <p>{{comment}}</p>
               </div>
               <div class="performers box-shadow">
                 <div class="performers-title">
-                  <h3>演职人员</h3>
-                  <p>
+                  <h4>演职人员</h4>
+                  <!-- <p>
                     <span>热播榜</span>
                     <van-icon name="arrow" />
-                  </p>
+                  </p> -->
                 </div>
                 <div class="sortMenu clearfix">
                   <ul class="sortMenu-ul">
@@ -124,7 +124,7 @@
                       :key="index"
                       @click="toPerformerDetail(item)"
                     >
-                      <img :src="`../../../static/images/${item.image}`" alt />
+                      <img :src="`${item.image}`" alt />
                       <p>{{item.performerName}}</p>
                       <p>{{item.role}}</p>
                       <!-- <a href>{{item.sortname}}</a> -->
@@ -134,7 +134,7 @@
               </div>
               <div class="movie-video box-shadow">
                 <div class="performers-title">
-                  <h3>视频</h3>
+                  <h4>视频</h4>
                   <!-- <p>
                 <span>热播榜</span>
                 <van-icon name="arrow" />
@@ -142,8 +142,8 @@
                 </div>
                 <div class="sortMenu clearfix">
                   <ul class="sortMenu-ul">
-                    <li class="cell" v-for="item in 6">
-                      <img src="../../assets/头像.jpg" alt />
+                    <li class="cell" v-for="(item,index) in movieVideoList" :key="index" @click="toMovieVideoPage(item)">
+                      <img :src="`${item.movieVideoCover}`" alt />
                       <!-- <p>哈哈</p>
                       <p>导演</p>-->
                       <!-- <a href>{{item.sortname}}</a> -->
@@ -153,7 +153,7 @@
               </div>
               <div class="photo box-shadow">
                 <div class="performers-title">
-                  <h3>剧照</h3>
+                  <h4>剧照</h4>
                 </div>
                 <div class="sortMenu clearfix">
                   <ul class="sortMenu-ul">
@@ -172,24 +172,12 @@
               >
                 <!-- <template v-slot:index>第{{ index }}页</template> -->
               </van-image-preview>
-              <div class="awards box-shadow">
-                <div class="performers-title">
-                  <h3>奖项荣誉</h3>
-                </div>
-                <div class="awards-part" v-for="item in 3">
-                  <img src="../../assets/film1.jpg" alt />
-                  <div>
-                    <h3>第35届香港电影金像奖</h3>
-                    <p>最佳两岸华语电影(提名)</p>
-                  </div>
-                  <van-icon name="arrow" />
-                </div>
-              </div>
+              
             </van-tab>
             <van-tab title="影评">
               <div class="film-review box-shadow">
                 <div class="film-review-title">
-                  <h3>观众评论</h3>
+                  <h4>观众评论</h4>
                   <span
                     :class="[isSeen?'write-comment-unable':'write-comment']"
                     @click="writeReview"
@@ -200,26 +188,25 @@
                   v-for="(item,index) in commentList"
                   :key="index"
                   v-if="index<3"
-                  @click="toMovieCommentAndReply(item)"
                 >
                   <div class="film-review-user">
                     <img :src="`${item.headPortrait}`" alt />
                     <span>{{item.userName}}</span>
                   </div>
-                  <p>{{item.comment}}</p>
+                  <p @click="toMovieCommentAndReply(item)">{{item.comment}}</p>
                   <div class="review-bottom">
                     <span>{{item.commentTime}}</span>
                     <div class="like-comment">
-                      <span class="like">
-                        <!-- <van-icon name="good-job-o" /> -->
+                      <!-- <span class="like">
                         <img
                           v-show="isLike==false || isLike==null"
+                          @click="tolikeThisComment(item)"
                           src="../../assets/icon/movie-like-grey.png"
                           alt
                         />
                         <img v-show="isLike==true" src="../../assets/icon/movie-like-red.png" alt />
                         <span>{{item.likeCommentNum}}</span>
-                      </span>
+                      </span> -->
                       <span class="comment">
                         <!-- <van-icon name="chat-o" /> -->
                         <img src="../../assets/icon/movie-comment-grey.png" alt />
@@ -234,7 +221,20 @@
             <van-tab title="更多">
               <div class="movie-dynamics box-shadow">
                 <div>
-                  <h3>电影动态</h3>
+                  <h4>电影动态</h4>
+                </div>
+              </div>
+              <div class="awards box-shadow">
+                <div class="performers-title">
+                  <h4>奖项荣誉</h4>
+                </div>
+                <div class="awards-part" v-for="item in 3">
+                  <img src="../../assets/film1.jpg" alt />
+                  <div>
+                    <h4>第35届香港电影金像奖</h4>
+                    <p>最佳两岸华语电影(提名)</p>
+                  </div>
+                  <van-icon name="arrow" />
                 </div>
               </div>
             </van-tab>
@@ -265,6 +265,7 @@ export default {
       isScroll: true,
       stillList: {},
       stillList1: [],
+      movieVideoList:[],
       imageShow: false,
       index: 0,
       commentList: [],
@@ -283,8 +284,9 @@ export default {
     this.seenMovie()
     this.movieScore()
     this.getMovieCommentData()
+    // this.likeThisComment()
     // 拿到剧照
-    this.$axios.post("http://localhost:8080/stillList", {
+    this.$axios.post("/stillList", {
       movieId: this.movieList.movieId
     }).then((res) => {
       if (res.data.code == 200) {
@@ -295,7 +297,18 @@ export default {
         str = str.substring(0, str.length - 1)
         this.stillList1 = str.split(',')
         this.stillList = res.data.data
-        console.log(this.stillList1)
+        // console.log(this.stillList1)
+      }
+      // console.log(res.data.data)
+    })
+
+    // 拿到视频
+    this.$axios.post("/movieVideoList", {
+      movieId: this.movieList.movieId
+    }).then((res) => {
+      if (res.data.code == 200) {
+        this.movieVideoList = res.data.data
+        console.log(this.movieVideoList)
       }
       // console.log(res.data.data)
     })
@@ -340,7 +353,7 @@ export default {
         this.movieList.wantLook = this.movieList.wantLook - 1
       }
       console.log(this.movieList.wantLook, this.isActive)
-      this.$axios.post("http://localhost:8080/wantToLook", {
+      this.$axios.post("/wantToLook", {
         wantLook: this.movieList.wantLook,
         movieId: this.movieList.movieId,
         isActive: this.isActive,
@@ -353,7 +366,7 @@ export default {
     // 渲染“想看”
     wantLookList () {
       // console.log(this.userInfo)
-      this.$axios.post("http://localhost:8080/wantLookList", {
+      this.$axios.post("/wantLookList", {
         userId: this.userInfo.userId,
         movieId: this.movieList.movieId
       }).then((res) => {
@@ -392,11 +405,27 @@ export default {
         console.log(res.data.data)
       })
     },
+    // likeThisComment () {
+    //   // for (let i = 0; i < this.commentList.length; i++) {
+    //     // this.commentList[i].isLike=''
+    //     this.$axios.post("/likeThisComment", {
+    //       userId: this.userInfo.userId,
+    //       filmCommentId: this.commentList[i].id
+    //     }).then((res) => {
+    //       if (res.data.code == 200) {
+    //         this.isLike = true
+    //       } else {
+    //         this.isLike = false
+    //       }
+    //     })
+    //     console.log(this.isLike)
+    //   // }
+    // },
     toLookComment () {
       localStorage.setItem('movieComment', JSON.stringify(this.commentList))
       this.$router.push('/Tickets/MovieDetail/AllMovieComments')
     },
-    toMovieCommentAndReply(item){
+    toMovieCommentAndReply (item) {
       console.log(item)
       localStorage.setItem('movieCommentReply', JSON.stringify(item))
       this.$router.push('/Tickets/MovieDetail/AllMovieComments/MovieCommentReply')
@@ -411,6 +440,11 @@ export default {
       // console.log(this.index)
       this.index = index;
     },
+    // 到电影视频观看页面
+    toMovieVideoPage(item){
+      localStorage.setItem("videoPlay",JSON.stringify(item))
+      this.$router.push({ path: '/Tickets/VideoPlay' })
+    },
     // 控制图片预览显示（在处理index时遇到一个问题，不应该将引用的组件放在v-for里面）
     isImageShow (index) {
       this.imageShow = true
@@ -419,7 +453,7 @@ export default {
     },
     // 电影评分
     movieScore () {
-      this.$axios.post("http://localhost:8080/movieScore", {
+      this.$axios.post("/movieScore", {
         // userId: this.userInfo.userId,
         movieId: this.movieList.movieId
       }).then((res) => {
@@ -439,7 +473,7 @@ export default {
 <style lang="less" scoped>
 .main-con {
   width: 100%;
-  h3,
+  h4,
   p {
     margin: 10px 0;
   }
@@ -516,11 +550,14 @@ export default {
           display: inline-block;
           display: flex;
           height: 20px;
-          width: 120px;
+          width: 130px;
           line-height: 20px;
-          background: rgb(245, 199, 199);
+          background: #f7dada94;
           border-radius: 20px;
           color: red;
+          span{
+            padding: 0 5px;
+          }
         }
       }
     }
@@ -554,6 +591,9 @@ export default {
   }
   .introduction-review-more {
     margin-bottom: 60px;
+    .card-mid{
+      padding-top: 15px;
+    }
     .expansion {
       white-space: pre-line;
       width: 100%;
@@ -592,6 +632,14 @@ export default {
       .sortMenu .cell {
         margin-right: 5px !important;
       }
+      .sortMenu-ul li img {
+        width: 200px;
+        height: 120px;
+      }
+      .sortMenu .cell {
+        margin-right: 5px !important;
+        width: 200px;
+      }
     }
     .photo {
       .sortMenu-ul li img {
@@ -624,18 +672,18 @@ export default {
           display: inline-block;
           text-align: center;
           width: 80px;
-          height: 30px;
-          line-height: 30px;
-          border-radius: 30px;
+          height: 25px;
+          line-height: 25px;
+          border-radius: 25px;
           color: white;
         }
         .write-comment-unable {
           display: inline-block;
           text-align: center;
           width: 80px;
-          height: 30px;
-          line-height: 30px;
-          border-radius: 30px;
+          height: 25px;
+          line-height: 25px;
+          border-radius: 25px;
           color: #ff3174;
           border: 1px solid #ff3174;
         }

@@ -7,9 +7,20 @@
         placeholder="请输入搜索关键词"
         @search="onSearch"
         @cancel="onCancel"
+        @clear="onClear"
       />
     </form>
+    <div class="history" v-show="searchHistoryShow == true"> 
+      <p>历史记录</p>
+      <span
+        v-for="(item,index) in historyList"
+        :key="index"
+        @click="historySearch(item)"
+        v-if="index<9"
+      >{{item.searchHistoryContent}}</span>
+    </div>
     <div class="search-result">
+      <p v-if="searchMovieList.length>0" class="title">电影</p>
       <div class="film" v-for="(mItem,index) in searchMovieList" :key="index">
         <div class="information" @click="goMovieDetailPage(mItem)">
           <img :src="`../../../static/${mItem.movieImg}`" alt />
@@ -33,6 +44,7 @@
         </div>
         <!-- <van-button color="#7232dd" size="mini" round @click="goTicketsBuy(mItem)">购票</van-button> -->
       </div>
+      <p v-if="searchPerformerList.length>0" class="title">影人</p>
       <div class="performer" v-for="(item,index) in searchPerformerList" :key="index">
         <div class="information" @click="toPerformerDetail(item)">
           <img :src="`../../../static/images/${item.image}`" alt />
@@ -45,6 +57,7 @@
           </div>
         </div>
       </div>
+      <p v-if="searchCinemaList.length>0" class="title">影院</p>
       <div class="cinema-all">
         <div
           class="cinema"
@@ -88,22 +101,38 @@ export default {
       searchMovieList: [],
       searchPerformerList: [],
       searchCinemaList: [],
+      historyList: [],
+      searchHistoryShow:true
     }
   },
   mounted () {
+    this.getSearchHistory()
   },
   methods: {
     onSearch (val) {
       console.log(val);
       this.inputText = val
-      this.getSearchAll()
+      // this.addSearchHistory()
+      // this.getSearchAll()
+      // this.getSearchHistory()
+      if (this.inputText != '') {
+        this.addSearchHistory()
+        this.getSearchAll()
+        this.getSearchHistory()
+      }else{
+        this.$toast("请输入搜索内容")
+      }
+    },
+    onClear (val) {
+      val = ''
     },
     onCancel () {
       this.$router.go(-1)
     },
-    // 搜索的电影
+    // 搜索的电影、影院、影人
     getSearchAll () {
-      this.$axios.post("http://localhost:8080/getSearchAll", {
+      this.searchHistoryShow = false
+      this.$axios.post("/getSearchAll", {
         inputText: this.inputText
       }).then((res) => {
         console.log(res.data.data)
@@ -115,14 +144,37 @@ export default {
         console.log(this.searchCinemaList)
       })
     },
+    // 得到搜索历史
+    getSearchHistory () {
+      this.$axios.post("/getSearchHistory", {
+      }).then((res) => {
+        this.historyList = res.data.data
+        console.log(this.historyList)
+      })
+    },
+    // 添加搜索历史
+    addSearchHistory () {
+      this.$axios.post("/addSearchHistory", {
+        searchHistoryContent: this.inputText
+      }).then((res) => {
+
+      })
+    },
+    // 点击历史记录搜索
+    historySearch (item) {
+      this.inputText = item.searchHistoryContent
+      // this.addSearchHistory()
+      this.getSearchHistory()
+      this.getSearchAll()
+    },
     goMovieDetailPage (mItem) {
       // 电影信息存到localstorage
       this.$router.push({ path: '/Tickets/MovieDetail' })
       localStorage.setItem('movie', JSON.stringify(mItem));
     },
     // 去演员简介页面
-    toPerformerDetail(item){
-      localStorage.setItem('performer',JSON.stringify(item))
+    toPerformerDetail (item) {
+      localStorage.setItem('performer', JSON.stringify(item))
       this.$router.push('/Tickets/MovieDetail/Performer')
     },
     toCinemaDetail (item) {
@@ -135,6 +187,23 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.history {
+  padding: 0 10px;
+  p {
+    margin: 10px 0;
+  }
+  span {
+    display: inline-block;
+    background: #f7f8fa;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 20px;
+    padding: 5px 20px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+}
 .search-result {
   h3,
   p {
@@ -154,8 +223,8 @@ export default {
       align-items: center;
       text-align: left;
       img {
-        width: 80px;
-        height: 120px;
+        width: 90px;
+        height: 115px;
       }
       h3 {
         margin: 8px;
@@ -179,8 +248,8 @@ export default {
       align-items: center;
       text-align: left;
       img {
-        width: 80px;
-        height: 120px;
+        width: 90px;
+        height: 115px;
       }
       h3 {
         margin: 8px;

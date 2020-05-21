@@ -13,17 +13,17 @@
             </p>
             <p>
               导演:
-              <span v-for="(dItem,index) in mItem.director" :key="index">{{dItem.performerName}}</span>
+              <span v-for="(dItem,index) in mItem.director" :key="index" style="paddingRight:4px">{{dItem.performerName}}</span>
             </p>
             <p>
               主演:
               <span v-for="(aItem,index) in mItem.actor" :key="index">
-                <span>{{aItem.performerName}}</span>
+                <span style="paddingRight:4px">{{aItem.performerName}}</span>
               </span>
             </p>
           </div>
         </div>
-        <van-button color="#7232dd" size="mini" round @click="goTicketsBuy(mItem)">购票</van-button>
+        <van-button color="#ff3174" size="small" round @click="goTicketsBuy(mItem)">购票</van-button>
       </div>
     </div>
   </div>
@@ -55,7 +55,7 @@ export default {
       this.$router.go(-1)
     },
     getLikeMovieData () {
-      this.$axios.post("http://localhost:8080/getLikeMovieData", {
+      this.$axios.post("/getLikeMovieData", {
         userId: this.userInfo.userId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -95,8 +95,8 @@ export default {
       text-align: left;
       font-size: 12px;
       img {
-        width: 80px;
-        height: 120px;
+        width: 90px;
+        height: 115px;
       }
       h3 {
         margin: 8px;

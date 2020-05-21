@@ -67,7 +67,7 @@
             @click="toVideoCollectDetail(item)"
           >
             <div class="video">
-              <img :src="`../../../static/images/${item.videoCover}`" alt />
+              <img :src="`${item.videoCover}`" alt />
             </div>
             <p>{{item.videoDescribe}}</p>
             <div class="video-bottom">
@@ -96,7 +96,7 @@ export default {
   name: 'PersonalHomepage',
   data () {
     return {
-      title: '',
+      title: '主页',
       active: 0,
       videoList: {},
       userInfo: {},
@@ -136,7 +136,7 @@ export default {
     },
     // 拿取该用户信息
     getUserInfo () {
-      this.$axios.post("http://localhost:8080/getUserInfo", {
+      this.$axios.post("/getUserInfo", {
         userId: this.videoList.userId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -152,7 +152,7 @@ export default {
     },
     // 是否关注了
     toCheckFollow () {
-      this.$axios.post("http://localhost:8080/toCheckFollow", {
+      this.$axios.post("/toCheckFollow", {
         userId: this.userInfo.userId,
         concernedId: this.videoList.userId
       }).then((res) => {
@@ -168,7 +168,7 @@ export default {
     },
     // 关注或取消关注
     follow () {
-      this.$axios.post("http://localhost:8080/follow", {
+      this.$axios.post("/follow", {
         userId: this.userInfo.userId,
         concernedId: this.videoList.userId,
         isFollow: this.isFollow
@@ -180,7 +180,7 @@ export default {
       })
     },
     getVideoData () {
-      this.$axios.post("http://localhost:8080/getVideoData", {
+      this.$axios.post("/getVideoData", {
         userId: this.videoList.userId,
         // concernedId: this.videoList.userId,
         // isFollow: this.isFollow
@@ -234,6 +234,16 @@ export default {
 .main-con {
   width: 100%;
   height: 100%;
+  /deep/ .van-hairline--bottom::after {
+    border-bottom-width: 0px !important;
+  }
+  /deep/ .van-hairline--top-bottom::after,
+  .van-hairline-unset--top-bottom::after {
+    border-width: 0px;
+  }
+  /deep/ .van-nav-bar .van-icon {
+    color: #323233;
+  }
   .top-bg {
     img {
       width: 100%;
@@ -245,6 +255,9 @@ export default {
     align-items: center;
     padding: 10px;
     margin-top: 46px;
+    box-shadow: rgb(240, 240, 240) 0px 0px 10px 1px;
+    margin: 56px 10px 20px 10px;
+    border-radius: 6px;
   }
   .user-info-show {
     display: flex;
@@ -286,14 +299,24 @@ export default {
   .videos-parts {
     padding: 10px 10px 50px 10px;
     text-align: left;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
     // display: flex;
     // flex-flow: column wrap;
     // height: 50vh;
-    column-count: 2;
-    column-gap: 2%;
+
+    // 瀑布流
+
+    // column-count: 2;
+    // column-gap: 2%;
     h3,
     p {
       margin: 0px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
     .videos {
       // width: 48%;
@@ -302,8 +325,11 @@ export default {
       border-radius: 5px;
       box-shadow: rgb(240, 240, 240) 0px 0px 10px 1px;
       background-color: white;
-      break-inside: avoid;
+      // 瀑布流
+      // break-inside: avoid;
       margin-bottom: 10px;
+      width: 48%;
+      overflow: hidden;
       // margin: 10px;
       // width: calc(100% / 2 - 20px);
       .video {

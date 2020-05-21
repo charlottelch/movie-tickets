@@ -33,7 +33,7 @@ export default {
     },
     preserveNickname () {
       console.log("hhaha")
-      this.$axios.post("http://localhost:8080/preserveNickname",{
+      this.$axios.post("/preserveNickname",{
         userName: this.userInfo.userName,
         userId:this.userInfo.userId
       }).then((res) => {

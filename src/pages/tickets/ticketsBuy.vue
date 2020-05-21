@@ -7,7 +7,7 @@
     </van-nav-bar>
     <div class="detail-info">
       <van-tabs class="date-tab">
-        <div class="select">
+        <div class="select" :class="navBarFixed == true ? 'navBarWrap' :''">
           <van-dropdown-menu>
             <van-dropdown-item :title="businessCircleTitle" class="first">
               <!-- <van-tabs v-model="active1">
@@ -28,7 +28,7 @@
                   <p>
                     <span>影院服务</span>
                   </p>
-                  <p class="parts parts-block">
+                  <p class="parts">
                     <span
                       v-for="(item, index) in cinemaServer"
                       :key="index"
@@ -210,11 +210,22 @@ export default {
   },
   mounted () {
     this.movieList = JSON.parse(localStorage.getItem('movie'))
+    // 事件监听滚动条
+    window.addEventListener('scroll', this.watchScroll)
     this.getMovieCinema()
   },
   methods: {
     onClickLeft () {
       this.$router.go(-1)
+    },
+    watchScroll () {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      //  当滚动超过 50 时，实现吸顶效果
+      if (scrollTop > 55) {
+        this.navBarFixed = true
+      } else {
+        this.navBarFixed = false
+      }
     },
     // 点击选择区
     getLeftData (index) {
@@ -239,7 +250,7 @@ export default {
     },
     // 获取有该电影的影院
     getMovieCinema () {
-      this.$axios.post("http://localhost:8080/getMovieCinema", {
+      this.$axios.post("/getMovieCinema", {
         movieId: this.movieList.movieId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -327,7 +338,7 @@ export default {
       console.log(this.cinemaServerSelected) //影院服务
       console.log(this.brandSelectText) //影院品牌
       console.log(this.sortOrderText)
-      this.$axios.post('http://localhost:8080/selectMovieCinema', {
+      this.$axios.post('/selectMovieCinema', {
         movieId: this.movieList.movieId,
         cinemaServerSelected: this.cinemaServerSelected,
         hallTypeSelected: this.hallTypeSelected,
@@ -354,6 +365,10 @@ export default {
 <style lang="less" scoped>
 .main-con {
   font-size: 12px;
+  h3,
+  p {
+    margin: 5px 0;
+  }
   .detail-info {
     margin-top: 46px;
     /deep/ .date-tab > .van-tabs__wrap {
@@ -366,6 +381,9 @@ export default {
         font-size: 10px;
       }
     }
+    /deep/ .van-tabs__line {
+      background-color: #ff3174;
+    }
     .select {
       position: fixed;
       top: 90px;
@@ -375,12 +393,27 @@ export default {
       .van-hairline-unset--top-bottom::after {
         display: none;
       }
+      /deep/ .van-dropdown-menu__title--active {
+        color: #ff3174;
+      }
+      /deep/ .van-dropdown-item__option--active {
+        color: #ff3174;
+      }
+      /deep/ .van-dropdown-item__option--active .van-dropdown-item__icon {
+        color: #ff3174;
+      }
+      .van-sidebar-item--select {
+        color: #ff3174;
+        font-weight: 500;
+        border-color: transparent;
+      }
       .van-dropdown-menu {
         width: 50px;
         height: 25px;
         display: flex;
         width: 100%;
         justify-content: flex-start;
+        padding: 10px 0;
         // margin: 5px 5px 0 0;
         /deep/.van-dropdown-menu__item {
           margin-right: 10px;
@@ -416,13 +449,13 @@ export default {
             height: 28px;
             line-height: 28px;
             border-radius: 3px;
-            background: rgb(241, 240, 235);
+            background: #d6d5d145;
             text-align: center;
             margin-top: 5px;
           }
           .selected {
-            background: rgb(245, 225, 229);
-            color: crimson;
+            background: rgba(255, 49, 116, 0.11);
+            color: rgb(255, 49, 116);
           }
         }
 
@@ -448,12 +481,13 @@ export default {
       }
     }
     .cinema-totle {
-      margin-top: 120px;
+      margin-top: 130px;
+      padding: 0 10px;
     }
     .cinema {
       text-align: left;
       border-bottom: 1px solid #ebedf0;
-      padding: 7px 10px;
+      padding: 7px 0px;
       background: white;
       .cinema-info {
         display: flex;

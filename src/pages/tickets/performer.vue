@@ -11,7 +11,7 @@
             <p>{{performerInfo.occupation}}</p>
           </div>
           <div>
-            <img :src="`../../../static/images/${performerInfo.image}`" alt />
+            <img :src="`${performerInfo.image}`" alt />
           </div>
         </div>
       </div>
@@ -44,8 +44,8 @@ export default {
   },
   methods: {
     getPerformerData() {
-      this.$axios.post("http://localhost:8080/getPerformerData",{
-        movieId:this.performer.movieId,
+      this.$axios.post("/getPerformerData",{
+        performerId:this.performer.performerId,
         // performerId:this.performer.performerId
       }).then((res)=>{
         if(res.data.code == 200){

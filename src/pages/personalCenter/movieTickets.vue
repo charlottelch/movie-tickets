@@ -19,9 +19,9 @@
             </p>
             <p>{{item.cinemaName}}</p>
           </div>
-          <div>
+          <!-- <div>
             <img src="../../assets/img/refunded.png" alt />
-          </div>
+          </div> -->
         </div>
         <template #right>
           <van-button square text="删除" type="danger" class="delete-button" />
@@ -61,7 +61,7 @@ export default {
       this.$router.push('/PersonalCenter/MovieTickets/TicketDetail')
     },
     getUserOrderData () {
-      this.$axios.post("http://localhost:8080/getUserOrderData", {
+      this.$axios.post("/getUserOrderData", {
         userId: this.userInfo.userId
       }).then((res) => {
         if (res.data.code == 200) {

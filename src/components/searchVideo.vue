@@ -50,14 +50,23 @@ export default {
     onSearch (val) {
       console.log(val);
       this.inputText = val
+      if (this.inputText != '') {
+        // this.addSearchHistory()
+        // this.getSearchAll()
+        // this.getSearchHistory()
       this.getSearchVideo()
+
+      }else{
+        this.$toast("请输入搜索内容")
+      }
+      // this.getSearchVideo()
     },
     onCancel () {
       this.$router.go(-1)
     },
     // 搜索的电影
     getSearchVideo () {
-      this.$axios.post("http://localhost:8080/getSearchVideo", {
+      this.$axios.post("/getSearchVideo", {
         inputText: this.inputText
       }).then((res) => {
         console.log(res.data.data)

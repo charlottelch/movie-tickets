@@ -67,7 +67,7 @@ export default {
     },
     // 验证座位
     selectSeatType () {
-      this.$axios.post("http://localhost:8080/selectSeatType", {
+      this.$axios.post("/selectSeatType", {
         seatList: this.seatList,
         sceneId: this.sceneInfo.sceneId
       }).then((res) => {
@@ -107,6 +107,7 @@ export default {
   }
   .van-icon-alipay {
     color: blue;
+    width: 40;
   }
   .van-icon-wechat {
     color: green;

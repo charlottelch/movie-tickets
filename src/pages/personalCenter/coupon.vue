@@ -113,7 +113,7 @@ export default {
       console.log(this.coupons[0].endAt)
     },
     getMyCoupon () {
-      this.$axios.post("http://localhost:8080/getMyCoupon", {
+      this.$axios.post("/getMyCoupon", {
         userId: this.userInfo.userId
       }).then((res) => {
         if (res.data.code == 200) {

@@ -166,7 +166,7 @@ export default {
     },
     // 获取用户的优惠券信息
     getMyCoupon () {
-      this.$axios.post("http://localhost:8080/getMyCoupon", {
+      this.$axios.post("/getMyCoupon", {
         userId: this.userInfo.userId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -193,7 +193,7 @@ export default {
     },
     // 验证座位
     selectSeatType () {
-      this.$axios.post("http://localhost:8080/selectSeatType", {
+      this.$axios.post("/selectSeatType", {
         seatList: this.seatList,
         sceneId: this.sceneInfo.sceneId
       }).then((res) => {
@@ -209,7 +209,7 @@ export default {
           if (this.isSeatAvailable == true) {
             var orderPrice = this.sceneInfo.ticketPrice * this.seatList.length - this.allowance
             localStorage.setItem('orderPrice', JSON.stringify(orderPrice))
-            this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions'})
+            this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat/BuyTickets/PaymentOptions' })
             // this.getSeatData()
           } else {
             this.$toast('座位已经被选了，请重新选座')
@@ -219,7 +219,7 @@ export default {
     },
     // 更新座位信息
     getSeatData () {
-      this.$axios.post("http://localhost:8080/getSeatData", {
+      this.$axios.post("/getSeatData", {
         seatList: this.seatList,
         sceneId: this.sceneInfo.sceneId
       }).then((res) => {
@@ -232,9 +232,13 @@ export default {
     onChange (index) {
       this.showList = false;
       this.chosenCoupon = index;
-      this.allowance = this.coupons[this.chosenCoupon].value / 100
-      // localStorage.setItem('coupon',JSON.stringify(this.coupons[this.chosenCoupon]))
+      if (this.chosenCoupon >= 0) {
+        this.allowance = this.coupons[this.chosenCoupon].value / 100
+      } else {
+        this.allowance = 0
+      }
       console.log(this.coupons[this.chosenCoupon])
+      console.log(this.chosenCoupon)
     },
     onExchange (code) {
       this.coupons.push(coupon);

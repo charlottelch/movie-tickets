@@ -152,7 +152,7 @@ export default {
           file.message = '上传成功！';
           this.imageUrl = res.data.data.url
           console.log(this.imageUrl)
-          this.$axios.post("http://localhost:8080/uploadHeadPortrait", {
+          this.$axios.post("/uploadHeadPortrait", {
             headPortrait: this.imageUrl,
             userId: this.userInfo.userId
           }).then((res) => {
@@ -178,7 +178,7 @@ export default {
       this.dateShow = false
       value = this.date(value)
       // this.userInfo.birthday = value
-      this.$axios.post("http://localhost:8080/confirmDate", {
+      this.$axios.post("/confirmDate", {
         birthday: this.userInfo.birthday,
         userId: this.userInfo.userId
       }).then((res) => {
@@ -223,9 +223,9 @@ export default {
       })
     },
     genderBoy () {
-      if (this.userInfo.gender == '女') {
-        this.$axios.post("http://localhost:8080/genderBoy", {
-          gender: this.userInfo.gender,
+      // if (this.userInfo.gender == '女' || null) {
+        this.$axios.post("/genderBoy", {
+          // gender: this.userInfo.gender,
           userId: this.userInfo.userId
         }).then((res) => {
           if (res.data.code == 200) {
@@ -235,13 +235,13 @@ export default {
           }
           console.log(res)
         })
-      }
+      // }
 
     },
     genderGirl () {
-      if (this.userInfo.gender == '男') {
-        this.$axios.post("http://localhost:8080/genderGirl", {
-          gender: this.userInfo.gender,
+      // if (this.userInfo.gender == '男' || null) {
+        this.$axios.post("/genderGirl", {
+          // gender: this.userInfo.gender,
           userId: this.userInfo.userId
         }).then((res) => {
           if (res.data.code == 200) {
@@ -251,7 +251,7 @@ export default {
           }
           console.log(res)
         })
-      }
+      // }
 
     }
   }
@@ -275,6 +275,10 @@ export default {
           height: 60px;
           border-radius: 50%;
           overflow: hidden;
+          img {
+            width: 100%;
+            height: 100%;
+          }
         }
       }
     }

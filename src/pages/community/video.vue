@@ -1,7 +1,13 @@
 <template>
   <div class="main-con">
     <!-- <nav-title-fixed :title="title"></nav-title-fixed> -->
-    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed />
+    <van-nav-bar
+      :title="title"
+      left-arrow
+      @click-left="onClickLeft"
+      fixed
+      :class="[isScroll?'title-top':'title-top-scroll']"
+    />
 
     <div class="vid-wrap">
       <video width="100%" height="100%" controls>
@@ -39,7 +45,7 @@
             alt
             @click="toCancelThumb"
           />
-          <span>{{videoList.likeNumber==null?'0':videoList.likeNumber}}</span>
+          <span>{{videoList.likeNumber==null?'点赞':videoList.likeNumber}}</span>
         </div>
         <div>
           <img
@@ -68,13 +74,20 @@
         <div class="comment-detail" v-for="(item,index) in commentsList" :key="index">
           <img :src="`${item.headPortrait}`" alt />
           <div>
-            <p>{{item.userName}}</p>
+            <p @click="toUserPersonalHomepage(item)">{{item.userName}}</p>
             <p @click="replyUser(item)">{{item.commentContent}}</p>
             <div class="reply-area">
               <p v-for="(Ritem,index) in item.reply" :key="index">
-                <span>{{Ritem.userSend[0].userName}}</span>
+                <span
+                  class="reply-user"
+                  @click="toUserPersonalHomepage(Ritem.userSend[0])"
+                >{{Ritem.userSend[0].userName}}</span>
                 <span v-if="Ritem.userReplied.length>0">回复</span>
-                <span v-if="Ritem.userReplied.length>0">{{Ritem.userReplied[0].userName}}</span>
+                <span
+                  class="reply-user"
+                  v-if="Ritem.userReplied.length>0"
+                  @click="toUserPersonalHomepage(Ritem.userReplied[0])"
+                >{{Ritem.userReplied[0].userName}}</span>
                 <span>：</span>
                 <span @click="replySomeOne(item,Ritem)">{{Ritem.replyContent}}</span>
               </p>
@@ -105,7 +118,7 @@
         v-show="isReply==true"
       >
         <template #button>
-          <span @click="sendReplyComment">cc</span>
+          <span @click="sendReplyComment">发布</span>
         </template>
       </van-field>
     </div>
@@ -135,7 +148,9 @@ export default {
       currentdate: '',
 
       videoCommentId: '',
-      repliedUserId: ''
+      repliedUserId: '',
+      isScroll: true,
+
     }
   },
   mounted () {
@@ -157,8 +172,22 @@ export default {
     this.toCheckThumb()
     this.getCommentData()
     this.toCheckCollect()
+    //首先，在mounted钩子window添加一个滚动滚动监听事件
+    window.addEventListener("scroll", this.handleScroll)
   },
   methods: {
+    //然后在方法中，添加这个handleScroll方法来获取滚动的位置，实现导航栏滚动时样式改变
+    handleScroll () {
+      let _this = this;
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      // console.log(scrollTop)
+      if (scrollTop > 0) {
+        _this.isScroll = false
+      } else {
+        _this.isScroll = true
+      }
+      // console.log(_this.isScroll)
+    },
     onClickLeft () {
       // 返回上一个页面就删除一条localstorage的数据
       var videoPlayList = JSON.parse(localStorage.getItem('video'))
@@ -169,7 +198,7 @@ export default {
       this.$router.go(-1)
     },
     toUserDetailPage () {
-      // 去到一个页面就想localstorage发一次
+      // 去到一个页面就向localstorage发一次
       var videoPlayList = JSON.parse(localStorage.getItem('video'))
       videoPlayList.push(this.videoList)
       console.log(videoPlayList)
@@ -179,7 +208,7 @@ export default {
     },
     // 拿取发布动态用户的信息
     getAuthorInfo () {
-      this.$axios.post("http://localhost:8080/getAuthorInfo", {
+      this.$axios.post("/getAuthorInfo", {
         userId: this.videoList.userId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -192,7 +221,7 @@ export default {
     },
     // 拿取该用户信息
     getUserInfo () {
-      this.$axios.post("http://localhost:8080/getUserInfo", {
+      this.$axios.post("/getUserInfo", {
         userId: this.userInfo.userId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -204,7 +233,7 @@ export default {
       })
     },
     toCheckFollow () {
-      this.$axios.post("http://localhost:8080/toCheckFollow", {
+      this.$axios.post("/toCheckFollow", {
         userId: this.userInfo.userId,
         concernedId: this.videoList.userId
       }).then((res) => {
@@ -220,7 +249,7 @@ export default {
     },
     // 关注或取消关注
     follow () {
-      this.$axios.post("http://localhost:8080/follow", {
+      this.$axios.post("/follow", {
         userId: this.userInfo.userId,
         concernedId: this.videoList.userId,
         isFollow: this.isFollow
@@ -233,7 +262,7 @@ export default {
     },
     // 初始化点赞
     toCheckThumb () {
-      this.$axios.post("http://localhost:8080/toCheckThumb", {
+      this.$axios.post("/toCheckThumb", {
         userId: this.userInfo.userId,
         videoId: this.videoList.videoId
       }).then((res) => {
@@ -250,7 +279,7 @@ export default {
     },
     // 点赞
     toThumb () {
-      this.$axios.post("http://localhost:8080/toThumb", {
+      this.$axios.post("/toThumb", {
         userId: this.userInfo.userId,
         videoId: this.videoList.videoId,
         likeNumber: this.videoList.likeNumber
@@ -264,7 +293,7 @@ export default {
     },
     // 取消点赞
     toCancelThumb () {
-      this.$axios.post("http://localhost:8080/toCancelThumb", {
+      this.$axios.post("/toCancelThumb", {
         userId: this.userInfo.userId,
         videoId: this.videoList.videoId,
         likeNumber: this.videoList.likeNumber
@@ -277,7 +306,7 @@ export default {
       })
     },
     toCheckCollect () {
-      this.$axios.post("http://localhost:8080/toCheckCollect", {
+      this.$axios.post("/toCheckCollect", {
         userId: this.userInfo.userId,
         videoId: this.videoList.videoId
       }).then((res) => {
@@ -292,7 +321,7 @@ export default {
       })
     },
     toCollect () {
-      this.$axios.post("http://localhost:8080/toCollect", {
+      this.$axios.post("/toCollect", {
         userId: this.userInfo.userId,
         videoId: this.videoList.videoId,
       }).then((res) => {
@@ -303,7 +332,7 @@ export default {
       })
     },
     toCancelCollect () {
-      this.$axios.post("http://localhost:8080/toCancelCollect", {
+      this.$axios.post("/toCancelCollect", {
         userId: this.userInfo.userId,
         videoId: this.videoList.videoId,
       }).then((res) => {
@@ -321,9 +350,9 @@ export default {
       var year = date.getFullYear();
       var month = date.getMonth() + 1;
       var strDate = date.getDate();
-      var hours = data.getHours();
-      var minutes = data.getMinutes()
-      var seconds = data.getSeconds()
+      var hours = date.getHours();
+      var minutes = date.getMinutes()
+      var seconds = date.getSeconds()
       if (month >= 1 && month <= 9) {
         month = "0" + month;
       }
@@ -339,7 +368,7 @@ export default {
       if (seconds >= 0 && seconds <= 9) {
         seconds = "0" + seconds;
       }
-      this.currentdate = year + seperator1 + month + seperator1 + strDate + " " + hours + seperator2 + date.minutes + seperator2 + seconds;;
+      this.currentdate = year + seperator1 + month + seperator1 + strDate + " " + hours + seperator2 + minutes + seperator2 + seconds;;
       // return currentdate;
       console.log(this.currentdate)
     },
@@ -376,6 +405,7 @@ export default {
         }
       })
     },
+    // 发布评论
     sendComment () {
       console.log(this.videoList.videoId, this.userInfo.userId, this.message, this.currentdate)
       this.getNowFormatDate()
@@ -385,9 +415,12 @@ export default {
         commentContent: this.message,
         commentTime: this.currentdate
       }).then((res) => {
-
+        if (res.data.code == 200) {
+          this.getCommentData()
+        }
       })
     },
+    // 回复
     sendReplyComment () {
       this.getNowFormatDate()
       console.log(this.videoCommentId, this.userInfo.userId, this.repliedUserId, this.message, this.currentdate)
@@ -398,8 +431,19 @@ export default {
         replyContent: this.message,
         replyTime: this.currentdate
       }).then((res) => {
-
+        if (res.data.code == 200) {
+          this.getCommentData()
+        }
       })
+    },
+    toUserPersonalHomepage (item) {
+      // 去到一个页面就向localstorage发一次
+      // console.log(item)
+      var videoPlayList = JSON.parse(localStorage.getItem('video'))
+      videoPlayList.push(item)
+      console.log(videoPlayList)
+      localStorage.setItem('video', JSON.stringify(videoPlayList));
+      this.$router.push({ path: '/Community/PersonalHomepage' })
     }
   }
 }
@@ -410,7 +454,31 @@ export default {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  // background: black;
+
+  .title-top {
+    // font-size: 10px;
+    background-color: transparent !important;
+    color: white;
+    i {
+      color: white;
+    }
+    .van-nav-bar__title {
+      color: white;
+    }
+  }
+  .title-top-scroll {
+    background-color: white !important;
+    color: black;
+    i {
+      color: black;
+    }
+    .van-nav-bar__title {
+      color: black;
+    }
+  }
+  /deep/ .van-hairline--bottom::after {
+    border-bottom-width: 0px !important;
+  }
   .vid-wrap {
     width: 100%;
     background: #000;
@@ -500,6 +568,9 @@ export default {
       .reply-area {
         background: #e4e2e273;
         width: 310px;
+        .reply-user {
+          color: rgb(64, 147, 224);
+        }
       }
     }
   }
@@ -509,6 +580,11 @@ export default {
     border-radius: 33px;
     padding: 0 10px;
     background: #e4e2e273;
+  }
+  .input{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
   }
 }
 </style>

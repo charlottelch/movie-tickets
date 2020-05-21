@@ -7,7 +7,8 @@ Vue.use(Vuex)
 
 const state = {
   userInfo: null,
-  token: false //登录前token为false
+  token: false, //登录前token为false
+  location:null
 }
 
 export default new Vuex.Store({

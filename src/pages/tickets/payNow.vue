@@ -142,7 +142,7 @@ export default {
 
     },
     // getMyCoupon () {
-    //   this.$axios.post("http://localhost:8080/getMyCoupon", {
+    //   this.$axios.post("/getMyCoupon", {
     //     userId: this.userInfo.userId
     //   }).then((res) => {
     //     if (res.data.code == 200) {
@@ -154,7 +154,7 @@ export default {
 
     // 验证座位
     selectSeatType () {
-      this.$axios.post("http://localhost:8080/selectSeatType", {
+      this.$axios.post("/selectSeatType", {
         seatList: this.seatList,
         sceneId: this.sceneInfo.sceneId
       }).then((res) => {
@@ -196,7 +196,7 @@ export default {
     },
     // 更新座位信息
     getSeatData () {
-      this.$axios.post("http://localhost:8080/getSeatData", {
+      this.$axios.post("/getSeatData", {
         seatList: this.seatList,
         sceneId: this.sceneInfo.sceneId,
         orderId: this.orderId
@@ -209,7 +209,7 @@ export default {
     },
     // 更新优惠券数量
     updateCouponData () {
-      this.$axios.post("http://localhost:8080/updateCouponData", {
+      this.$axios.post("/updateCouponData", {
         couponId: this.couponlist.couponId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -220,7 +220,7 @@ export default {
     },
     // 生成电影订单
     createOrder () {
-      this.$axios.post("http://localhost:8080/createOrder", {
+      this.$axios.post("/createOrder", {
         orderNum: this.orderNum,
         userId: this.userInfo.userId,
         sceneId: this.sceneInfo.sceneId,

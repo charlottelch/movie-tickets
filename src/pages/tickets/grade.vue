@@ -47,6 +47,8 @@ export default {
       this.userInfo = this.$store.state.userInfo
       console.log(this.userInfo)
     }
+    this.getNowFormatDate()
+
   },
   methods: {
     // 获取时间
@@ -57,9 +59,9 @@ export default {
       var year = date.getFullYear();
       var month = date.getMonth() + 1;
       var strDate = date.getDate();
-      var hours = data.getHours();
-      var minutes = data.getMinutes()
-      var seconds = data.getSeconds()
+      var hours = date.getHours();
+      var minutes = date.getMinutes()
+      var seconds = date.getSeconds()
       if (month >= 1 && month <= 9) {
         month = "0" + month;
       }
@@ -75,7 +77,7 @@ export default {
       if (seconds >= 0 && seconds <= 9) {
         seconds = "0" + seconds;
       }
-      this.currentdate = year + seperator1 + month + seperator1 + strDate + " " + hours + seperator2 + date.minutes + seperator2 + seconds;;
+      this.currentdate = year + seperator1 + month + seperator1 + strDate + " " + hours + seperator2 + minutes + seperator2 + seconds;;
       // return currentdate;
       console.log(this.currentdate)
     },
@@ -87,16 +89,17 @@ export default {
       this.$router.push({ path: '/Tickets/MovieDetail'})
       // this.$router.go(-1)
       // 新增评论
-      this.$axios.post("http://localhost:8080/score", {
+      this.$axios.post("/score", {
         userId: this.userInfo.userId,
         movieId: this.movieList.movieId,
         score:this.score,
-        comment:this.message
+        comment:this.message,
+        commentTime:this.currentdate
       }).then((res) => {
         console.log(res.data.code)
       })
       // 提交评分，更新电影平均评分
-      this.$axios.post("http://localhost:8080/movieScore", {
+      this.$axios.post("/movieScore", {
         // userId: this.userInfo.userId,
         movieId: this.movieList.movieId
       }).then((res) => {

@@ -59,7 +59,7 @@ export default {
     },
     // 拿取该用户信息
     getUserInfo () {
-      this.$axios.post("http://localhost:8080/getUserInfo", {
+      this.$axios.post("/getUserInfo", {
         userId: this.videoList.userId
       }).then((res) => {
         if (res.data.code == 200) {

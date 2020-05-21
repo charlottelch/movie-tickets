@@ -1,5 +1,7 @@
 import { GET_USERINFO } from './mutations-type'
 import { CLEAR_USERINFO } from './mutations-type'
+import { GET_LOCATION } from './mutations-type'
+
 export default {
   [GET_USERINFO] (state, data) {
     // 变更状态，data为前端传过来的值
@@ -9,6 +11,9 @@ export default {
   [CLEAR_USERINFO] (state) {
     state.token = false //登录成功后token变为true
     state.userInfo = {}
+  },
+  [GET_LOCATION] (state, data){
+    state.location = data
   }
 
 }

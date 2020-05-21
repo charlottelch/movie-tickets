@@ -63,7 +63,7 @@
             <img src="../../assets/icon/watched.png" alt />
             <span>看过</span>
           </div>
-          <div>
+          <div @click="toUserComment">
             <img src="../../assets/icon/comment.png" alt />
             <span>评论</span>
           </div>
@@ -145,6 +145,9 @@ export default {
     toLikeMovie () {
       this.$router.push('/PersonalCenter/LikeMoviePage')
     },
+    toUserComment(){
+      this.$router.push('/PersonalCenter/UserComment')
+    },
     toMyCommunity () {
       var videoArr = []
       console.log(this.userInfo)
@@ -154,7 +157,7 @@ export default {
     },
     // 获取动态数
     getVideoData () {
-      this.$axios.post("http://localhost:8080/getVideoData", {
+      this.$axios.post("/getVideoData", {
         userId: this.userInfo.userId,
         // concernedId: this.videoList.userId,
         // isFollow: this.isFollow
@@ -171,7 +174,7 @@ export default {
     },
     // 获取关注和粉丝数
     getUserInfo () {
-      this.$axios.post("http://localhost:8080/getUserInfo", {
+      this.$axios.post("/getUserInfo", {
         userId: this.userInfo.userId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -199,7 +202,7 @@ export default {
       // this.userName = this.$route.query.data 
     },
     // getLoginUserCommunity () {
-    //   this.$axios.post("http://localhost:8080/getLoginUserCommunity", {
+    //   this.$axios.post("/getLoginUserCommunity", {
     //     userId: this.userInfo.userId,
     //   }).then((res) => {
     //     if (res.data.code == 200) {
@@ -228,8 +231,9 @@ export default {
   .personal-top {
     height: 150px;
     // background: #34c372;
-    background: url('../../assets/personal-bg.png');
-    background-position: bottom left;
+    background: url('../../assets/personal-bg02.png') no-repeat;
+    background-size: cover;
+    background-position: 6% 82%;
     // background-image: radial-gradient(
     //   circle at 10% 50%,
     //   #99cccc 20%,
@@ -246,7 +250,7 @@ export default {
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      background: cornsilk;
+      background: #ffffffa1;
     }
     img {
       width: 60px;

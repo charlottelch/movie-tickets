@@ -1,6 +1,6 @@
 <template>
   <div class="title">
-    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed/>
+    <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" fixed />
   </div>
 </template>
 
@@ -27,4 +27,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .van-nav-bar .van-icon {
+  color: #000;
+}
 </style>

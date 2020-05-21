@@ -8,10 +8,10 @@
           <p>{{cinemaList.cinemaAdress}}</p>
         </div>
         <div class="cinema-info-right">
-          <div>
-            <img src="../../assets/img/uncollect.png" alt v-show="isCollect" @click="collect" />
-            <img src="../../assets/img/collected.png" alt v-show="!isCollect" @click="iscollect" />
-          </div>
+          <!-- <div> -->
+          <!-- <img src="../../assets/img/uncollect.png" alt v-show="isCollect" @click="collect" />
+          <img src="../../assets/img/collected.png" alt v-show="!isCollect" @click="iscollect" />-->
+          <!-- </div> -->
           <img src="../../assets/img/mapIcon.png" alt />
         </div>
       </div>
@@ -124,7 +124,7 @@ export default {
     },
     // 获取影院上映的电影
     getCinemaMovie () {
-      this.$axios.post("http://localhost:8080/getCinemaMovie", {
+      this.$axios.post("/getCinemaMovie", {
         cinemaId: this.cinemaList.cinemaId
       }).then((res) => {
         if (res.data.code == 200) {
@@ -144,7 +144,7 @@ export default {
       console.log(index)
     },
     toSelectSeat (citem) {
-      this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat'})
+      this.$router.push({ path: '/Tickets/MovieDetail/SelectSeat' })
       localStorage.setItem('scene', JSON.stringify(citem));
     }
 
@@ -168,9 +168,9 @@ export default {
       justify-content: space-between;
       align-items: center;
       .cinema-info-right {
-        display: flex;
-        justify-content: space-between;
-        width: 70px;
+        // display: flex;
+        // justify-content: space-between;
+        // width: 70px;
         img {
           width: 27px;
           height: 27px;
@@ -207,6 +207,12 @@ export default {
     // /deep/ .van-tab {
     //   font-size: 10px !important;
     // }
+    .van-tab {
+      font-size: 12px;
+    }
+    /deep/ .van-tabs__line {
+      background-color: #ff3174;
+    }
     .tickets-info {
       padding: 10px 0;
       display: flex;
@@ -238,7 +244,7 @@ export default {
           margin: 2px 0;
         }
         .price {
-          color: hotpink;
+          color: #ff3174;
           span {
             font-size: 18px;
           }
@@ -249,8 +255,8 @@ export default {
           height: 25px;
           text-align: center;
           line-height: 25px;
-          border: 1px solid hotpink;
-          color: hotpink;
+          border: 1px solid #ff3174;
+          color: #ff3174;
           border-radius: 25px;
           margin-left: 10px;
         }

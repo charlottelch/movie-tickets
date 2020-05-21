@@ -27,4 +27,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .van-nav-bar .van-icon {
+  color: #000;
+}
 </style>

@@ -4,6 +4,9 @@ import Router from 'vue-router'
 import Login from '@/pages/loginAndRegister/login'
 import Register from '@/pages/loginAndRegister/register'
 import HomePage from '@/pages/homePage/homePage'
+import SecondSwipe from '@/pages/homePage/secondSwipe'
+import FirstSwipe from '@/pages/homePage/FirstSwipe'
+
 import Tickets from '@/pages/tickets/tickets'
 import MovieDetail from '@/pages/tickets/movieDetail'
 import TicketsBuy from '@/pages/tickets/ticketsBuy'
@@ -17,6 +20,7 @@ import PayNow from '@/pages/tickets/payNow'
 import PaySuccess from '@/pages/tickets/paySuccess'
 import AllMovieComments from '@/pages/tickets/allMovieComments'
 import MovieCommentReply from '@/pages/tickets/movieCommentReply'
+import VideoPlay from '@/pages/tickets/videoPlay'
 
 import CinemaDetail from '@/pages/tickets/cinemaDetail'
 import CinemaMap from '@/pages/tickets/CinemaMap'
@@ -32,6 +36,7 @@ import TicketDetail from '@/pages/personalCenter/TicketDetail'
 import Coupon from '@/pages/personalCenter/coupon'
 import LikeMoviePage from '@/pages/personalCenter/likeMoviePage'
 import Member from '@/pages/personalCenter/member'
+import UserComment from '@/pages/personalCenter/userComment'
 
 import Community from '@/pages/community/community'
 import Video from '@/pages/community/video'
@@ -59,6 +64,14 @@ export default new Router({
       path: '/',
       name: 'HomePage',
       component: HomePage
+    },{
+      path: '/SecondSwipe',
+      name: 'SecondSwipe',
+      component: SecondSwipe
+    },{
+      path: '/FirstSwipe',
+      name: 'FirstSwipe',
+      component: FirstSwipe
     }, {
       path: '/Tickets',
       name: 'Tickets',
@@ -103,6 +116,10 @@ export default new Router({
       path: '/Tickets/MovieDetail/AllMovieComments/MovieCommentReply',
       name: 'MovieCommentReply',
       component: MovieCommentReply
+    },{
+      path: '/Tickets/VideoPlay',
+      name: 'VideoPlay',
+      component: VideoPlay
     }, {
       path: '/Tickets/MovieDetail/Grade',
       name: 'Grade',
@@ -150,6 +167,10 @@ export default new Router({
       path: '/PersonalCenter/Member',
       name: 'Member',
       component: Member
+    },{
+      path: '/PersonalCenter/UserComment',
+      name: 'UserComment',
+      component: UserComment
     }, {
       path: '/PersonalCenter/LikeMoviePage',
       name: 'LikeMoviePage',
