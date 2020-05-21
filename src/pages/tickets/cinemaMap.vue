@@ -35,7 +35,7 @@ export default {
       console.log('11')
       this.trafficMap = new AMap.Map('container', {
         zoom: 12, // 级别
-        center: [116.397428, 39.90923], // 中心点坐标
+        center: [104.04104, 30.6265], // 中心点坐标
         viewMode: '3D'// 使用3D视图
       })
       this.trafficMap.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.Geolocation'], () => {

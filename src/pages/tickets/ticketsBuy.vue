@@ -204,7 +204,8 @@ export default {
       isHallTypeSelected: 0,
       hallTypeSelected: '',
       // 选择排序方式
-      sortOrderText: 'bottomPrice,cinemaDistance'
+      sortOrderText: 'bottomPrice,cinemaDistance',
+      locationCity: '',
       // subwayTitle: '全城',
     }
   },
@@ -212,7 +213,50 @@ export default {
     this.movieList = JSON.parse(localStorage.getItem('movie'))
     // 事件监听滚动条
     window.addEventListener('scroll', this.watchScroll)
+    if (this.$store.state.location != null) {
+      this.location = this.$store.state.location
+      this.locationCity = this.location.addressComponent.city
+      // this.locationLat = this.location.position.lat
+      // this.locationLng = this.location.position.lng
+      console.log(this.location.position)
+    }
+    this.city = JSON.parse(localStorage.getItem("location"))
+    if (this.city != null) {
+      this.locationCity = this.city.name
+      // this.locationLat = this.city.lat
+      // this.locationLng = this.city.lng
+      console.log(this.city)
+    }
+    if (this.locationCity == '成都市'||'成都') {
+      this.businessCircleItems = [
+        { text: '全部', children: [{ text: '全部' }] },
+        { text: '武侯区', children: [{ text: '全部' }, { text: '火车南站' }, { text: '石羊场' }] },
+        { text: '锦江区', children: [{ text: '全部' }, { text: '春熙路' }] },
+        { text: '双流区', children: [{ text: '全部' }, { text: '华阳' }] },
+        { text: '金牛区', children: [{ text: '全部' }, { text: '五块石' }] },
+        { text: '郫都区', children: [{ text: '全部' }, { text: '红光' }, { text: '犀浦' }] },
+        { text: '成华区', children: [{ text: '全部' }, { text: 'SM广场' }] },
+      ]
+    }
+    if (this.locationCity == '北京') {
+      this.businessCircleItems = [
+        { text: '全部', children: [{ text: '全部' }] },
+        { text: '昌平区', children: [{ text: '全部' }, { text: '国泰百货' }, { text: '龙德广场' }] },
+        { text: '朝阳区', children: [{ text: '全部' }, { text: '北京嘉里中心' }] },
+        { text: '大兴区', children: [{ text: '全部' }, { text: '乐家购物中心' }] },
+      ]
+
+    }
+    if (this.locationCity == '上海') {
+      this.businessCircleItems = [
+        { text: '全部', children: [{ text: '全部' }] },
+        { text: '宝山区', children: [{ text: '全部' }, { text: '龙湖上海宝山天街' }, { text: '凯旋丽都广场' }] },
+        { text: '黄埔区', children: [{ text: '全部' }, { text: '世茂广场' }] },
+        { text: '长宁区', children: [{ text: '全部' }, { text: '上海金虹桥商城' }] },
+      ]
+    }
     this.getMovieCinema()
+
   },
   methods: {
     onClickLeft () {
@@ -251,7 +295,8 @@ export default {
     // 获取有该电影的影院
     getMovieCinema () {
       this.$axios.post("/getMovieCinema", {
-        movieId: this.movieList.movieId
+        movieId: this.movieList.movieId,
+        locationCity:this.locationCity
       }).then((res) => {
         if (res.data.code == 200) {
           if (res.data.data.length !== 0) {
@@ -346,6 +391,7 @@ export default {
         zoneSelected: this.zoneSelected,
         tradeAreaSelected: this.tradeAreaSelected,
         sortOrderText: this.sortOrderText,
+        locationCity:this.locationCity
       }).then((res) => {
         if (res.data.code == 200) {
           console.log(res.data.data)

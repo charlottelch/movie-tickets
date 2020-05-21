@@ -2,7 +2,7 @@
   <div class="main-con">
     <div class="search-top">
       <div class="location" @click="toCity">
-        <p v-if="location.addressComponent!=undefined">{{location.addressComponent.city}}</p>
+        <p v-if="location.addressComponent!=undefined">{{locationCity}}</p>
         <i class="arrow-bottom"></i>
       </div>
       <span class="search-form" @click="toSearch">
@@ -60,21 +60,6 @@
               <img :src="`${item.headPortrait}`" alt />
               <p>{{item.userName}}</p>
             </div>
-            <!-- <div class="right-great">
-                <img
-                  v-show="isthumb == false"
-                  src="../../assets/icon/thumb-grey.png"
-                  alt
-                  @click="toThumb"
-                />
-                <img
-                  v-show="isthumb == true"
-                  src="../../assets/icon/thumb-red.png"
-                  alt
-                  @click="toCancelThumb"
-                />
-                <span>{{item.likeNumber}}</span>
-            </div>-->
           </div>
         </div>
       </div>
@@ -100,21 +85,35 @@ export default {
       trafficMap: null,
       // 定位城市
       city: '',
-      location: ''
+      location: '',
+      locationCity: '',
     }
   },
   mounted () {
-    this.init()
-    this.getLocation()
-    this.getMovie()
+    // this.init()
+    // this.getLocation()
+    // this.getMovie()
     this.getVideo()
     // this.city = JSON.parse(localStorage.getItem("location"))
     if (this.$store.state.location != null) {
       this.location = this.$store.state.location
-    console.log(this.location.addressComponent.city)
+      this.locationCity = this.location.addressComponent.city
+      this.getMovie()
 
+      // console.log(this.location.addressComponent.city)
+    } else {
+      this.init()
+      this.getLocation()
     }
-    console.log(this.location)
+    this.city = JSON.parse(localStorage.getItem("location"))
+    if (this.city != null) {
+      this.locationCity = this.city.name
+      this.getMovie()
+      // this.locationLat = this.city.lat
+      // this.locationLng = this.city.lng
+      console.log(this.city)
+    }
+    console.log(this.locationCity)
 
   },
   methods: {
@@ -177,7 +176,7 @@ export default {
               pageSize: 50,
             });
 
-            placeSearch.search('CGV影城', (status, result) => {
+            placeSearch.search('万达影城(金红桥店)上海', (status, result) => {
               // 查询成功时，result即对应匹配的POI信息
               console.log(result)
             });
@@ -242,8 +241,10 @@ export default {
     },
     // 拿取到电影信息
     getMovie () {
+      console.log(this.locationCity)
+
       this.$axios.post("/getMovie", {
-        // user_id: "1"
+        locationCity: this.locationCity
       }).then((res) => {
         this.movieList = res.data.data
         console.log(this.movieList)

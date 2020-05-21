@@ -2,7 +2,7 @@
   <div class="main-con">
     <div class="ticket-top">
       <div class="location" @click="toCity">
-        <p v-if="location.addressComponent!=undefined">{{location.addressComponent.city}}</p>
+        <p v-if="location.addressComponent!=undefined">{{locationCity}}</p>
         <i class="arrow-bottom"></i>
       </div>
       <!-- <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" /> -->
@@ -358,7 +358,10 @@ export default {
       // 近期最受期待电影
       recentExpectationsList: [],
       // 定位城市
-      city: ''
+      locationCity: '',
+      city: '',
+      // locationLat: '',
+      // locationLng: ''
       // subwayTitle: '全城',
     }
   },
@@ -369,9 +372,47 @@ export default {
     }
     if (this.$store.state.location != null) {
       this.location = this.$store.state.location
+      this.locationCity = this.location.addressComponent.city
+      // this.locationLat = this.location.position.lat
+      // this.locationLng = this.location.position.lng
       console.log(this.location.position)
     }
-    // this.city = JSON.parse(localStorage.getItem("location"))
+    this.city = JSON.parse(localStorage.getItem("location"))
+    if (this.city != null) {
+      this.locationCity = this.city.name
+      // this.locationLat = this.city.lat
+      // this.locationLng = this.city.lng
+      console.log(this.city)
+    }
+    if (this.locationCity == '成都市'||'成都') {
+      this.businessCircleItems = [
+        { text: '全部', children: [{ text: '全部' }] },
+        { text: '武侯区', children: [{ text: '全部' }, { text: '火车南站' }, { text: '石羊场' }] },
+        { text: '锦江区', children: [{ text: '全部' }, { text: '春熙路' }] },
+        { text: '双流区', children: [{ text: '全部' }, { text: '华阳' }] },
+        { text: '金牛区', children: [{ text: '全部' }, { text: '五块石' }] },
+        { text: '郫都区', children: [{ text: '全部' }, { text: '红光' }, { text: '犀浦' }] },
+        { text: '成华区', children: [{ text: '全部' }, { text: 'SM广场' }] },
+      ]
+    }
+    if (this.locationCity == '北京') {
+      this.businessCircleItems = [
+        { text: '全部', children: [{ text: '全部' }] },
+        { text: '昌平区', children: [{ text: '全部' }, { text: '国泰百货' }, { text: '龙德广场' }] },
+        { text: '朝阳区', children: [{ text: '全部' }, { text: '北京嘉里中心' }] },
+        { text: '大兴区', children: [{ text: '全部' }, { text: '乐家购物中心' }] },
+      ]
+
+    }
+    if (this.locationCity == '上海') {
+      this.businessCircleItems = [
+        { text: '全部', children: [{ text: '全部' }] },
+        { text: '宝山区', children: [{ text: '全部' }, { text: '龙湖上海宝山天街' }, { text: '凯旋丽都广场' }] },
+        { text: '黄埔区', children: [{ text: '全部' }, { text: '世茂广场' }] },
+        { text: '长宁区', children: [{ text: '全部' }, { text: '上海金虹桥商城' }] },
+      ]
+    }
+    // console.log(this.locationLat, this.locationLng)
     this.getMovie()
     this.getCinemaData()
     this.getComingSoonMovie()
@@ -384,35 +425,35 @@ export default {
   },
   methods: {
     // getDistance () {
-      // 方法定义 lat,lng 
-      GetDistance (lat1, lng1, lat2, lng2) {
-        var radLat1 = lat1 * Math.PI / 180.0;
-        var radLat2 = lat2 * Math.PI / 180.0;
-        var a = radLat1 - radLat2;
-        var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
-        var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
-          Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
-        s = s * 6378.137;// EARTH_RADIUS;
-        s = Math.round(s * 10000) / 10000;
-        return s;
-      },
-      // 调用 return的距离单位为km
-      // console.log(GetDistance(22.54605355, 114.02597366, 22.620315, 114.144802));
+    // 方法定义 lat,lng 
+    GetDistance (lat1, lng1, lat2, lng2) {
+      var radLat1 = lat1 * Math.PI / 180.0;
+      var radLat2 = lat2 * Math.PI / 180.0;
+      var a = radLat1 - radLat2;
+      var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+      var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+        Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+      s = s * 6378.137;// EARTH_RADIUS;
+      s = Math.round(s * 10000) / 10000;
+      return s;
+    },
+    // 调用 return的距离单位为km
+    // console.log(GetDistance(22.54605355, 114.02597366, 22.620315, 114.144802));
     // },
-    getDistance(){
+    getDistance () {
       this.$axios.post("/getCinemaData", {
       }).then((res) => {
         var cinemaList = res.data.data
         console.log(cinemaList)
-        for(let i=0;i<cinemaList.length;i++){
-          var distance=this.GetDistance(this.location.position.lat, this.location.position.lng, cinemaList[i].lat, cinemaList[i].lng)
+        for (let i = 0; i < cinemaList.length; i++) {
+          var distance = this.GetDistance(this.location.position.lat, this.location.position.lng, cinemaList[i].lat, cinemaList[i].lng)
           console.log(distance)
-          cinemaList[i].cinemaDistance=distance
+          cinemaList[i].cinemaDistance = distance
         }
         console.log(cinemaList)
-        this.$axios.post("/updataCinemaDistance",{
-          cinemaList:cinemaList
-        }).then((res)=>{
+        this.$axios.post("/updataCinemaDistance", {
+          cinemaList: cinemaList
+        }).then((res) => {
 
         })
         // this.movieList.score = res.data.data[0].score
@@ -478,7 +519,7 @@ export default {
     // 拿取到电影信息
     getMovie () {
       this.$axios.post("/getMovie", {
-        // user_id: "1"
+        locationCity:this.locationCity
       }).then((res) => {
         this.movieList = res.data.data
         console.log(this.movieList)
@@ -487,6 +528,7 @@ export default {
     // 获取电影院信息
     getCinemaData () {
       this.$axios.post("/getCinemaData", {
+        locationCity:this.locationCity
       }).then((res) => {
         this.cinemaList = res.data.data
         console.log(this.cinemaList)
@@ -543,17 +585,17 @@ export default {
       this.selectCinema()
     },
     // 筛选影院服务
-    selectHallType () {
-      this.$axios.post('/selectHallType', {
+    // selectHallType () {
+    //   this.$axios.post('/selectHallType', {
 
-        hallTypeSelected: this.hallTypeSelected
-      }).then((res) => {
-        if (res.data.code == 200) {
-          // console.log(res.data.data)
-          // this.cinemaList = res.data.data
-        }
-      })
-    },
+    //     hallTypeSelected: this.hallTypeSelected
+    //   }).then((res) => {
+    //     if (res.data.code == 200) {
+    //       // console.log(res.data.data)
+    //       // this.cinemaList = res.data.data
+    //     }
+    //   })
+    // },
     // 筛选
     selectCinema () {
       if (this.zoneSelected == '全部') {
@@ -584,6 +626,7 @@ export default {
         zoneSelected: this.zoneSelected,
         tradeAreaSelected: this.tradeAreaSelected,
         sortOrderText: this.sortOrderText,
+        locationCity:this.locationCity
       }).then((res) => {
         if (res.data.code == 200) {
           console.log(res.data.data)

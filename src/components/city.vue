@@ -3,7 +3,7 @@
     <van-nav-bar title="选择城市" left-arrow @click-left="onClickLeft" />
     <div class="city-location">
       <p>定位城市</p>
-      <span @click="choose" :class="[isChoose==0?'selected':'']">{{locationCity}}</span>
+      <span @click="choose" :class="[isChoose==0?'selected':'']" v-if="location.addressComponent!=undefined">{{locationCity}}</span>
     </div>
     <div class="city-popular">
       <p>热门城市</p>
@@ -49,7 +49,9 @@ export default {
       locationCity: '',
       isSelected: -1,
       isChoose: -1,
-      isSelectedIndex: -1
+      isSelectedIndex: -1,
+      location:'',
+      locationCity:''
     }
   },
   mounted () {
@@ -59,8 +61,13 @@ export default {
     //     this.hotCities = res.hotCities
     //   }
     // })
-    this.locationCity = JSON.parse(localStorage.getItem("location"))
+    if (this.$store.state.location != null) {
+      this.location = this.$store.state.location
+      this.locationCity = this.location.addressComponent.city
+      
+      console.log(this.location.addressComponent.city)
 
+    }
     this.getCityData()
   },
   methods: {
@@ -79,16 +86,26 @@ export default {
     },
     toSelect (index, item) {
       this.isSelected = index
-      localStorage.setItem("location", JSON.stringify(item.name))
+      console.log(item)
+      localStorage.setItem("location", JSON.stringify(item))
       this.$router.go(-1)
     },
     choose () {
       this.isChoose = 0
-      localStorage.setItem("location", JSON.stringify("成都"))
+      var arr={
+        name:'',
+        lng:'',
+        lat:''
+      }
+      arr.name=this.location.addressComponent.city
+      arr.lng=this.location.position.lng
+      arr.lat=this.location.position.lat
+      console.log(arr)
+      localStorage.setItem("location", JSON.stringify(arr))
       this.$router.go(-1)
     },
     toSelectIndex (citem, cindex) {
-      localStorage.setItem("location", JSON.stringify(citem.name))
+      localStorage.setItem("location", JSON.stringify(citem))
       this.$router.go(-1)
     }
   }

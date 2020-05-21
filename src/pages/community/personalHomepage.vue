@@ -58,7 +58,32 @@
           </div>
         </div>
       </van-tab>
-      <van-tab title="收藏">
+      <van-tab title="喜欢">
+        <div class="videos-parts">
+          <div
+            class="videos"
+            v-for="(item,index) in ownLikeList"
+            :key="index"
+            @click="toVideoLikeDetail(item)"
+          >
+            <div class="video">
+              <img :src="`${item.videoCover}`" alt />
+            </div>
+            <p>{{item.videoDescribe}}</p>
+            <div class="video-bottom">
+              <div class="left-person">
+                <img src="../../assets/头像.jpg" alt />
+                <p>{{item.userName}}</p>
+              </div>
+              <!-- <div class="right-great">
+                <van-icon name="good-job-o" />
+                <span>5</span>
+              </div>-->
+            </div>
+          </div>
+        </div>
+      </van-tab>
+      <van-tab title="收藏" v-if="videoList.userId == userInfo.userId">
         <div class="videos-parts">
           <div
             class="videos"
@@ -105,7 +130,8 @@ export default {
       followAndFansList: [],
       isFollow: null,
       ownReleaseList: [],
-      ownCollectList: []
+      ownCollectList: [],
+      ownLikeList:[]
     }
   },
   mounted () {
@@ -189,6 +215,7 @@ export default {
           console.log(res.data.data)
           this.ownReleaseList = res.data.data[0]
           this.ownCollectList = res.data.data[1]
+          this.ownLikeList = res.data.data[2]
           console.log(this.ownReleaseList)
           console.log(this.ownCollectList)
 
@@ -205,6 +232,12 @@ export default {
       this.$router.push({ path: '/Community/Video', query: { data: item } })
 
       console.log("jjj")
+    },
+    toVideoLikeDetail(){
+      var videoPlayList = JSON.parse(localStorage.getItem('video'))
+      videoPlayList.push(item)
+      localStorage.setItem('video', JSON.stringify(videoPlayList));
+      this.$router.push({ path: '/Community/Video', query: { data: item } })
     },
     // 收藏用户的动态页
     toVideoCollectDetail (item) {

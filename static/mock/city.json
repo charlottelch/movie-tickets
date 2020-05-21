@@ -2,34 +2,50 @@
 	"code": true,
 	"hotCities": [
 		{
-			"id": 1,
-			"spell": "beijing",
-			"name": "北京"
+			"code": "010", 
+			"name": "北京", 
+			"pinyin": "Beijing", 
+			"label": "Beijing010",
+			"lng": "116.46", 
+			"lat": "39.92"
+		}, 
+		{
+			"code": "021", 
+			"name": "上海", 
+			"pinyin": "Shanghai", 
+			"label": "Shanghai021",
+			"lng": "121.48",
+			"lat": "31.22"
+		}, 
+		{
+			"code": "028", 
+			"name": "成都", 
+			"pinyin": "Chengdu", 
+			"label": "Chengdu028"
+		}, 
+		{
+			"code": "020", 
+			"name": "广州", 
+			"pinyin": "Guangzhou", 
+			"label": "Guangzhou020"
+		}, 
+		{
+			"code": "029", 
+			"name": "西安", 
+			"pinyin": "Xian", 
+			"label": "Xian029"
 		},
 		{
-			"id": 3,
-			"spell": "shanghai",
-			"name": "上海"
-		},
+			"code": "0755", 
+			"name": "深圳", 
+			"pinyin": "Shenzhen", 
+			"label": "Shenzhen0755"
+		}, 
 		{
-			"id": 47,
-			"spell": "xian",
-			"name": "西安"
-		},
-		{
-			"id": 239,
-			"spell": "sanya",
-			"name": "三亚"
-		},
-		{
-			"id": 188,
-			"spell": "lijiang",
-			"name": "丽江"
-		},
-		{
-			"id": 125,
-			"spell": "guilin",
-			"name": "桂林"
+			"code": "025", 
+			"name": "南京", 
+			"pinyin": "Nanjing", 
+			"label": "Nanjing025"
 		}
 	],
 	"cities": [
