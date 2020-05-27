@@ -21,7 +21,7 @@
       <van-swipe-item>3</van-swipe-item>
       <van-swipe-item>4</van-swipe-item>
     </van-swipe>
-    <div class="popular">
+    <div class="popular" v-if="movieList.length>0">
       <div class="popular-title">
         <h3>热映电影</h3>
         <!-- <p>
@@ -41,7 +41,7 @@
         </ul>
       </div>
     </div>
-    <div>
+    <div v-if="videoList.length>0">
       <h3>热门动态</h3>
       <div class="videos-parts">
         <div
@@ -201,7 +201,7 @@ export default {
             console.log(result.city)
             // this.$store.commit(GET_LOCATION, result.city)
             // localStorage.setItem("location", JSON.stringify(result.city))
-            // this.city = result.city
+            this.location = result.city
             //逆向地理编码
             this.trafficMap.plugin('AMap.Geocoder', function () {
               var geocoder = new AMap.Geocoder({
@@ -242,7 +242,6 @@ export default {
     // 拿取到电影信息
     getMovie () {
       console.log(this.locationCity)
-
       this.$axios.post("/getMovie", {
         locationCity: this.locationCity
       }).then((res) => {

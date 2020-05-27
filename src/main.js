@@ -10,6 +10,9 @@ import store from './store/store'
 // 3D轮播
 import Carousel3d from 'vue-carousel-3d';
 import Vuex from 'vuex'
+// md5加密
+import md5 from 'js-md5';
+Vue.prototype.$md5 = md5;
 
 import VueBetterCalendar from 'vue-better-calendar'
 Vue.use(VueBetterCalendar)

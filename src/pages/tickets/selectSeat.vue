@@ -200,17 +200,6 @@ export default {
       //提示用户无合法位置可选
       this.$toast('无合法位置可选!')
       console.log(this.seatArray)
-      // var arr = []
-      // for(let i=0;i<this.seatArray.length;i++){
-      //   console.log(i)
-      //   for(let j=0;j<this.seatArray[i].length;j++){
-      //     console.log(j)
-      //     if(this.seatArray[i][j]==1){
-      //         console.log(i,j)
-      //         return
-      //     }
-      //   }
-      // }
     },
 
     /*辅助函数，判断每一行座位从i列到j列是否全部空余且连续
@@ -305,7 +294,6 @@ export default {
         newArray[row][col] = 1
       }
 
-      // var arr = []
       if (seatValue === 0) {
         let c = col
         let r = row

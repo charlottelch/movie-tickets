@@ -49,7 +49,7 @@ export default {
   data () {
     return {
       title: '',
-      couponList: [],
+      // couponList: [],
       userInfo: {},
       cinemalist: {},
       sceneInfo: {},
@@ -85,7 +85,7 @@ export default {
     }
     this.sceneInfo = JSON.parse(localStorage.getItem('scene'))
     this.seatList = JSON.parse(localStorage.getItem('seat'))
-    // this.couponlist = JSON.parse(localStorage.getItem('coupon'))
+    this.couponlist = JSON.parse(localStorage.getItem('coupon'))
     this.cinemalist = JSON.parse(localStorage.getItem('cinema'))
 
     this.orderPrice = JSON.parse(localStorage.getItem('orderPrice'))

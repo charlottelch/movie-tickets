@@ -44,7 +44,6 @@ export default {
       this.$router.go(-1)
     },
     register () {
-      // console.log("kk")
       if (!this.tel) {
         this.$toast('电话号码为空')
         return
@@ -54,7 +53,6 @@ export default {
         return
       }
       var pwdRegex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z]).{6,10}');
-
       if (!pwdRegex.test(this.newPassword)) {
         this.$toast("密码格式错误");
         return
@@ -68,7 +66,7 @@ export default {
       }
       this.$axios.post("/register", {
         phone: this.tel,
-        password: this.newPassword
+        password: this.$md5(this.newPassword)
       }).then((res) => {
         if (res.data.code == 200) {
           this.$router.go(-1)

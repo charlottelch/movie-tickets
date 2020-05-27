@@ -3,8 +3,12 @@
     <nav-title :title="title"></nav-title>
     <van-cell-group>
       <van-field v-model="userInfo.userName" placeholder="请输入昵称" />
-      <van-button type="primary" size="large" @click="preserveNickname">保存</van-button>
+
+      <!-- <van-button type="primary" size="large" @click="preserveNickname">保存</van-button> -->
     </van-cell-group>
+    <div class="ticket-purchase">
+      <span @click="preserveNickname">保存</span>
+    </div>
   </div>
 </template>
 
@@ -33,9 +37,9 @@ export default {
     },
     preserveNickname () {
       console.log("hhaha")
-      this.$axios.post("/preserveNickname",{
+      this.$axios.post("/preserveNickname", {
         userName: this.userInfo.userName,
-        userId:this.userInfo.userId
+        userId: this.userInfo.userId
       }).then((res) => {
         console.log(res)
       })
@@ -45,4 +49,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.ticket-purchase {
+  // position: fixed;
+  // bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: white;
+  margin-top: 20px;
+  span {
+    display: inline-block;
+    background: rgb(233, 87, 131);
+    background-image: linear-gradient(to left, #ff3174, #fe756b);
+    border: 0;
+    width: 95%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 40px;
+    color: white;
+  }
+}
 </style>

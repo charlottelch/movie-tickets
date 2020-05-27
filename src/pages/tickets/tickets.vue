@@ -360,8 +360,8 @@ export default {
       // 定位城市
       locationCity: '',
       city: '',
-      // locationLat: '',
-      // locationLng: ''
+      locationLat: '',
+      locationLng: ''
       // subwayTitle: '全城',
     }
   },
@@ -373,18 +373,22 @@ export default {
     if (this.$store.state.location != null) {
       this.location = this.$store.state.location
       this.locationCity = this.location.addressComponent.city
-      // this.locationLat = this.location.position.lat
-      // this.locationLng = this.location.position.lng
+      this.locationLat = this.location.position.lat
+      this.locationLng = this.location.position.lng
+      this.getDistance()
+
       console.log(this.location.position)
     }
     this.city = JSON.parse(localStorage.getItem("location"))
     if (this.city != null) {
       this.locationCity = this.city.name
-      // this.locationLat = this.city.lat
-      // this.locationLng = this.city.lng
-      console.log(this.city)
+      this.locationLat = this.city.lat
+      this.locationLng = this.city.lng
+      console.log(this.locationLat, this.locationLng)
+      this.getDistance()
+
     }
-    if (this.locationCity == '成都市'||'成都') {
+    if (this.locationCity == '成都市' || '成都') {
       this.businessCircleItems = [
         { text: '全部', children: [{ text: '全部' }] },
         { text: '武侯区', children: [{ text: '全部' }, { text: '火车南站' }, { text: '石羊场' }] },
@@ -413,12 +417,12 @@ export default {
       ]
     }
     // console.log(this.locationLat, this.locationLng)
-    this.getMovie()
+    // this.getMovie()
     this.getCinemaData()
     this.getComingSoonMovie()
     this.getTrailerData()
     this.getRecentExpectations()
-    this.getDistance()
+    // this.getDistance()
     // 事件监听滚动条
     window.addEventListener('scroll', this.watchScroll)
 
@@ -441,12 +445,14 @@ export default {
     // console.log(GetDistance(22.54605355, 114.02597366, 22.620315, 114.144802));
     // },
     getDistance () {
+      console.log("hhh")
       this.$axios.post("/getCinemaData", {
+        locationCity:this.locationCity
       }).then((res) => {
         var cinemaList = res.data.data
         console.log(cinemaList)
         for (let i = 0; i < cinemaList.length; i++) {
-          var distance = this.GetDistance(this.location.position.lat, this.location.position.lng, cinemaList[i].lat, cinemaList[i].lng)
+          var distance = this.GetDistance(this.locationLat, this.locationLng, cinemaList[i].lat, cinemaList[i].lng)
           console.log(distance)
           cinemaList[i].cinemaDistance = distance
         }
@@ -454,6 +460,7 @@ export default {
         this.$axios.post("/updataCinemaDistance", {
           cinemaList: cinemaList
         }).then((res) => {
+          this.getMovie()
 
         })
         // this.movieList.score = res.data.data[0].score
@@ -519,7 +526,7 @@ export default {
     // 拿取到电影信息
     getMovie () {
       this.$axios.post("/getMovie", {
-        locationCity:this.locationCity
+        locationCity: this.locationCity
       }).then((res) => {
         this.movieList = res.data.data
         console.log(this.movieList)
@@ -528,7 +535,7 @@ export default {
     // 获取电影院信息
     getCinemaData () {
       this.$axios.post("/getCinemaData", {
-        locationCity:this.locationCity
+        locationCity: this.locationCity
       }).then((res) => {
         this.cinemaList = res.data.data
         console.log(this.cinemaList)
@@ -626,7 +633,7 @@ export default {
         zoneSelected: this.zoneSelected,
         tradeAreaSelected: this.tradeAreaSelected,
         sortOrderText: this.sortOrderText,
-        locationCity:this.locationCity
+        locationCity: this.locationCity
       }).then((res) => {
         if (res.data.code == 200) {
           console.log(res.data.data)

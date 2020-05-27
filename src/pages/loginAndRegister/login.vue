@@ -45,7 +45,7 @@ export default {
     login () {
       this.$axios.post("/login", {
         phone: this.tel,
-        password: this.password
+        password: this.$md5(this.password)
       }).then((res) => {
         console.log(res.data)
         if (res.data.code == 200) {
@@ -53,6 +53,7 @@ export default {
           // this.userName = this.data.userName
           // console.log(this.userName)
           // 将登录数据传值到仓库
+          this.$toast(res.data.msg)
           this.$store.commit(GET_USERINFO, this.data)
           // this.$store.dispatch('getUser',{
           //   userId:'0001'

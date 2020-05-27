@@ -51,7 +51,7 @@
           <div>
             <h3>{{item.performerName}}</h3>
             <p>
-              评分
+              职业：
               <span>{{item.occupation}}</span>
             </p>
           </div>

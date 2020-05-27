@@ -172,7 +172,7 @@ export default {
     margin: 10px 0;
   }
   .movie-comment {
-    padding: 46px 10px 0 10px;
+    padding: 46px 10px 46px 10px;
   }
   .film-review-part {
     padding: 10px 0;

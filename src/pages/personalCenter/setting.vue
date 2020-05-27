@@ -60,7 +60,10 @@
           <van-icon name="arrow" />
         </div>
       </div>
-      <van-button type="primary" size="large" @click="logout">退出登录</van-button>
+      <div class="ticket-purchase">
+        <span @click="logout">退出登录</span>
+      </div>
+      <!-- <van-button round size="large" @click="logout">退出登录</van-button> -->
       <van-action-sheet v-model="show" title="标题" cancel-text="取消" @cancel="onCancel">
         <div class="content">
           <van-uploader :after-read="afterReadImage" accept="image/*" :max-count="1">
@@ -224,33 +227,33 @@ export default {
     },
     genderBoy () {
       // if (this.userInfo.gender == '女' || null) {
-        this.$axios.post("/genderBoy", {
-          // gender: this.userInfo.gender,
-          userId: this.userInfo.userId
-        }).then((res) => {
-          if (res.data.code == 200) {
-            this.userInfo.gender = '男'
-            this.onGenderCancel()
-            this.$store.commit(GET_USERINFO, this.userInfo)
-          }
-          console.log(res)
-        })
+      this.$axios.post("/genderBoy", {
+        // gender: this.userInfo.gender,
+        userId: this.userInfo.userId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.userInfo.gender = '男'
+          this.onGenderCancel()
+          this.$store.commit(GET_USERINFO, this.userInfo)
+        }
+        console.log(res)
+      })
       // }
 
     },
     genderGirl () {
       // if (this.userInfo.gender == '男' || null) {
-        this.$axios.post("/genderGirl", {
-          // gender: this.userInfo.gender,
-          userId: this.userInfo.userId
-        }).then((res) => {
-          if (res.data.code == 200) {
-            this.userInfo.gender = '女'
-            this.onGenderCancel()
-            this.$store.commit(GET_USERINFO, this.userInfo)
-          }
-          console.log(res)
-        })
+      this.$axios.post("/genderGirl", {
+        // gender: this.userInfo.gender,
+        userId: this.userInfo.userId
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.userInfo.gender = '女'
+          this.onGenderCancel()
+          this.$store.commit(GET_USERINFO, this.userInfo)
+        }
+        console.log(res)
+      })
       // }
 
     }
@@ -282,13 +285,41 @@ export default {
         }
       }
     }
+    .ticket-purchase {
+      // position: fixed;
+      // bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background: white;
+      span {
+        display: inline-block;
+        background: rgb(233, 87, 131);
+        background-image: linear-gradient(to left, #ff3174, #fe756b);
+        border: 0;
+        width: 95%;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 40px;
+        color: white;
+      }
+    }
     .van-action-sheet__header {
       display: none !important;
     }
     .content {
+      // display: flex;
+      // justify-content: center;
       p {
         text-align: center;
       }
+    }
+    /deep/ .van-uploader {
+      width: 100%;
+    }
+    /deep/ .van-uploader__input-wrapper {
+      width: 100%;
     }
   }
 }

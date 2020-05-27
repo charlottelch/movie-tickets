@@ -552,7 +552,7 @@ export default {
     margin: 10px 0 !important;
   }
   .comment {
-    padding: 0 10px;
+    padding: 0 10px 46px 10px;
     .comment-detail {
       display: flex;
       align-items: flex-start;
@@ -581,7 +581,7 @@ export default {
     padding: 0 10px;
     background: #e4e2e273;
   }
-  .input{
+  .input {
     position: fixed;
     bottom: 0;
     width: 100%;

@@ -168,26 +168,6 @@ export default {
           }
         })
 
-        // 模拟发送签到请求
-        // setTimeout(() => {
-        //   this.isSigning = false
-        //   // 模拟请求成功状态值
-        //   let responseDataStatus = true // true为成功，false为失败（具体看接口）
-        //   let responseDataMsg = '签到失败，请重试~'
-        //   if (responseDataStatus) {
-        //     // 改变签到状态
-        //     this.isSigned = true
-
-        //     // 提示签到成功，可以通过signSuccessTxt属性设置
-        //     alert(signInfo.msg)
-
-        //     // 更新已签到日期
-        //     this.signedDates = signInfo.signedDates
-        //     // console.log(this.signedDates)
-        //   } else {
-        //     alert(responseDataMsg)
-        //   }
-        // }, 3000)
       } else {
         /* 需要在当天才能签到的提示，有如下三个属性可设置提示内容
          * notSignInOtherMonthsTxt，签到时点击本月外日期时的文本提示，默认值为“不能在本月外进行签到”

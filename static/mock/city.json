@@ -21,7 +21,9 @@
 			"code": "028", 
 			"name": "成都", 
 			"pinyin": "Chengdu", 
-			"label": "Chengdu028"
+			"label": "Chengdu028",
+			"lng": "104.40976",
+			"lat": "30.921141"
 		}, 
 		{
 			"code": "020", 
