@@ -33,11 +33,12 @@
           <img src="../../assets/icon/QQ .png" alt />
         </div>
       </van-action-sheet>
-      <div class="video" v-if="movieList.video!= ''">
-        <video width="100%" height="100%" controls>
+      <div class="video">
+        <video width="100%" height="100%" controls v-if="movieList.video!= null">
           <source :src="`../../../static/video/${movieList.video}`" type="video/mp4" />您的浏览器不支持 HTML5 video 标签。
           <!-- <source src="../../../static/video/meirenyu.mp4" type="video/mp4"/>> -->
         </video>
+        <div v-if="movieList.video == null" style="width:100%;height:46px;background:grey"></div>
       </div>
       <div class="info">
         <div class="score box-shadow">
@@ -64,9 +65,10 @@
           <van-divider></van-divider>
           <div class="score-detail">
             <div class="score-star">
-              <p>
-                <span>{{movieList.score}}</span>电影评分
+              <p v-if="movieList.score!=null">
+                <span class="score-number">{{movieList.score}}</span>电影评分
               </p>
+              <p v-if="movieList.score==null">暂无评分</p>
               <van-rate
                 v-model="starValue"
                 allow-half
@@ -75,6 +77,7 @@
                 void-color="#eee"
                 :size="20"
                 readonly
+                v-if="movieList.score!=null"
               />
             </div>
             <span class="click-button" :class="[isActive?'checked':'']" @click="wantToLook">
@@ -114,7 +117,7 @@
                   <!-- <p>
                     <span>热播榜</span>
                     <van-icon name="arrow" />
-                  </p> -->
+                  </p>-->
                 </div>
                 <div class="sortMenu clearfix">
                   <ul class="sortMenu-ul">
@@ -142,7 +145,12 @@
                 </div>
                 <div class="sortMenu clearfix">
                   <ul class="sortMenu-ul">
-                    <li class="cell" v-for="(item,index) in movieVideoList" :key="index" @click="toMovieVideoPage(item)">
+                    <li
+                      class="cell"
+                      v-for="(item,index) in movieVideoList"
+                      :key="index"
+                      @click="toMovieVideoPage(item)"
+                    >
                       <img :src="`${item.movieVideoCover}`" alt />
                       <!-- <p>哈哈</p>
                       <p>导演</p>-->
@@ -172,7 +180,6 @@
               >
                 <!-- <template v-slot:index>第{{ index }}页</template> -->
               </van-image-preview>
-              
             </van-tab>
             <van-tab title="影评">
               <div class="film-review box-shadow">
@@ -206,7 +213,7 @@
                         />
                         <img v-show="isLike==true" src="../../assets/icon/movie-like-red.png" alt />
                         <span>{{item.likeCommentNum}}</span>
-                      </span> -->
+                      </span>-->
                       <span class="comment">
                         <!-- <van-icon name="chat-o" /> -->
                         <img src="../../assets/icon/movie-comment-grey.png" alt />
@@ -215,11 +222,12 @@
                     </div>
                   </div>
                 </div>
-                <p class="to-look-comment" @click="toLookComment">查看全部影评</p>
+                <p class="to-look-comment" @click="toLookComment" v-if="this.commentList.length>3">查看全部影评</p>
               </div>
             </van-tab>
             <van-tab title="更多">
-              <div class="movie-dynamics box-shadow">
+              <p style="textAlign:center">敬请期待...</p>
+              <!-- <div class="movie-dynamics box-shadow">
                 <div>
                   <h4>电影动态</h4>
                 </div>
@@ -236,12 +244,12 @@
                   </div>
                   <van-icon name="arrow" />
                 </div>
-              </div>
+              </div> -->
             </van-tab>
           </van-tabs>
         </div>
       </div>
-      <div class="ticket-purchase">
+      <div class="ticket-purchase" v-if="movieList.movieState==0">
         <!-- <van-button round type="info" size="large">选座购票</van-button> -->
         <span @click="goTicketsBuy">选座购票</span>
       </div>
@@ -265,7 +273,7 @@ export default {
       isScroll: true,
       stillList: {},
       stillList1: [],
-      movieVideoList:[],
+      movieVideoList: [],
       imageShow: false,
       index: 0,
       commentList: [],
@@ -334,8 +342,12 @@ export default {
     },
     //去写评论
     writeReview () {
-      if (this.isSeen != true) {
-        this.$router.push({ path: '/Tickets/MovieDetail/Grade' })
+      if (this.$store.state.userInfo != null) {
+        if (this.isSeen != true) {
+          this.$router.push({ path: '/Tickets/MovieDetail/Grade' })
+        }
+      }else{
+        this.$router.push({ path: '/Login' })
       }
     },
     // 接收电影数据
@@ -346,22 +358,26 @@ export default {
     },
     // 操作“想看”
     wantToLook (index) {
-      this.isActive = !this.isActive
-      if (this.isActive) {
-        this.movieList.wantLook = this.movieList.wantLook + 1
+      if (this.$store.state.userInfo != null) {
+        this.isActive = !this.isActive
+        if (this.isActive) {
+          this.movieList.wantLook = this.movieList.wantLook + 1
+        } else {
+          this.movieList.wantLook = this.movieList.wantLook - 1
+        }
+        console.log(this.movieList.wantLook, this.isActive)
+        this.$axios.post("/wantToLook", {
+          wantLook: this.movieList.wantLook,
+          movieId: this.movieList.movieId,
+          isActive: this.isActive,
+          userId: this.userInfo.userId,
+        }).then((res) => {
+          // this.movieList = res.data.data
+          console.log(res)
+        })
       } else {
-        this.movieList.wantLook = this.movieList.wantLook - 1
+        this.$router.push({ path: '/Login' })
       }
-      console.log(this.movieList.wantLook, this.isActive)
-      this.$axios.post("/wantToLook", {
-        wantLook: this.movieList.wantLook,
-        movieId: this.movieList.movieId,
-        isActive: this.isActive,
-        userId: this.userInfo.userId,
-      }).then((res) => {
-        // this.movieList = res.data.data
-        console.log(res)
-      })
     },
     // 渲染“想看”
     wantLookList () {
@@ -441,8 +457,8 @@ export default {
       this.index = index;
     },
     // 到电影视频观看页面
-    toMovieVideoPage(item){
-      localStorage.setItem("videoPlay",JSON.stringify(item))
+    toMovieVideoPage (item) {
+      localStorage.setItem("videoPlay", JSON.stringify(item))
       this.$router.push({ path: '/Tickets/VideoPlay' })
     },
     // 控制图片预览显示（在处理index时遇到一个问题，不应该将引用的组件放在v-for里面）
@@ -534,7 +550,7 @@ export default {
     // background: red;
   }
   .score {
-    margin-top: 0;
+    margin: 10px 0;
     .movie-info {
       display: flex;
       // padding: 10px 0;
@@ -555,7 +571,7 @@ export default {
           background: #f7dada94;
           border-radius: 20px;
           color: red;
-          span{
+          span {
             padding: 0 5px;
           }
         }
@@ -565,6 +581,9 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      .score-number {
+        font-size: 18px;
+      }
       .click-button {
         display: flex;
         align-items: center;
@@ -591,7 +610,7 @@ export default {
   }
   .introduction-review-more {
     margin-bottom: 60px;
-    .card-mid{
+    .card-mid {
       padding-top: 15px;
     }
     .expansion {

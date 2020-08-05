@@ -2,7 +2,7 @@
   <div class="main-con">
     <div class="search-top">
       <div class="location" @click="toCity">
-        <p v-if="location.addressComponent!=undefined">{{locationCity}}</p>
+        <p v-if="location.addressComponent!=undefined || city != null">{{locationCity}}</p>
         <i class="arrow-bottom"></i>
       </div>
       <span class="search-form" @click="toSearch">
@@ -18,8 +18,9 @@
       <van-swipe-item @click="toSecondSwipeDetail">
         <img src="../../assets/homePage/gana.png" alt />
       </van-swipe-item>
-      <van-swipe-item>3</van-swipe-item>
-      <van-swipe-item>4</van-swipe-item>
+      <van-swipe-item>
+        <img src="../../assets/homePage/third-swipe-img01.jpg" alt="">
+      </van-swipe-item>
     </van-swipe>
     <div class="popular" v-if="movieList.length>0">
       <div class="popular-title">
@@ -176,7 +177,7 @@ export default {
               pageSize: 50,
             });
 
-            placeSearch.search('万达影城(金红桥店)上海', (status, result) => {
+            placeSearch.search('影院', (status, result) => {
               // 查询成功时，result即对应匹配的POI信息
               console.log(result)
             });

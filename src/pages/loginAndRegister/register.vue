@@ -52,7 +52,8 @@ export default {
         this.$toast('电话号码格式错误')
         return
       }
-      var pwdRegex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z]).{6,10}');
+      // var pwdRegex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z]).{6,8}');
+      var pwdRegex = new RegExp(/^(?=.*?[a-z)(?=.*>[A-Z])(?=.*?[0-9])[a-zA_Z0-9]{6,10}$/)
       if (!pwdRegex.test(this.newPassword)) {
         this.$toast("密码格式错误");
         return

@@ -77,7 +77,6 @@ export default {
     onClickLeft () {
       this.$router.go(-1)
     },
-
   }
 }
 </script>
@@ -85,7 +84,6 @@ export default {
 <style lang="less" scoped>
 .main-con {
   .secondSwipe{
-    // width: 100%;
     margin: 46px 0;
     padding: 0 10px;
     img{

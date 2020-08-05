@@ -47,7 +47,7 @@ export default {
       this.userInfo = this.$store.state.userInfo
       console.log(this.userInfo)
     }
-    this.getNowFormatDate()
+    
 
   },
   methods: {
@@ -86,9 +86,9 @@ export default {
     },
     onClickRight () {
       // console.log(this.message)
-      this.$router.push({ path: '/Tickets/MovieDetail'})
       // this.$router.go(-1)
       // 新增评论
+      this.getNowFormatDate()
       this.$axios.post("/score", {
         userId: this.userInfo.userId,
         movieId: this.movieList.movieId,
@@ -106,7 +106,7 @@ export default {
         // this.movieList.score=res.data.data[0].score
         console.log(res)
       })
-
+      this.$router.push({ path: '/Tickets/MovieDetail'})
     },
     changGrade (value) {
       this.score = value * 2

@@ -58,7 +58,6 @@ export default {
   data () {
     return {
       title: '',
-
     }
   },
   mounted () {
@@ -68,7 +67,6 @@ export default {
     onClickLeft () {
       this.$router.go(-1)
     },
-
   }
 }
 </script>
@@ -76,7 +74,6 @@ export default {
 <style lang="less" scoped>
 .main-con {
   .firstSwipe {
-    // width: 100%;
     background: #e6c99d;
     padding: 46px 10px;
     .title {
@@ -125,9 +122,7 @@ export default {
           font-size: 20px;
         }
         .title-dark{
-          // color: #294965;
           color: white;
-
         }
       }
     }

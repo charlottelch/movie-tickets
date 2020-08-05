@@ -4,6 +4,7 @@
     <div class="city-location">
       <p>定位城市</p>
       <span @click="choose" :class="[isChoose==0?'selected':'']" v-if="location.addressComponent!=undefined">{{locationCity}}</span>
+      <span :class="[isChoose==0?'selected':'']" v-if="$store.state.location == null">自动定位失败</span>
     </div>
     <div class="city-popular">
       <p>热门城市</p>
@@ -61,12 +62,11 @@ export default {
     //     this.hotCities = res.hotCities
     //   }
     // })
+    console.log(this.$store.state.location)
     if (this.$store.state.location != null) {
       this.location = this.$store.state.location
       this.locationCity = this.location.addressComponent.city
-      
       console.log(this.location.addressComponent.city)
-
     }
     this.getCityData()
   },

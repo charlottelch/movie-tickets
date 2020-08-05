@@ -262,7 +262,8 @@ export default {
     }
   }
   /deep/ .van-nav-bar {
-    background-color: transparent !important;
+    // background-color: transparent !important;
+    background: #28aca4 !important;
     color: white;
     position: fixed;
     left: 0;

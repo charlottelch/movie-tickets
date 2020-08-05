@@ -152,6 +152,8 @@ export default {
         videoLabel: this.labelMessage
       }).then((res) => {
         if (res.data.code == 200) {
+          this.$toast("发布成功")
+           this.$router.push('/Community')
           console.log(res.data.data)
         }
       })

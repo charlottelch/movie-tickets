@@ -10,7 +10,7 @@
         @clear="onClear"
       />
     </form>
-    <div class="history" v-show="searchHistoryShow == true"> 
+    <div class="history" v-show="searchHistoryShow == true">
       <p>历史记录</p>
       <span
         v-for="(item,index) in historyList"
@@ -20,6 +20,12 @@
       >{{item.searchHistoryContent}}</span>
     </div>
     <div class="search-result">
+      <img
+        class="empty-show"
+        src="../assets/empty-img01.jpg"
+        alt
+        v-if="searchMovieList.length==0 && searchPerformerList.length == 0 && searchCinemaList.length==0 && searchHistoryShow == false"
+      />
       <p v-if="searchMovieList.length>0" class="title">电影</p>
       <div class="film" v-for="(mItem,index) in searchMovieList" :key="index">
         <div class="information" @click="goMovieDetailPage(mItem)">
@@ -102,7 +108,7 @@ export default {
       searchPerformerList: [],
       searchCinemaList: [],
       historyList: [],
-      searchHistoryShow:true
+      searchHistoryShow: true
     }
   },
   mounted () {
@@ -119,7 +125,7 @@ export default {
         this.addSearchHistory()
         this.getSearchAll()
         this.getSearchHistory()
-      }else{
+      } else {
         this.$toast("请输入搜索内容")
       }
     },
@@ -163,7 +169,7 @@ export default {
     // 点击历史记录搜索
     historySearch (item) {
       this.inputText = item.searchHistoryContent
-      // this.addSearchHistory()
+      this.addSearchHistory()
       this.getSearchHistory()
       this.getSearchAll()
     },
@@ -187,6 +193,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.empty-show{
+  width: 100%;
+}
 .history {
   padding: 0 10px;
   p {

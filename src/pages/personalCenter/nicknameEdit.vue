@@ -41,6 +41,8 @@ export default {
         userName: this.userInfo.userName,
         userId: this.userInfo.userId
       }).then((res) => {
+        this.$router.go(-1)
+        this.$toast("修改成功")
         console.log(res)
       })
     }

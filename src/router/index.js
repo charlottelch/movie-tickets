@@ -127,7 +127,10 @@ export default new Router({
     }, {
       path: '/Tickets/TicketsBuy',
       name: 'TicketsBuy',
-      component: TicketsBuy
+      component: TicketsBuy,
+      meta: {
+        requireAuth: true
+      }
     }, {
       path: '/Tickets/CinemaDetail',
       name: 'CinemaDetail',
@@ -158,28 +161,46 @@ export default new Router({
     }, {
       path: '/PersonalCenter/SignIn',
       name: 'SignIn',
-      component: SignIn
+      component: SignIn,
+      meta: {
+        requireAuth: true
+      }
     }, {
       path: '/PersonalCenter/Coupon',
       name: 'Coupon',
-      component: Coupon
+      component: Coupon,
+      meta: {
+        requireAuth: true
+      }
     },{
       path: '/PersonalCenter/Member',
       name: 'Member',
-      component: Member
+      component: Member,
+      meta: {
+        requireAuth: true
+      }
     },{
       path: '/PersonalCenter/UserComment',
       name: 'UserComment',
-      component: UserComment
+      component: UserComment,
+      meta: {
+        requireAuth: true
+      }
     }, {
       path: '/PersonalCenter/LikeMoviePage',
       name: 'LikeMoviePage',
-      component: LikeMoviePage
+      component: LikeMoviePage,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/PersonalCenter/MovieTickets',
       name: 'MovieTickets',
-      component: MovieTickets
+      component: MovieTickets,
+      meta: {
+        requireAuth: true
+      }
     }, {
       path: '/PersonalCenter/MovieTickets/TicketDetail',
       name: 'TicketDetail',
@@ -195,11 +216,17 @@ export default new Router({
     }, {
       path: '/Community/PersonalHomepage',
       name: 'PersonalHomepage',
-      component: PersonalHomepage
+      component: PersonalHomepage,
+      meta: {
+        requireAuth: true
+      }
     }, {
       path: '/Community/EditCommunity',
       name: 'EditCommunity',
-      component: EditCommunity
+      component: EditCommunity,
+      meta: {
+        requireAuth: true
+      }
     },{
       path: '/Community/FollowAndFansList',
       name: 'FollowAndFansList',

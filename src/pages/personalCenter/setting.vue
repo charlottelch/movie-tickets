@@ -165,6 +165,7 @@ export default {
               // console.log(this.userInfo)
               // 将修改头像，重新传值到仓库
               this.$store.commit(GET_USERINFO, this.userInfo)
+              this.show = false
             }
 
           })

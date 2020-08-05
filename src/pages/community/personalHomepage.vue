@@ -286,7 +286,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: 30px;
     margin-top: 46px;
     box-shadow: rgb(240, 240, 240) 0px 0px 10px 1px;
     margin: 56px 10px 20px 10px;

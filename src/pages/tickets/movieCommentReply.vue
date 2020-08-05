@@ -73,7 +73,7 @@ export default {
       message: '',
       placeholder: '',
       userFilmRepliedId: '',
-      commentListOne:[]
+      commentListOne: []
     }
   },
   mounted () {
@@ -129,7 +129,7 @@ export default {
       }).then((res) => {
         this.commentListOne = res.data.data[0]
         // if(this.commentListOne.reply.length>0){
-        this.commentNum =  this.commentListOne.reply.length
+        this.commentNum = this.commentListOne.reply.length
         // }
         console.log(this.commentListOne)
       })
@@ -147,18 +147,23 @@ export default {
       // this.filmReplyContent=item.filmReplyContent
     },
     sendReplyComment () {
-      this.getNowFormatDate()
-      this.$axios.post("/sendFilmReplyComment", {
-        filmCommentId: this.commentReplyList.id,
-        userFilmSendId: this.userInfo.userId,
-        userFilmRepliedId: this.userFilmRepliedId,
-        filmReplyContent: this.message,
-        filmReplyTime: this.currentdate
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.getMovieCommentDataOne()
-        }
-      })
+      if (this.$store.state.userInfo != null) {
+        this.getNowFormatDate()
+        this.$axios.post("/sendFilmReplyComment", {
+          filmCommentId: this.commentReplyList.id,
+          userFilmSendId: this.userInfo.userId,
+          userFilmRepliedId: this.userFilmRepliedId,
+          filmReplyContent: this.message,
+          filmReplyTime: this.currentdate
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.getMovieCommentDataOne()
+          }
+        })
+      }else{
+        this.$router.push({ path: '/Login' })
+      }
+
     }
 
   }
@@ -226,7 +231,7 @@ export default {
     padding: 0 10px;
     background: #e4e2e273;
   }
-  .input{
+  .input {
     position: fixed;
     bottom: 0;
     width: 100%;

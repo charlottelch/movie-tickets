@@ -26,6 +26,7 @@
             class="follow"
             :class="[isFollow?'followed':'un-followed']"
             @click="follow"
+            v-if="videoList.userId != userInfo.userId"
           >{{isFollow?'已关注':'关注'}}</span>
         </div>
         <p>{{videoList.videoLabel}}</p>
@@ -249,16 +250,20 @@ export default {
     },
     // 关注或取消关注
     follow () {
-      this.$axios.post("/follow", {
-        userId: this.userInfo.userId,
-        concernedId: this.videoList.userId,
-        isFollow: this.isFollow
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.toCheckFollow()
-        } else {
-        }
-      })
+      if (this.$store.state.userInfo != null) {
+        this.$axios.post("/follow", {
+          userId: this.userInfo.userId,
+          concernedId: this.videoList.userId,
+          isFollow: this.isFollow
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.toCheckFollow()
+          } else {
+          }
+        })
+      } else {
+        this.$router.push({ path: '/Login' })
+      }
     },
     // 初始化点赞
     toCheckThumb () {
@@ -279,31 +284,40 @@ export default {
     },
     // 点赞
     toThumb () {
-      this.$axios.post("/toThumb", {
-        userId: this.userInfo.userId,
-        videoId: this.videoList.videoId,
-        likeNumber: this.videoList.likeNumber
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.videoList.likeNumber = this.videoList.likeNumber + 1
-          // this.isthumb = true
-          this.toCheckThumb()
-        }
-      })
+      if (this.$store.state.userInfo != null) {
+        this.$axios.post("/toThumb", {
+          userId: this.userInfo.userId,
+          videoId: this.videoList.videoId,
+          likeNumber: this.videoList.likeNumber
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.videoList.likeNumber = this.videoList.likeNumber + 1
+            // this.isthumb = true
+            this.toCheckThumb()
+          }
+        })
+      } else {
+        this.$router.push({ path: '/Login' })
+      }
+
     },
     // 取消点赞
     toCancelThumb () {
-      this.$axios.post("/toCancelThumb", {
-        userId: this.userInfo.userId,
-        videoId: this.videoList.videoId,
-        likeNumber: this.videoList.likeNumber
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.videoList.likeNumber = this.videoList.likeNumber - 1
-          // this.isthumb = true
-          this.toCheckThumb()
-        }
-      })
+      if (this.$store.state.userInfo != null) {
+        this.$axios.post("/toCancelThumb", {
+          userId: this.userInfo.userId,
+          videoId: this.videoList.videoId,
+          likeNumber: this.videoList.likeNumber
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.videoList.likeNumber = this.videoList.likeNumber - 1
+            // this.isthumb = true
+            this.toCheckThumb()
+          }
+        })
+      } else {
+        this.$router.push({ path: '/Login' })
+      }
     },
     toCheckCollect () {
       this.$axios.post("/toCheckCollect", {
@@ -321,26 +335,34 @@ export default {
       })
     },
     toCollect () {
-      this.$axios.post("/toCollect", {
-        userId: this.userInfo.userId,
-        videoId: this.videoList.videoId,
-      }).then((res) => {
-        if (res.data.code == 200) {
-          // this.isthumb = true
-          this.toCheckCollect()
-        }
-      })
+      if (this.$store.state.userInfo != null) {
+        this.$axios.post("/toCollect", {
+          userId: this.userInfo.userId,
+          videoId: this.videoList.videoId,
+        }).then((res) => {
+          if (res.data.code == 200) {
+            // this.isthumb = true
+            this.toCheckCollect()
+          }
+        })
+      } else {
+        this.$router.push({ path: '/Login' })
+      }
     },
     toCancelCollect () {
-      this.$axios.post("/toCancelCollect", {
-        userId: this.userInfo.userId,
-        videoId: this.videoList.videoId,
-      }).then((res) => {
-        if (res.data.code == 200) {
-          // this.isthumb = true
-          this.toCheckCollect()
-        }
-      })
+      if (this.$store.state.userInfo != null) {
+        this.$axios.post("/toCancelCollect", {
+          userId: this.userInfo.userId,
+          videoId: this.videoList.videoId,
+        }).then((res) => {
+          if (res.data.code == 200) {
+            // this.isthumb = true
+            this.toCheckCollect()
+          }
+        })
+      } else {
+        this.$router.push({ path: '/Login' })
+      }
     },
     // 获取时间
     getNowFormatDate () {
@@ -407,34 +429,42 @@ export default {
     },
     // 发布评论
     sendComment () {
-      console.log(this.videoList.videoId, this.userInfo.userId, this.message, this.currentdate)
-      this.getNowFormatDate()
-      this.$axios.post("/sendComment", {
-        videoId: this.videoList.videoId,
-        userCommentId: this.userInfo.userId,
-        commentContent: this.message,
-        commentTime: this.currentdate
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.getCommentData()
-        }
-      })
+      if (this.$store.state.userInfo != null) {
+        console.log(this.videoList.videoId, this.userInfo.userId, this.message, this.currentdate)
+        this.getNowFormatDate()
+        this.$axios.post("/sendComment", {
+          videoId: this.videoList.videoId,
+          userCommentId: this.userInfo.userId,
+          commentContent: this.message,
+          commentTime: this.currentdate
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.getCommentData()
+          }
+        })
+      } else {
+        this.$router.push({ path: '/Login' })
+      }
     },
     // 回复
     sendReplyComment () {
-      this.getNowFormatDate()
-      console.log(this.videoCommentId, this.userInfo.userId, this.repliedUserId, this.message, this.currentdate)
-      this.$axios.post("/sendReplyComment", {
-        videoCommentId: this.videoCommentId,
-        userSendId: this.userInfo.userId,
-        userRepliedId: this.repliedUserId,
-        replyContent: this.message,
-        replyTime: this.currentdate
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.getCommentData()
-        }
-      })
+      if (this.$store.state.userInfo != null) {
+        this.getNowFormatDate()
+        console.log(this.videoCommentId, this.userInfo.userId, this.repliedUserId, this.message, this.currentdate)
+        this.$axios.post("/sendReplyComment", {
+          videoCommentId: this.videoCommentId,
+          userSendId: this.userInfo.userId,
+          userRepliedId: this.repliedUserId,
+          replyContent: this.message,
+          replyTime: this.currentdate
+        }).then((res) => {
+          if (res.data.code == 200) {
+            this.getCommentData()
+          }
+        })
+      } else {
+        this.$router.push({ path: '/Login' })
+      }
     },
     toUserPersonalHomepage (item) {
       // 去到一个页面就向localstorage发一次

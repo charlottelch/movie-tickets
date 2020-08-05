@@ -2,7 +2,7 @@
   <div class="main-con">
     <div class="ticket-top">
       <div class="location" @click="toCity">
-        <p v-if="location.addressComponent!=undefined">{{locationCity}}</p>
+        <p v-if="location.addressComponent!=undefined || city != null">{{locationCity}}</p>
         <i class="arrow-bottom"></i>
       </div>
       <!-- <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" input-align="center" /> -->
@@ -18,6 +18,7 @@
     </div>
     <van-tabs v-model="active" sticky>
       <van-tab title="热映">
+        <img class="empty-show" src="../../assets/empty-img01.jpg" alt v-if="movieList.length==0" />
         <div class="film" v-for="(mItem,index) in movieList" :key="index">
           <div class="information" @click="goMovieDetailPage(mItem)">
             <img :src="`../../../static/${mItem.movieImg}`" alt />
@@ -133,6 +134,7 @@
             ></van-dropdown-item>
           </van-dropdown-menu>
         </div>
+        <img class="empty-show" src="../../assets/empty-img01.jpg" alt v-if="cinemaList.length==0" />
         <div class="cinema-all">
           <div
             class="cinema"
@@ -430,6 +432,7 @@ export default {
   methods: {
     // getDistance () {
     // 方法定义 lat,lng 
+    // 第一种是默认地球是一个光滑的球面，然后计算任意两点间的距离，这个距离叫做大圆距离(The Great Circle Distance)
     GetDistance (lat1, lng1, lat2, lng2) {
       var radLat1 = lat1 * Math.PI / 180.0;
       var radLat2 = lat2 * Math.PI / 180.0;
@@ -447,7 +450,7 @@ export default {
     getDistance () {
       console.log("hhh")
       this.$axios.post("/getCinemaData", {
-        locationCity:this.locationCity
+        locationCity: this.locationCity
       }).then((res) => {
         var cinemaList = res.data.data
         console.log(cinemaList)
@@ -555,7 +558,9 @@ export default {
     // 重置筛选
     clearSelect () {
       this.isHallTypeSelected = 0
+      this.hallTypeSelected = '全部'
       this.isCinemaServerSelected = 0
+      this.cinemaServerSelected = '全部'
     },
     // 确认筛选
     makeSureSelect () {
@@ -707,6 +712,10 @@ export default {
   padding-left: 10px;
   padding-right: 10px;
   font-size: 12px;
+  .empty-show {
+    width: 100%;
+    margin-top: 50px;
+  }
   .navBarWrap {
     position: fixed;
     top: 44px;
